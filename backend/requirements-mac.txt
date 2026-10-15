@@ -1,0 +1,4 @@
+# Native macOS arm64 installation; pip resolves matching torch/torchvision wheels.
+-r requirements.txt
+ultralytics==8.4.177
+opencv-python>=4.10,<5

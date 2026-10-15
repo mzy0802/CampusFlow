@@ -1,0 +1,23 @@
+node_modules/
+dist/
+.venv/
+__pycache__/
+.pytest_cache/
+.env
+backend/storage/
+models/*.pt
+models/*.onnx
+*.pt
+.vision-deps/
+.vision-config/
+
+百炼.env
+
+# Local credentials and generated comparison artifacts
+*.env
+.env.*
+!.env.example
+Ultralytics/
+comparison-*.jpg
+comparison-*.json
+MANIFEST-SHA256.json

@@ -1,0 +1,10 @@
+{
+  "type": "FeatureCollection",
+  "is_example": true,
+  "description": "纯虚构演示坐标，位于经纬度原点附近；不是长安大学、修远楼或任何真实停车区。名称、边界和容量均为示例。",
+  "features": [
+    {"type":"Feature","properties":{"id":"demo-a","name":"示例停车区 A","capacity":40},"geometry":{"type":"Polygon","coordinates":[[[-0.0012,0.0005],[-0.0002,0.0005],[-0.0002,0.0009],[-0.0012,0.0009],[-0.0012,0.0005]]]}},
+    {"type":"Feature","properties":{"id":"demo-b","name":"示例停车区 B","capacity":24},"geometry":{"type":"Polygon","coordinates":[[[0.0004,-0.0001],[0.0009,-0.0001],[0.0009,0.0009],[0.0004,0.0009],[0.0004,-0.0001]]]}},
+    {"type":"Feature","properties":{"id":"demo-c","name":"示例停车区 C","capacity":32},"geometry":{"type":"Polygon","coordinates":[[[-0.0011,-0.0009],[0.0001,-0.0009],[0.0001,-0.0005],[-0.0011,-0.0005],[-0.0011,-0.0009]]]}}
+  ]
+}
