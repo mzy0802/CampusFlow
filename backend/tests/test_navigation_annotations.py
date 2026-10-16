@@ -25,7 +25,7 @@ def test_navigation_splits_same_edge_and_respects_oneway():
 @pytest.mark.parametrize('points',[
     [(0,0),(1,1),(0,1),(1,0)],
     [(0,0),(1,0),(.5,0)],
-    [(0,0),(1,0),(1,0),(0,1)],
+    [(0,0),(1,0),(1,1),(1,0),(0,1)],
     [(0,0),(1.1,0),(0,1)],
 ])
 def test_invalid_annotation_geometry(points):
@@ -33,6 +33,14 @@ def test_invalid_annotation_geometry(points):
 
 def test_only_allowed_label_accepted():
     with pytest.raises(ValueError):Polygon(id='x',label='forbidden',points=[(0,0),(1,0),(0,1)])
+
+def test_duplicate_clicks_and_closing_vertex_are_normalized():
+    p=Polygon(id='x',label='allowed',points=[(0,0),(1,0),(1,0),(1,1),(0,1),(0,0),(0,0)])
+    assert p.points==[(0,0),(1,0),(1,1),(0,1)]
+    with pytest.raises(ValueError,match='至少需要3'):Polygon(id='x',label='allowed',points=[(0,0),(0,0),(1,1)])
+    # Exact failed payload supplied by the user: the repeated last click is harmless.
+    points=[(.33955044441677934,.6081021930435015),(.7048062921960965,.3854706379012907),(.6306790824994757,.2985383163695703),(.21042562752589142,.4734631096955931),(.33895264433858074,.6081021930435015),(.33895264433858074,.6081021930435015)]
+    assert Polygon(id='user-shape',label='allowed',points=points).points==points[:-1]
 
 def test_annotation_upload_persistence_frame_policy_and_conflict():
     import cv2,numpy as np
@@ -46,8 +54,11 @@ def test_annotation_upload_persistence_frame_policy_and_conflict():
         old=c.get(f'/api/annotations/media/{mid}').json()
         assert old['reviewed_frames']==[] and old['unreviewed_policy']=='unknown'
         body={'revision':0,'reviewed_frames':[0],'polygons':[{'id':'p','label':'allowed','points':[[.1,.1],[.8,.1],[.8,.8],[.1,.8]]}]}
+        expected=body['polygons'][0]['points'][:]
+        body['polygons'][0]['points'] += [[.1,.8],[.1,.1]]
         saved=c.put(f'/api/annotations/media/{mid}',json=body)
         assert saved.status_code==200
+        assert saved.json()['polygons'][0]['points']==expected
         assert saved.json()['outside_policy']=='forbidden_in_reviewed_frame'
         assert c.put(f'/api/annotations/media/{mid}',json=body).status_code==409
         body.update(revision=1,reviewed_frames=[2])

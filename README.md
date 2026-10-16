@@ -8,7 +8,7 @@ Vue 3 + Vite + Leaflet / OSM，FastAPI，Docker Compose。用于长安大学渭�
 
 将 `.env.example` 复制为 `.env`，填写自己的百炼密钥和对应地域/工作空间的接口地址。密钥只在后端读取，不提交 Git。安装及限制见 [Qwen 识别说明](docs/QWEN-VISION.md)。旧 YOLO 文档和脚本保留供实验参考，不是当前网页默认引擎。
 
-**当前默认加载用户上传的24个停车区：修远7个、明远17个。** 合并数据为 `data/parking.imported.geojson`；原文件分别保存在 `data/parking.upload.original.geojson` 和 `data/parking.mingyuan.original.geojson`。新版明远文件的17个区域名称、ID和容量均完整，容量合计640，未使用参考容量。已有数据库在启动时只追加本批新增区域，保留现有修改；不会在以后重启时恢复用户删除的区域。边界和容量支持在调试页修改并持久化。应用页状态优先使用该区最近Qwen上传估算，没有结果则明确显示模拟数据；均附数据来源和时间。原来的虚构示例另存于 `data/parking.example.geojson`，不参与当前展示。
+**当前默认加载用户上传的33个停车区：原有7个、明远17个、修远新标注9个。** 合并数据为 `data/parking.imported.geojson`；三份原文件分别保存在 `data/parking.upload.original.geojson`、`data/parking.mingyuan.original.geojson` 和 `data/parking.xiuyuan.original.geojson`。明远容量合计640；修远新文件容量合计1779，按文件提供的面积估算容量使用。修远新区域名称增加“修远”前缀，原名称存于original_name。容量、ID、经纬度均来自用户文件，不覆盖旧区域；原文件中大小写不同的ID分别保留。已有数据库启动时各批次只追加一次，保留现有修改；不会在以后重启时恢复用户删除的区域。应用状态优先使用最近Qwen上传估算，否则明确显示模拟数据及时间。独立虚构示例不参与当前展示。
 
 原修远区域导入将7条带ID、名称的LineString按原坐标顺序闭合成Polygon，将`capility`转为`capacity`；2个无属性的单点线条仅保留在原文件。明远区域导入将`space`转为`capacity`，闭合WM1002的LineString，移除两处连续重复顶点；所有经纬度沿用用户文件，未补造地理点位。
 

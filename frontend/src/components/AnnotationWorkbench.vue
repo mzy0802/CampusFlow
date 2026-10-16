@@ -1,5 +1,6 @@
 <script setup>
 import {ref,computed,watch,onMounted,onBeforeUnmount} from 'vue'
+import {cleanPoints,polygonIssue} from '../annotationGeometry'
 const emit=defineEmits(['close','observation'])
 const areas=ref([]),areaId=ref(''),viewName=ref(''),captureGroup=ref(''),savedViews=ref([]),surveySelection=ref([]),surveyJob=ref(null)
 const viewsLoading=ref(false),viewsStatus=ref(''),viewsError=ref(''),availableGroups=ref([])
@@ -13,22 +14,33 @@ const dirty=computed(()=>current.value&&(serialized()!==baseline.value||draft.va
 const visible=computed(()=>polygons.value.filter(p=>Math.abs(p.time_seconds-time.value)<0.08))
 const reviewed=computed(()=>reviewedFrames.value.some(t=>Math.abs(t-time.value)<0.08))
 const chosen=computed(()=>polygons.value.find(p=>p.id===selected.value))
-async function api(path,options){const r=await fetch('/api/annotations'+path,options);let d;try{d=await r.json()}catch{throw Error('接口未返回有效数据，请确认后端已启动')}if(!r.ok){if(r.status===404&&path.startsWith('/views'))throw Error('当前后端没有视角读取接口，请重启后端后重试');throw Error(typeof d.detail==='string'?d.detail:JSON.stringify(d.detail))}return d}
+async function api(path,options){const r=await fetch('/api/annotations'+path,options);let d;try{d=await r.json()}catch{throw Error('接口未返回有效数据，请确认后端已启动')}if(!r.ok){if(r.status===404&&path.startsWith('/views'))throw Error('当前后端没有视角读取接口，请重启后端后重试');const detail=Array.isArray(d.detail)?d.detail.map(e=>{const i=e.loc?.indexOf('polygons');return (i>=0&&typeof e.loc[i+1]==='number'?`第${e.loc[i+1]+1}个区域：`:'')+e.msg.replace(/^Value error,\s*/,'')}).join('；'):d.detail;throw Error(typeof detail==='string'?detail:'保存失败，请重试')}return d}
 watch([areaId,captureGroup,()=>current.value?.id],()=>{viewsRequest++;savedViews.value=[];surveySelection.value=[];viewsStatus.value='';viewsError.value='';availableGroups.value=[]},{flush:'sync'})
 async function refresh(){items.value=(await api('/media')).items}
 function leave(){return !dirty.value||confirm('有未保存标注，确认丢弃？可先取消并保存或导出。')}
 async function open(id){if(!leave())return;error.value='';try{const d=await api('/media/'+id);current.value=d.media;polygons.value=d.polygons;areaId.value=d.area_id||'';viewName.value=d.view_name||'';captureGroup.value=d.capture_group||'';savedViews.value=[];surveySelection.value=[];reviewedFrames.value=d.reviewed_frames||[];revision.value=d.revision;baseline.value=serialized();draft.value=[];selected.value='';time.value=0;paused.value=true}catch(e){error.value=e.message}}
 async function upload(event){const files=[...(event.target.files||[])];busy.value=true;error.value='';let last=null;const failures=[];for(let i=0;i<files.length;i++){const f=files[i];message.value=`上传 ${i+1}/${files.length}：${f.name}`;try{if(f.size>100*1024*1024)throw Error('超过100MB');const d=await api('/media?'+new URLSearchParams({filename:f.name}),{method:'POST',headers:{'Content-Type':'application/octet-stream'},body:f});last=d.id}catch(e){failures.push(f.name+'：'+e.message)}}try{await refresh();if(last&&!dirty.value)await open(last)}catch(e){failures.push(e.message)}error.value=failures.join('；');message.value='上传完成，素材只保存在本地后端，未调用 Qwen';busy.value=false;event.target.value=''}
-function point(event){if(!current.value||!paused.value)return;const r=event.currentTarget.getBoundingClientRect();draft.value.push([Math.max(0,Math.min(1,(event.clientX-r.left)/r.width)),Math.max(0,Math.min(1,(event.clientY-r.top)/r.height))])}
-function finish(){if(draft.value.length<3)return;polygons.value.push({id:crypto.randomUUID(),label:label.value,note:note.value,time_seconds:current.value.kind==='image'?0:Math.min(current.value.duration_seconds,Number(time.value.toFixed(4))),points:[...draft.value]});draft.value=[];note.value=''}
+function point(event){
+ if(!current.value||!paused.value||busy.value||viewsLoading.value||event.detail>1)return
+ const r=event.currentTarget.getBoundingClientRect(),p=[Math.max(0,Math.min(1,(event.clientX-r.left)/r.width)),Math.max(0,Math.min(1,(event.clientY-r.top)/r.height))]
+ const gap=q=>Math.hypot((p[0]-q[0])*r.width,(p[1]-q[1])*r.height)
+ event.currentTarget.focus();error.value=''
+ if(draft.value.length>=3&&gap(draft.value[0])<10){finish();return}
+ if(draft.value.length&&gap(draft.value.at(-1))<3)return
+ if(draft.value.length>=200){error.value='每个区域最多200个顶点';return}
+ draft.value.push(p)
+}
+function finish(){if(!draft.value.length)return;const p=cleanPoints(draft.value),issue=polygonIssue(p);if(issue){error.value=issue;return}polygons.value.push({id:crypto.randomUUID(),label:label.value,note:note.value,time_seconds:current.value.kind==='image'?0:Math.min(current.value.duration_seconds,Number(time.value.toFixed(4))),points:p});draft.value=[];note.value='';error.value='';message.value='区域已完成，接着点击“保存标注”即可保存'}
 function points(p){return p.map(([x,y])=>`${x*1000},${y*1000}`).join(' ')}
 async function persist(markFrame=false){
  const id=current.value.id
+ const before=JSON.stringify(polygons.value),normalized=polygons.value.map(p=>({...p,points:cleanPoints(p.points)}))
  const frames=markFrame?[...reviewedFrames.value,Math.min(current.value.duration_seconds,Number(time.value.toFixed(4)))]:reviewedFrames.value
- const d=await api('/media/'+id,{method:'PUT',headers:{'Content-Type':'application/json'},signal:AbortSignal.timeout(15000),body:JSON.stringify({revision:revision.value,area_id:areaId.value.trim()||null,view_name:viewName.value,capture_group:captureGroup.value.trim(),polygons:polygons.value,reviewed_frames:frames})})
+ const d=await api('/media/'+id,{method:'PUT',headers:{'Content-Type':'application/json'},signal:AbortSignal.timeout(15000),body:JSON.stringify({revision:revision.value,area_id:areaId.value.trim()||null,view_name:viewName.value,capture_group:captureGroup.value.trim(),polygons:normalized,reviewed_frames:frames})})
  if(stopped||current.value?.id!==id)return false
  if((d.area_id||'')!==areaId.value.trim()||(d.capture_group||'')!==captureGroup.value.trim())throw Error('后端未保存停车区或批次信息，请重启更新后的后端')
  revision.value=d.revision;reviewedFrames.value=d.reviewed_frames
+ if(JSON.stringify(polygons.value)===before)polygons.value=d.polygons
  baseline.value=JSON.stringify({polygons:d.polygons,area_id:d.area_id||'',view_name:d.view_name||'',capture_group:d.capture_group||''})
  message.value='已保存到数据库 · 版本 '+d.revision
  return true
@@ -81,7 +93,7 @@ onBeforeUnmount(()=>{stopped=true;viewsRequest++;clearTimeout(surveyTimer);windo
     <p>本帧所有可停区域关联到所选地图停车区；画面周边违停也归属此区，并已包含在总数中。同一区域同一时段的不同角度填写相同批次，跨时段另建批次。画面应只覆盖此区及其负责的周边。</p>
     <h3>画区域</h3><label>标注类型<select v-model="label"><option v-for="(v,k) in names" :value="k" :key="k">{{v}}</option></select></label>
     <label>备注<input v-model="note" maxlength="500" placeholder="如：西侧白线内"></label>
-    <p>在画面上依次点击边界顶点，再点“完成区域”。只画可停车范围。确认本帧后，所有绿色区域以外均为不可停车；未标注帧保持未知。</p>
+    <p>沿边缘顺时针或逆时针单击一圈，不要来回穿过区域。至少3点，点“完成区域”、双击最后一点或按Enter均可结束；系统自动闭合，不用重复点击起点。只画可停车范围。</p>
     <div class="actions"><button :disabled="draft.length<3" @click="finish">完成区域（{{draft.length}}点）</button><button :disabled="!draft.length" @click="draft.pop()">撤销顶点</button><button @click="draft=[]">清空草稿</button></div>
     <p v-if="current.kind==='video'">当前 {{time.toFixed(2)}} 秒。先暂停再画区域；标注只对应当前帧，不会自动沿用到移动镜头或其他时刻。</p>
     <button class="primary" :disabled="busy||viewsLoading" @click="save">确认本帧并保存</button><button @click="exportJson">导出 JSON</button>
@@ -98,10 +110,10 @@ onBeforeUnmount(()=>{stopped=true;viewsRequest++;clearTimeout(surveyTimer);windo
     <p v-if="surveyJob">任务：{{surveyJob.status==='completed'?'已完成':surveyJob.status==='failed'?'失败': '识别中'}} {{surveyJob.error||''}}</p>
     <div v-if="surveyJob?.result"><strong>总数 {{surveyJob.result.two_wheeler.latest.count}} 辆 · {{surveyJob.result.two_wheeler.latest.percent}}%</strong><p>自行车 {{surveyJob.result.bicycle.latest.count}} · 电动两轮车 {{surveyJob.result.motorcycle.latest.count}} · 类型不明 {{surveyJob.result.uncertain_type.latest.count}}</p><p>区内 {{surveyJob.result.legal_count}} · 违停 {{surveyJob.result.illegal_count}} · 位置不明 {{surveyJob.result.unknown_location_count}}（均已计入总数）</p></div>
    </template>
-  </aside><main><div v-if="current" class="stage" :style="{aspectRatio:current.width+'/'+current.height}" :key="current.id">
+  </aside><main><div v-if="current" class="drawing-toolbar"><strong>{{draft.length?'正在绘制 · '+draft.length+'点':'沿边界逐点单击'}}</strong><button :disabled="draft.length<3||busy||viewsLoading" @click="finish">完成区域</button><button :disabled="!draft.length" @click="draft.pop();error=''">撤销一点</button><button class="primary" :disabled="busy||viewsLoading" @click="save">保存标注</button><span>Enter完成 · Esc取消 · 系统自动闭合</span><p v-if="error" class="error" role="alert">{{error}}</p></div><div v-if="current" class="stage" :style="{aspectRatio:current.width+'/'+current.height}" :key="current.id">
    <img v-if="current.kind==='image'" :src="current.url" alt="待标注原尺寸图片">
    <video v-else ref="video" :src="current.url" preload="metadata" @timeupdate="updateTime" @seeked="updateTime" @play="paused=false" @pause="paused=true" @error="error='浏览器不能播放此编码，请转换为 H.264 MP4；原文件已保留'" />
-   <svg viewBox="0 0 1000 1000" preserveAspectRatio="none" @click="point" aria-label="点击画面添加区域顶点">
+   <svg viewBox="0 0 1000 1000" preserveAspectRatio="none" tabindex="0" @click="point" @dblclick.stop.prevent="finish" @keydown.enter.prevent="finish" @keydown.esc.prevent="draft=[];error=''" @keydown.backspace.prevent="draft.pop()" aria-label="点击画面添加区域顶点">
     <defs><mask id="outside-parking-mask"><rect width="1000" height="1000" fill="white"/><polygon v-for="p in visible" :key="p.id" :points="points(p.points)" fill="black"/></mask></defs><rect v-if="reviewed||visible.length" width="1000" height="1000" fill="#ef4444" fill-opacity=".16" mask="url(#outside-parking-mask)"/>
     <polygon v-for="p in visible" :key="p.id" :points="points(p.points)" :fill="colors[p.label]" fill-opacity=".22" :stroke="colors[p.label]" :stroke-width="p.id===selected?5:2" vector-effect="non-scaling-stroke"><title>{{names[p.label]}} {{p.note}}</title></polygon>
     <polyline :points="points(draft)" fill="none" :stroke="colors[label]" stroke-width="3" vector-effect="non-scaling-stroke"/>
@@ -113,6 +125,6 @@ onBeforeUnmount(()=>{stopped=true;viewsRequest++;clearTimeout(surveyTimer);windo
  </section></Teleport>
 </template>
 <style scoped>
-.annotation-workbench{position:fixed;inset:0;z-index:2200;background:#f1f5f9;color:#172b4d;font:14px/1.5 system-ui;display:flex;flex-direction:column}.annotation-workbench header{display:flex;align-items:center;gap:20px;padding:14px 20px;background:white;border-bottom:1px solid #ddd}.annotation-workbench header span{flex:1;overflow:hidden;text-overflow:ellipsis}.layout{display:flex;flex:1;min-height:0}.layout aside{width:320px;flex-shrink:0;overflow:auto;padding:18px;background:white}.layout main{flex:1;min-width:0;padding:20px;overflow:auto}.stage{position:relative;width:100%;background:#111}.stage img,.stage video{width:100%;height:100%;display:block}.stage svg{position:absolute;inset:0;width:100%;height:100%;cursor:crosshair}.annotation-workbench label{display:block;margin:12px 0}.annotation-workbench input:not([type=range]),.annotation-workbench select{box-sizing:border-box;width:100%;padding:8px;border:1px solid #cbd5e1;border-radius:6px}.annotation-workbench button{padding:8px 10px;border:1px solid #cbd5e1;border-radius:6px;background:white;color:inherit;cursor:pointer;margin:3px}.annotation-workbench button:disabled{opacity:.45;cursor:default}.annotation-workbench .primary{background:#2563eb;color:white}.annotation-workbench p{font-size:12px;color:#64748b}.annotation-workbench .error{color:#b91c1c;overflow-wrap:anywhere}.actions{display:flex;flex-wrap:wrap}.list{max-height:220px;overflow:auto}.list button{display:block;text-align:left;width:95%}.list .chosen{border-color:#2563eb;background:#eff6ff}.video-controls{display:flex;align-items:center;gap:10px}.video-controls input{flex:1}.empty{padding:100px 20px;text-align:center}.legend{text-align:center}@media(max-width:750px){.layout{flex-direction:column-reverse}.layout aside{width:auto;max-height:45%;}.layout main{min-height:30vh;padding:8px}}
+.annotation-workbench{position:fixed;inset:0;z-index:2200;background:#f1f5f9;color:#172b4d;font:14px/1.5 system-ui;display:flex;flex-direction:column}.annotation-workbench header{display:flex;align-items:center;gap:20px;padding:14px 20px;background:white;border-bottom:1px solid #ddd}.annotation-workbench header span{flex:1;overflow:hidden;text-overflow:ellipsis}.layout{display:flex;flex:1;min-height:0}.layout aside{width:320px;flex-shrink:0;overflow:auto;padding:18px;background:white}.layout main{flex:1;min-width:0;padding:20px;overflow:auto}.stage{position:relative;width:100%;background:#111;user-select:none;-webkit-user-select:none}.stage img,.stage video{-webkit-user-drag:none}.stage img,.stage video{width:100%;height:100%;display:block}.stage svg{position:absolute;inset:0;width:100%;height:100%;cursor:crosshair}.annotation-workbench label{display:block;margin:12px 0}.annotation-workbench input:not([type=range]),.annotation-workbench select{box-sizing:border-box;width:100%;padding:8px;border:1px solid #cbd5e1;border-radius:6px}.annotation-workbench button{padding:8px 10px;border:1px solid #cbd5e1;border-radius:6px;background:white;color:inherit;cursor:pointer;margin:3px}.annotation-workbench button:disabled{opacity:.45;cursor:default}.annotation-workbench .primary{background:#2563eb;color:white}.annotation-workbench p{font-size:12px;color:#64748b}.annotation-workbench .error{color:#b91c1c;overflow-wrap:anywhere}.actions{display:flex;flex-wrap:wrap}.list{max-height:220px;overflow:auto}.list button{display:block;text-align:left;width:95%}.list .chosen{border-color:#2563eb;background:#eff6ff}.video-controls{display:flex;align-items:center;gap:10px}.video-controls input{flex:1}.empty{padding:100px 20px;text-align:center}.legend{text-align:center}@media(max-width:750px){.layout{flex-direction:column-reverse}.layout aside{width:auto;max-height:45%;}.layout main{min-height:30vh;padding:8px}}
 </style>
-<style scoped>.view-check{display:flex!important;align-items:center;gap:8px}.view-check input{width:auto!important}.annotation-workbench .views-status{padding:10px;background:#eff6ff;border-radius:7px;color:#1d4ed8}</style>
+<style scoped>.view-check{display:flex!important;align-items:center;gap:8px}.view-check input{width:auto!important}.annotation-workbench .views-status{padding:10px;background:#eff6ff;border-radius:7px;color:#1d4ed8}.drawing-toolbar{position:sticky;top:-20px;background:white;z-index:5;padding:8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;border-radius:8px;margin-bottom:12px;box-shadow:0 2px 8px #0001}.drawing-toolbar span{font-size:12px;color:#64748b}.drawing-toolbar .error{flex-basis:100%;margin:0}.stage svg:focus{outline:2px solid #93c5fd;outline-offset:2px}</style>

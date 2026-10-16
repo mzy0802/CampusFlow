@@ -17,14 +17,21 @@ class Polygon(BaseModel):
     label: Literal['allowed']
     note: str = Field('', max_length=500)
     time_seconds: float = Field(0, ge=0, allow_inf_nan=False)
-    points: list[tuple[float, float]] = Field(min_length=3, max_length=200)
+    points: list[tuple[float, float]] = Field(min_length=3, max_length=201)
 
     @model_validator(mode='after')
     def geometry(self):
         p = self.points
         if any(not math.isfinite(v) or not 0 <= v <= 1 for xy in p for v in xy):
             raise ValueError('坐标必须是 0～1 的有限值')
-        if len(set(p)) != len(p): raise ValueError('顶点不能重复')
+        cleaned=[]
+        for point in p:
+            if not cleaned or point!=cleaned[-1]:cleaned.append(point)
+        if len(cleaned)>1 and cleaned[-1]==cleaned[0]:cleaned.pop()
+        if len(cleaned)<3:raise ValueError('区域至少需要3个不同顶点')
+        if len(cleaned)>200:raise ValueError('区域最多支持200个顶点')
+        self.points=p=cleaned
+        if len(set(p)) != len(p): raise ValueError('边界重复经过同一顶点，请沿边缘依次绘制')
         if abs(sum(p[i][0]*p[(i+1)%len(p)][1]-p[(i+1)%len(p)][0]*p[i][1] for i in range(len(p)))) < 1e-8:
             raise ValueError('区域面积不能为零')
         def orient(a,b,c): return (b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0])

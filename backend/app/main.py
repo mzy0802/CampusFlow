@@ -22,7 +22,10 @@ async def lifespan(app: FastAPI):
     seed = os.getenv('CAMPUS_NETWORK_FILE', str(Path(os.getenv('PARKING_DATA_FILE', str(DEFAULT_FILE))).parent / 'network.osm.json'))
     app.state.store.seed_campus(seed)
     if os.getenv('CAMPUS_ACCEPT_ROADS', '1') == '1': app.state.store.accept_current_roads()
-    app.state.parking = app.state.store.parking(merge_import_batch(app.state.store,load_parking(),'mingyuan-20261016')['collection'])
+    default_parking=load_parking()
+    for batch in ('mingyuan-20261016','xiuyuan-20261016'):
+        parking=merge_import_batch(app.state.store,default_parking,batch)
+    app.state.parking = app.state.store.parking(parking['collection'])
     app.state.vision = VisionService(os.getenv('DETECTION_STORAGE', str(Path(__file__).resolve().parents[1] / 'storage')))
     app.state.vision.store = app.state.store
     for path in app.state.vision.storage.glob("*/job.json"):
