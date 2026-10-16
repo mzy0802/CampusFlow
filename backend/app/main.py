@@ -1,6 +1,6 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
-from .data import load_parking
+from .data import load_parking, DEFAULT_FILE
 from .traffic_store import Store
 from .network_api import router as network_router
 from .parking import router as parking_router
@@ -14,6 +14,8 @@ import os
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     app.state.store = Store()
+    seed = os.getenv('CAMPUS_NETWORK_FILE', str(Path(os.getenv('PARKING_DATA_FILE', str(DEFAULT_FILE))).parent / 'network.osm.json'))
+    app.state.store.seed_campus(seed)
     app.state.parking = app.state.store.parking(load_parking())
     app.state.vision = VisionService(os.getenv('DETECTION_STORAGE', str(Path(__file__).resolve().parents[1] / 'storage')))
     app.state.vision.store = app.state.store

@@ -16,7 +16,7 @@ Vue 3 + Vite + Leaflet / OSM，FastAPI，Docker Compose。用于长安大学渭�
 
 ## 路网编辑与停车联合推荐
 
-点击“路线”打开工作台，可录入道路和入口、保存 SQLite、导入导出 JSON，计算最快或少走路方案。校园路网初始为空，独立虚构示例可直接演示。见 [验收说明](docs/MORNING-ACCEPTANCE.md) 和 [LLM 接口交接](docs/ROUTING-API.md)。
+点击“路线”打开工作台，可录入道路和入口、保存 SQLite、导入导出 JSON，计算最快或少走路方案。全新或未编辑的空白校园路网会自动载入 OSM 公开道路（全部待核验），独立虚构示例仍可直接演示。公开数据来源与限制见 [道路说明](docs/OSM-ROADS.md)。见 [验收说明](docs/MORNING-ACCEPTANCE.md) 和 [LLM 接口交接](docs/ROUTING-API.md)。
 
 ## Docker 一键启动
 

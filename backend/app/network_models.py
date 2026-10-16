@@ -35,12 +35,13 @@ class Network(BaseModel):
     def references(self):
         ids = [n.id for n in self.nodes]
         if len(ids) != len(set(ids)): raise ValueError('节点 ID 重复')
+        lookup = {n.id: n for n in self.nodes}
         eids = [e.id for e in self.edges]
         if len(eids) != len(set(eids)): raise ValueError('道路 ID 重复')
         for e in self.edges:
-            if e.source not in ids or e.target not in ids: raise ValueError('道路引用不存在的节点')
+            if e.source not in lookup or e.target not in lookup: raise ValueError('道路引用不存在的节点')
             if e.source == e.target: raise ValueError('道路不能连接同一节点')
-            a, b = next(n for n in self.nodes if n.id == e.source), next(n for n in self.nodes if n.id == e.target)
+            a, b = lookup[e.source], lookup[e.target]
             if (a.longitude, a.latitude) == (b.longitude, b.latitude): raise ValueError('道路两端坐标不能相同')
         for n in self.nodes:
             if n.available > n.capacity: raise ValueError('示例空位不能大于容量')

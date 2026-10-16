@@ -26,7 +26,7 @@ function fit(){
 async function load(value=dataset.value){
  if(dirty.value&&saved.value&&!confirm('有未保存修改，切换后将丢弃。需要保留请先取消并导出。'))return
  busy.value=true;error.value=''
- try{const data=await api('/network/'+value);dataset.value=value;graph.value=data;saved.value=JSON.stringify(data);selected.value='';edgeId.value='';from.value='';to.value='';origin.value=data.nodes[0]?.id||'';destination.value=data.nodes.find(n=>n.kind==='entrance')?.id||'';invalidate();await nextTick();paint();fit();message.value=value==='example'?'独立虚构示例：不是渭水校区道路。':'校园路网：请按实地可通行道路录入。'}catch(e){error.value=e.message}finally{busy.value=false}
+ try{const data=await api('/network/'+value);dataset.value=value;graph.value=data;saved.value=JSON.stringify(data);selected.value='';edgeId.value='';from.value='';to.value='';origin.value=data.nodes[0]?.id||'';destination.value=data.nodes.find(n=>n.kind==='entrance')?.id||'';invalidate();await nextTick();paint();fit();message.value=value==='example'?'独立虚构示例：不是渭水校区道路。':'公开道路已标出（如有）；虚线待核验，停车入口需关联。'}catch(e){error.value=e.message}finally{busy.value=false}
 }
 async function save(){busy.value=true;error.value='';try{const data=await api('/network/'+dataset.value,'PUT',graph.value);graph.value=data;saved.value=JSON.stringify(data);message.value='已保存到数据库 · 版本 '+data.revision;invalidate()}catch(e){error.value=e.message}finally{busy.value=false}}
 function addNode(latlng){
@@ -47,7 +47,7 @@ function paint(){
  line.on('click',ev=>{L.DomEvent.stopPropagation(ev);edgeId.value=e.id;selected.value='';paint()})}
  for(const n of validNodes){
  const circle=L.circleMarker([n.latitude,n.longitude],{radius:n.id===selected.value?10:7,color:n.kind==='parking'?'#188038':n.kind==='entrance'?'#9333ea':'#2563eb',fillOpacity:1,weight:3}).addTo(layer)
- const label=document.createElement('span');label.textContent=n.name;circle.bindTooltip(label,{permanent:true,direction:'top',offset:[0,-7]})
+ const label=document.createElement('span');label.textContent=n.name;circle.bindTooltip(label,{permanent:validNodes.length<=80||n.id===selected.value,direction:'top',offset:[0,-7]})
  circle.on('click',ev=>{L.DomEvent.stopPropagation(ev);if(tool.value==='origin'){origin.value=n.id;tool.value='select'}else if(tool.value==='destination'){destination.value=n.id;tool.value='select'}else{selected.value=n.id;edgeId.value=''}paint()})}
 }
 function showPlan(plan){activePlan.value=plan;routeLayer.clearLayers();for(const s of plan.segments)L.geoJSON(s.geojson,{style:{color:s.mode==='bike'?'#2563eb':'#16a34a',weight:7,dashArray:s.mode==='walk'?'7 9':null},pointToLayer:(f,ll)=>L.circleMarker(ll,{radius:8})}).addTo(routeLayer);if(routeLayer.getLayers().length)map.fitBounds(routeLayer.getBounds(),{padding:[40,40],maxZoom:19})}
@@ -66,10 +66,11 @@ onBeforeUnmount(()=>{observer?.disconnect();map?.remove()})
 </script>
 <template>
  <section class="workbench" aria-label="路网编辑与停车推荐">
-  <header><div><strong>CampusFlow · 路线工作台</strong><small>{{dataset==='example'?'虚构示例场景 · 无真实地理含义':'校园路网 · 用户录入与核验'}} · {{dirty?'有未保存修改':'已保存'}} · v{{graph.revision}}</small></div><button @click="close">返回停车地图</button></header>
+  <header><div><strong>CampusFlow · 路线工作台</strong><small>{{dataset==='example'?'虚构示例场景 · 无真实地理含义':'校园路网 · 公开数据与人工核验'}} · {{dirty?'有未保存修改':'已保存'}} · v{{graph.revision}}</small></div><button @click="close">返回停车地图</button></header>
   <div class="workbody"><aside>
    <div class="scene"><button :class="{chosen:dataset==='campus'}" :disabled="busy" @click="load('campus')">校园数据</button><button :class="{chosen:dataset==='example'}" :disabled="busy" @click="load('example')">独立示例</button></div>
    <p v-if="error" role="alert" class="err">{{error}}</p><p v-if="message" role="status" class="hint">{{message}}</p>
+   <p v-if="dataset==='campus'" class="hint">道路来源：<a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap contributors · ODbL</a>。公开数据可能缺失；虚线不代表已核验可通行。节点过多时悬停显示名称。</p>
    <h2>路线与停车推荐</h2>
    <p class="hint">先选择已录入节点作为起终点。蓝色为骑行，绿色虚线为步行；预计时间和空位均为演示数据。</p>
    <label>起点<select v-model="origin"><option value="">请选择</option><option v-for="n in graph.nodes" :key="n.id" :value="n.id">{{n.name}}</option></select></label>

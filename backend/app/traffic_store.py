@@ -48,6 +48,16 @@ class Store:
             row=db.execute('SELECT * FROM networks WHERE dataset=?',(dataset,)).fetchone()
         result=json.loads(row['payload']);result['revision']=row['revision']
         return result
+    def seed_campus(self, path):
+        """Initialize untouched campus data only; never overwrite user edits."""
+        if not path or not Path(path).is_file(): return False
+        graph = Network.model_validate_json(Path(path).read_text(encoding='utf-8'))
+        if graph.dataset != 'campus' or any(e.verified for e in graph.edges):
+            raise ValueError('公开道路初始数据必须属于校园且全部待核验')
+        current = self.get('campus')
+        if current['revision'] != 0 or current['nodes'] or current['edges']: return False
+        self.save(graph.model_copy(update={'revision': current['revision']}))
+        return True
     def save(self,graph):
         with self.connect() as db:
             db.execute('BEGIN IMMEDIATE')
