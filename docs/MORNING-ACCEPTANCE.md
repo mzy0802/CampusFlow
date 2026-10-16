@@ -1,0 +1,34 @@
+# 本轮交付与验收
+
+已完成：地图录入道路节点、建筑及停车入口；方向、步行/骑行权限、核验状态与时间乘数编辑；JSON 导入导出；SQLite 保存和版本冲突保护；停车容量配置；骑行和停车后步行联合推荐；Qwen 历史入库；LLM 接口交接。
+
+## 五分钟验收
+
+1. 点击网页“路线”，切换“独立示例”。示例是独立空白示意图，不对应校园地理。
+2. 从“示例起点”到“示例教学楼入口”，默认参数计算。
+3. 最快方案：停车 A，约 4.15 分钟，步行 111.2 米。
+4. 少走路方案：停车 B，约 5.93 分钟，步行 33.4 米。
+5. 修改节点名称，保存并重新加载，检查持久化。
+6. 校园场景初始无路网。按实地采集结果录入、关联停车入口、核验道路并保存，再计算。不要把虚构示例坐标放进校园场景。
+
+## 启动与数据
+
+Windows 在项目根目录执行 python run_backend.py。另一个终端进入 frontend 执行 npm run dev -- --port 5174 --strictPort，访问 http://127.0.0.1:5174 。首次安装见 README。两个终端都须保持运行。
+
+本机没有全局 npm 时，在 frontend 目录使用已有 Node：
+
+```powershell
+& 'C:/Users/mzy/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe' node_modules/vite/bin/vite.js --host 127.0.0.1 --port 5174 --strictPort
+```
+
+Mac 见 START-HERE-MAC.md；Docker 使用 docker compose up -d --build，访问 http://127.0.0.1:8080。
+
+SQLite 默认 backend/storage/traffic.sqlite3，可通过 TRAFFIC_DB 修改。备份前停止后端，再复制数据库和识别存储目录。Docker 使用 vision-storage 持久卷，不要执行 docker compose down -v，以免删除数据。
+
+## 限制与验证
+
+真实道路尚待采集；停车空位模拟、速度与拥堵乘数人工设置，不能作为实测研究结论。Qwen 保留现有云端识别，本轮没有新增付费调用。公交和自然语言助手等待队友接入。
+
+验证包含后端测试、前端生产构建、本机 HTTP 集成与浏览器示例方案切换。Mac 原生与 Docker 容器未实机运行，需接收者验收。
+
+本次恢复后的复测：11 项路由与持久化单元测试通过，前端生产构建通过，密钥扫描通过。恢复前完整后端测试为 38 项通过。本次完整测试在 TestClient 请求阶段未返回，独立浏览器端口连接超时，因此最新道路导出接口的端到端验收仍待复核，不能将此前结果当作最新全量通过。

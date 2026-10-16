@@ -4,6 +4,7 @@ import L from 'leaflet'
 import {getJson} from './api'
 import MapIcon from './components/MapIcon.vue'
 import VisionPanel from './components/VisionPanel.vue'
+import RouteWorkbench from './components/RouteWorkbench.vue'
 const areas=ref(null),snapshot=ref(null),observations=ref([]),error=ref(''),loading=ref(false)
 const selected=ref(''),tab=ref('parking'),moduleInfo=ref(''),useOsm=ref(true),tileError=ref(false)
 const query=ref(''),panelOpen=ref(true),mapEl=ref(null),layerOpen=ref(false)
@@ -79,6 +80,7 @@ onBeforeUnmount(()=>{stopped=true;clearInterval(timer);resizeObserver?.disconnec
 </script>
 <template>
   <main class="maps-app">
+    <RouteWorkbench v-if="['roads','routing'].includes(tab)" :areas="rows" :parking-geo-json="areas" @close="tab='parking';refresh()" />
     <div ref="mapEl" class="full-map" aria-label="校园停车区域地图"></div>
     <nav class="rail" aria-label="主要功能"><div class="app-symbol"><MapIcon name="map" :size="29" /></div><button v-for="[key,icon,label] in tabs" :key="key" :class="{active:tab===key}" @click="switchTab(key)"><span><MapIcon :name="icon" /></span>{{label}}</button><div class="rail-bottom">DEMO</div></nav>
     <div class="search-box"><button class="icon-button" :aria-label="panelOpen?'收起侧栏':'展开侧栏'" @click="panelOpen=!panelOpen"><MapIcon :name="panelOpen?'close':'search'" /></button><form @submit.prevent="search"><input v-model="query" aria-label="搜索停车区域" placeholder="搜索修远楼周边停车区" @focus="tab='parking';panelOpen=true"><button class="icon-button" aria-label="搜索"><MapIcon name="search" :size="21" /></button></form></div>

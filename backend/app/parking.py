@@ -26,17 +26,17 @@ def snapshot(collection, now=None):
 
 @router.get('/areas')
 def areas(request: Request):
-    return request.app.state.parking
+    return request.app.state.store.parking(request.app.state.parking)
 
 
 @router.get('/status')
 def status(request: Request):
-    return snapshot(request.app.state.parking)
+    return snapshot(request.app.state.store.parking(request.app.state.parking))
 
 
 @router.get('/{area_id}/status')
 def area_status(area_id: str, request: Request):
-    result = snapshot(request.app.state.parking)
+    result = snapshot(request.app.state.store.parking(request.app.state.parking))
     item = next((item for item in result['items'] if item['id'] == area_id), None)
     if item is None:
         raise HTTPException(404, 'Unknown parking area')

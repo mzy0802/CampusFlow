@@ -21,3 +21,6 @@ Ultralytics/
 comparison-*.jpg
 comparison-*.json
 MANIFEST-SHA256.json
+
+*.sqlite3
+*.sqlite3-*

@@ -14,6 +14,10 @@ Vue 3 + Vite + Leaflet / OSM，FastAPI，Docker Compose。用于长安大学渭�
 
 重启当前电脑的后端：在旧后端终端按 Ctrl+C，进入本项目目录执行 `python run_backend.py`，再刷新页面。首次安装后端依赖执行 `python -m pip install -r backend/requirements.txt`，并配置百炼密钥。
 
+## 路网编辑与停车联合推荐
+
+点击“路线”打开工作台，可录入道路和入口、保存 SQLite、导入导出 JSON，计算最快或少走路方案。校园路网初始为空，独立虚构示例可直接演示。见 [验收说明](docs/MORNING-ACCEPTANCE.md) 和 [LLM 接口交接](docs/ROUTING-API.md)。
+
 ## Docker 一键启动
 
 安装并启动 Docker Desktop（Linux 容器，Compose v2），在本目录运行：
@@ -28,7 +32,7 @@ docker compose up --build -d
 - 查看日志：`docker compose logs -f`
 - 停止：`docker compose down`
 
-首次构建需要网络下载镜像和依赖；OSM 瓦片需要浏览器联网。无需 API Key。前端通过 Nginx 将 `/api` 转发给后端，浏览器不访问容器内部主机名。端口仅绑定本机。
+首次构建需要网络下载镜像和依赖；OSM 瓦片需要浏览器联网。OSM 底图无需 API Key；Qwen 识别需要百炼密钥。前端通过 Nginx 将 `/api` 转发给后端，浏览器不访问容器内部主机名。端口仅绑定本机。
 
 ## 本地开发
 

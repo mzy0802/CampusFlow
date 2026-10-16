@@ -16,6 +16,7 @@ services:
       PARKING_DATA_FILE: /app/data/parking.imported.geojson
       DETECTION_MODEL: /app/models/yolo11n.pt
       DETECTION_STORAGE: /app/storage
+      TRAFFIC_DB: /app/storage/traffic.sqlite3
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')"]
       interval: 10s

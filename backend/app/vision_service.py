@@ -23,6 +23,7 @@ class VisionService:
         self.slots = BoundedSemaphore(4)
         self.executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix='vision')
         self.engine = VisionEngine()
+        self.store = None
         # Previous process cannot finish its in-flight jobs after a restart.
         for path in self.storage.glob('*/job.json'):
             job = json.loads(path.read_text(encoding='utf-8'))
@@ -90,6 +91,7 @@ class VisionService:
             job.update(status='completed', progress=100, result=result, updated_at=utc_now(),
                        preview_url=f"/api/vision/jobs/{job['id']}/preview")
             self.save(job)
+            if self.store: self.store.record_vision(job)
         except Exception as exc:
             logging.exception('Vision job %s failed', job['id'])
             job.update(status='failed', error=str(exc), updated_at=utc_now())

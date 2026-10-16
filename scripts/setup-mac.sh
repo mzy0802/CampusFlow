@@ -2,9 +2,9 @@
 set -euo pipefail
 ROOT="$(cd -- "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
-MODE="${1:---vision}"
-if [[ "$MODE" != "--vision" && "$MODE" != "--map-only" ]]; then
-  echo "Usage: bash scripts/setup-mac.sh [--vision|--map-only]" >&2
+MODE="${1:---cloud}"
+if [[ "$MODE" != "--local-yolo" && "$MODE" != "--cloud" ]]; then
+  echo "Usage: bash scripts/setup-mac.sh [--cloud|--local-yolo]" >&2
   exit 1
 fi
 if [[ "$(uname -s)" != "Darwin" ]]; then
@@ -27,7 +27,7 @@ if [[ ! -x .venv/bin/python ]]; then
   "$PYTHON" -m venv .venv
 fi
 .venv/bin/python -m pip install --upgrade pip
-if [[ "$MODE" == "--vision" ]]; then
+if [[ "$MODE" == "--local-yolo" ]]; then
   .venv/bin/python -m pip install -r backend/requirements-mac.txt
   export YOLO_CONFIG_DIR="$ROOT/.vision-config"
   mkdir -p "$YOLO_CONFIG_DIR"
