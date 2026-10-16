@@ -70,18 +70,21 @@ def route(graph,body,mode):
     return {'id':mode,'mode':mode,'distance_m':result['distance_m'],'duration_minutes':round(result['duration_seconds']/60,1),'geojson':result['geojson'],
             'origin_access_distance_m':round(snaps[0][2],1),'destination_access_distance_m':round(snaps[1][2],1),
             'assumed_speed_kmh':speed,'network_revision':graph['revision'],
-            'notice':'预计耗时仅含路网内路段；选点到道路的入口接驳距离未计时，需现场确认。道路按项目负责人要求纳入规划，非实时路况。'}
+            'notice':'预计耗时仅含路网内路段，不含选点至道路的接驳距离和停车时间；非实时路况。'}
 
 @router.get('/places')
 def places(request:Request,q:str=Query('',max_length=100)):
     items=read_data('places.osm.json',{'items':[]})['items'][:]
     items += [{**n,'source':'user','location_type':'entrance'} for n in request.app.state.store.get('campus')['nodes'] if n['kind'] in ('entrance','parking')]
+    for feature in request.app.state.parking['features']:
+        p=feature['properties'];ring=feature['geometry']['coordinates'][0][:-1]
+        items.append({'id':'parking:'+p['id'],'name':p['name'],'longitude':sum(x[0] for x in ring)/len(ring),'latitude':sum(x[1] for x in ring)/len(ring),'source':'user','location_type':'parking_center'})
     def normalized(s):
         for word in ('学生','宿舍','公寓','号楼','号','楼',' '):s=s.replace(word,'')
         return s.lower()
     key=normalized(q.strip())
     matches=[p for p in items if key in normalized(p['name'])] if q else items
-    return {'items':matches[:100],'source':'OpenStreetMap and user entrances','note':'建筑中心不是已核验入口；重名地点请在地图确认'}
+    return {'items':matches[:100],'source':'OpenStreetMap and user entrances','note':'建筑坐标为中心点；入口接驳距离未计入路线时间'}
 
 @router.get('/map')
 def map_data(request:Request,include_service:bool=False):
@@ -100,6 +103,37 @@ def map_data(request:Request,include_service:bool=False):
 def plan(body:NavigationRequest,request:Request):
     try:return route(request.app.state.store.get('campus'),body,body.mode)
     except ValueError as e:raise HTTPException(422,str(e))
+
+@router.post('/parking-recommendations')
+def parking_recommendations(body:NavigationRequest,request:Request):
+    from .parking_state import area_states
+    graph=request.app.state.store.get('campus'); candidates=[];excluded=[]
+    entrances={n.get('parking_id'):n for n in graph['nodes'] if n.get('parking_id')}
+    for area in area_states(request)['items']:
+        ring=area['geometry']['coordinates'][0][:-1]
+        point=entrances.get(area['id']) or {'longitude':sum(p[0] for p in ring)/len(ring),'latitude':sum(p[1] for p in ring)/len(ring)}
+        if distance(point,body.destination.model_dump())>800:continue
+        try:
+            approach=route(graph,NavigationRequest(origin=body.origin,destination=point,mode=body.mode),body.mode)
+            walking=route(graph,NavigationRequest(origin=point,destination=body.destination,mode='walk'),'walk')
+        except ValueError as e:
+            excluded.append({'area_id':area['id'],'reason':str(e)});continue
+        # A 100% occupancy costs five equivalent minutes; walking has double weight.
+        cost=approach['duration_minutes']+2*walking['duration_minutes']+5*area['percent']/100
+        candidate={k:v for k,v in area.items() if k!='geometry'}
+        candidate.update(area_id=area['id'],approach=approach,walking=walking,score=round(cost,3),
+                         longitude=point['longitude'],latitude=point['latitude'],
+                         walk_minutes=walking['duration_minutes'],
+                         duration_minutes=round(approach['duration_minutes']+walking['duration_minutes'],1),
+                         distance_m=round(approach['distance_m']+walking['distance_m'],1),
+                         geojson={'type':'FeatureCollection','features':[
+                             {'type':'Feature','properties':{'segment':'approach','mode':body.mode},'geometry':approach['geojson']['geometry']},
+                             {'type':'Feature','properties':{'segment':'walk','mode':'walk'},'geometry':walking['geojson']['geometry']}]})
+        candidates.append(candidate)
+    candidates.sort(key=lambda c:(c['score'],c['area_id']))
+    return {'items':candidates[:5],'excluded':excluded,'radius_m':800,
+            'formula':'approach_minutes + 2 * walk_minutes + 5 * occupancy_percent / 100',
+            'notice':'按路网时间、停车后步行时间和容载率排序；入口接驳与停车操作未计时。上传识别或模拟数据，不预留车位。'}
 
 def ask_ai(preference,candidates):
     c=config();key=c.get('DASHSCOPE_API_KEY') or c.get('LLM_API_KEY')

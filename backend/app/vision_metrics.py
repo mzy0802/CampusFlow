@@ -28,7 +28,7 @@ def summarize(samples, bicycle_capacity, person_capacity):
             'classification_note': 'motorcycle 为电动两轮车/摩托车候选；尚未具备专用电动车分类能力。',
             'vehicle_capacity_basis': 'shared_two_wheeler_parking_capacity',
             'quality_status': 'unvalidated_general_model',
-            'warning': '通用模型可能严重漏检，检测比例低不代表实际空闲；需核验后使用。',
+            'warning': '画面计数估算，非实时数据。',
             'sampled_frames': len(samples),
             'counting_method': 'per_frame_not_unique_visitors',
             'display_basis': 'latest_sample'}

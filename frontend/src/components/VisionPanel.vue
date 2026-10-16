@@ -12,10 +12,10 @@ let pollTimer, stopped=false, xhr
 const currentArea=computed(()=>props.areas.find(area=>area.id===areaId.value))
 const active=computed(()=>job.value && ['queued','processing'].includes(job.value.status))
 const stateLabels={queued:'等待处理',processing:'正在识别',completed:'识别完成',failed:'处理失败'}
-const levelLabels={clear:'检测比例低，待核验',moderate:'检测比例中等',crowded:'检测比例高',overloaded:'检测超过参考容量'}
+const levelLabels={clear:'低容载率',moderate:'中等容载率',crowded:'高容载率',overloaded:'超出容量'}
 const resultCards=computed(()=>[['two_wheeler','两轮车候选总数','bike'],['bicycle','自行车','bike'],['motorcycle','电动两轮车 / 摩托车候选','bike'],['person','人员','people']].filter(([key])=>job.value?.result?.[key]))
 watch(()=>props.selectedId,value=>{if(!busy.value && value) areaId.value=value},{immediate:true})
-watch(currentArea,area=>{if(area && !busy.value) bicycleCapacity.value=area.capacity})
+watch(currentArea,area=>{if(area && !busy.value) bicycleCapacity.value=area.capacity},{immediate:true})
 function chooseFile(event){
   const chosen=event.target.files?.[0]; error.value=''
   if(chosen && chosen.size>100*1024*1024){error.value='文件超过 100 MB，请截取或压缩后重试。';file.value=null;return}
@@ -68,15 +68,16 @@ onBeforeUnmount(()=>{stopped=true;clearTimeout(pollTimer);xhr?.abort()})
 </script>
 <template>
   <div class="vision-panel">
-    <AnnotationWorkbench v-if="annotating" @close="annotating=false" />
+    <AnnotationWorkbench v-if="annotating" @close="annotating=false" @observation="emit('observation')" />
     <button class="primary-button" @click="annotating=true">可停车范围标注 · 批量素材</button>
     <div class="panel-heading"><span class="heading-icon blue"><MapIcon name="people" /></span><div><h2>人车识别实验室</h2><p>上传测试 · 后端分析 · 数据呈现</p></div></div>
     <div class="model-status" :class="{ready:health?.ready}"><i></i><span>{{health?.ready?'识别引擎就绪':health?.message||'正在检查识别引擎…'}}</span><button class="icon-button" aria-label="重新检查识别引擎" @click="checkHealth"><MapIcon name="refresh" :size="16" /></button></div>
-    <p v-if="health?.ready" class="muted">{{health.model}} · Qwen 云端视觉计数 · 准确率待核验</p>
+    <p v-if="health?.ready" class="muted">{{health.model}} · Qwen 云端视觉估算</p>
     <form @submit.prevent="submit">
       <label class="upload-zone" :class="{chosen:file}"><MapIcon name="upload" :size="30" /><strong>{{file?file.name:'选择照片或视频'}}</strong><span>JPG / PNG / WebP · MP4 / MOV / AVI / WebM</span><small>最大 100 MB，视频最长 2 分钟</small><input aria-label="上传照片或视频" type="file" accept=".jpg,.jpeg,.png,.webp,.mp4,.mov,.avi,.webm" :disabled="busy" @change="chooseFile"></label>
       <label class="field">关联停车区域<select v-model="areaId" :disabled="busy"><option value="">独立测试，不关联地图</option><option v-for="area in areas" :key="area.id" :value="area.id">{{area.name}}</option></select></label>
-      <div class="field-grid"><label class="field">两轮车总容量<input v-model.number="bicycleCapacity" type="number" min="1" max="100000" required :disabled="busy"><small>自行车与电动车共用的停车容量</small></label><label class="field">人员参考容量<input v-model.number="personCapacity" type="number" min="1" max="100000" required :disabled="busy"><small>测试参考值，需自行核验</small></label></div>
+      <div class="field-grid"><label class="field">两轮车总容量<input v-model.number="bicycleCapacity" type="number" min="1" max="100000" required :disabled="busy||!!currentArea"><small>{{currentArea?'自动使用地图停车区容量：'+currentArea.name:'独立测试参考容量；关联停车区后自动读取'}}</small></label><label class="field">人员参考容量<input v-model.number="personCapacity" type="number" min="1" max="100000" required :disabled="busy"><small>用于画面人员拥挤度计算</small></label></div>
+      <p class="info-note">同一区域的多角度照片、视频帧，请进入上方标注工作台，关联停车区和采集批次，再联合识别。周边违停已包含在该区总数中。</p>
       <p class="muted">图片原文件将发送到百炼 Qwen，客户端不缩图；云端可能调整分辨率。视频最多抽取12帧调用，可能产生 API 费用。</p>
       <details class="advanced"><summary>识别参数</summary><div class="field-grid"><label v-if="false" class="field">置信度阈值<input v-model.number="confidence" type="number" min="0.05" max="0.95" step="0.05" required :disabled="busy"></label><label class="field">视频采样间隔（秒）<input v-model.number="interval" type="number" min="0.5" max="10" step="0.5" required :disabled="busy"></label></div></details>
       <button class="primary-button" :disabled="!file||busy||!health?.ready"><MapIcon name="upload" :size="18" />{{busy?uploading?`上传中 ${uploadProgress}%`:'后台正在识别…':'开始识别'}}</button>
@@ -92,6 +93,6 @@ onBeforeUnmount(()=>{stopped=true;clearTimeout(pollTimer);xhr?.abort()})
       <figure><img :src="job.preview_url" alt="Qwen计数对应的原始画面"><figcaption>Qwen 计数 · 原图预览，无检测框</figcaption></figure>
       <details v-if="job.kind==='video'" class="timeline"><summary>查看采样记录</summary><table><thead><tr><th>秒</th><th>人数</th><th>自行车</th><th>电动车候选</th><th>两轮总数</th></tr></thead><tbody><tr v-for="sample in job.result.samples" :key="sample.time_seconds"><td>{{sample.time_seconds}}</td><td>{{sample.person}}</td><td>{{sample.bicycle}}</td><td>{{sample.motorcycle??'—'}}</td><td>{{sample.two_wheeler??'—'}}</td></tr></tbody></table></details>
     </section>
-    <div class="info-note"><strong>拥挤度可以超过 100%</strong><p>两轮车候选总数 ÷ 两轮车停车容量 × 100%。例如 120 辆 / 100 辆 = 120%。自行车和电动两轮车候选分开显示，分项比例也以两轮车总容量为分母。车型和数量仍需人工核验；视频为抽帧统计，不是去重通行量。</p></div>
+    <div class="info-note"><strong>容载率可以超过 100%</strong><p>区域总数（包含归属该区的周边违停）÷地图停车区容量×100%。例如120辆/100辆＝120%。单文件视频为抽帧统计；多角度联合估算从标注工作台提交。</p></div>
   </div>
 </template>

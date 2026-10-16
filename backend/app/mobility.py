@@ -19,12 +19,6 @@ def roads(request: Request):
             'message': '已保存的校园路网；仅 verified=true 的道路参与计算。'}
 
 
-@router.get('/transit')
-def transit():
-    return {'status': 'not_configured', 'stops': [], 'routes': [],
-            'message': '公交模块预留：等待站点、线路和时刻数据。'}
-
-
 class Coordinate(BaseModel):
     longitude: float = Field(ge=-180, le=180, allow_inf_nan=False)
     latitude: float = Field(ge=-90, le=90, allow_inf_nan=False)

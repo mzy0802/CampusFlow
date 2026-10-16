@@ -47,7 +47,7 @@ function paint(){
  const meta=roadMetadata.get(e.id);if(dataset.value==='campus'&&meta?.highway==='service')continue
  const roadColor=meta?.highway==='cycleway'?'#22a447':['footway','pedestrian','steps'].includes(meta?.highway)?'#66CCFF':'#f6c344'
  const line=L.polyline([[a.latitude,a.longitude],[b.latitude,b.longitude]],{color:e.id===edgeId.value?'#ef6c00':roadColor,weight:5,dashArray:e.verified?null:'7 7'}).addTo(layer)
- const label=document.createElement('span');label.textContent=`${a.name} → ${b.name} · ${e.bidirectional?'双向':'单向'} · ${e.verified?'已核验':'未核验'}`;if(meta?.name){label.textContent=meta.name;line.bindTooltip(label,{permanent:!named.has(meta.name),direction:'center'});named.add(meta.name)}else line.bindTooltip(label)
+ const label=document.createElement('span');label.textContent=`${a.name} → ${b.name} · ${e.bidirectional?'双向':'单向'} · ${e.verified?'已启用':'未启用'}`;if(meta?.name){label.textContent=meta.name;line.bindTooltip(label,{permanent:!named.has(meta.name),direction:'center'});named.add(meta.name)}else line.bindTooltip(label)
  line.on('click',ev=>{L.DomEvent.stopPropagation(ev);edgeId.value=e.id;selected.value='';paint()})}
  for(const n of validNodes){
  const circle=L.circleMarker([n.latitude,n.longitude],{radius:n.id===selected.value?10:7,color:n.kind==='parking'?'#188038':n.kind==='entrance'?'#9333ea':'#2563eb',fillOpacity:1,weight:3}).addTo(layer)
@@ -70,11 +70,11 @@ onBeforeUnmount(()=>{observer?.disconnect();map?.remove()})
 </script>
 <template>
  <section class="workbench" aria-label="路网编辑与停车推荐">
-  <header><div><strong>CampusFlow · 路线工作台</strong><small>{{dataset==='example'?'虚构示例场景 · 无真实地理含义':'校园路网 · 公开数据与人工核验'}} · {{dirty?'有未保存修改':'已保存'}} · v{{graph.revision}}</small></div><button @click="close">返回停车地图</button></header>
+  <header><div><strong>CampusFlow · 路线工作台</strong><small>{{dataset==='example'?'虚构示例场景 · 无真实地理含义':'校园路网 · 公开数据与用户编辑'}} · {{dirty?'有未保存修改':'已保存'}} · v{{graph.revision}}</small></div><button @click="close">返回停车地图</button></header>
   <div class="workbody"><aside>
    <div class="scene"><button :class="{chosen:dataset==='campus'}" :disabled="busy" @click="load('campus')">校园数据</button><button :class="{chosen:dataset==='example'}" :disabled="busy" @click="load('example')">独立示例</button></div>
    <p v-if="error" role="alert" class="err">{{error}}</p><p v-if="message" role="status" class="hint">{{message}}</p>
-   <p v-if="dataset==='campus'" class="hint">道路来源：<a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap contributors · ODbL</a>。公开数据可能缺失；已按负责人要求纳入规划，非独立实地核验。节点过多时悬停显示名称。</p>
+   <p v-if="dataset==='campus'" class="hint">道路来源：<a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap contributors · ODbL</a>。公开数据可能缺失；已按负责人要求纳入规划，非实时路况。节点过多时悬停显示名称。</p>
    <h2>路线与停车推荐</h2>
    <p class="hint">先选择已录入节点作为起终点。蓝色为骑行，绿色虚线为步行；预计时间和空位均为演示数据。</p>
    <label>起点<select v-model="origin"><option value="">请选择</option><option v-for="n in graph.nodes" :key="n.id" :value="n.id">{{n.name}}</option></select></label>
@@ -83,7 +83,7 @@ onBeforeUnmount(()=>{observer?.disconnect();map?.remove()})
    <label>出行偏好<select v-model="preference"><option value="fastest">总耗时短</option><option value="less_walking">少走路优先</option></select></label>
    <button class="primary" :disabled="busy||dirty||!origin||!destination" @click="calculate">{{busy?'处理中…':'计算停车方案'}}</button><small v-if="dirty">请先保存路网，再计算路线。</small>
    <div v-if="result">
-    <p v-if="!result.recommended" class="err">没有可行方案。检查空位、道路核验状态、通行方式和连接方向。</p>
+    <p v-if="!result.recommended" class="err">没有可行方案。检查空位、道路启用状态、通行方式和连接方向。</p>
     <button v-for="(p,i) in options" :key="p.parking_node_id" class="plan" :class="{chosen:activePlan===p}" @click="showPlan(p)"><b>{{i===0?'推荐':'备选'}} · {{p.name}}</b><span>预计 {{p.total_minutes}} 分钟 · 步行 {{p.walk_distance_m}} 米</span><span>模拟空位 {{p.available}} / {{p.capacity}}</span><small>{{p.reason}}</small></button>
     <p class="hint">速度假设：骑行12 km/h、步行4.5 km/h，停车1分钟。道路时间乘数非实时拥堵。</p><p class="hint">公交尚未配置。</p>
     <details v-if="result.excluded.length"><summary>未入选停车点</summary><p v-for="x in result.excluded" :key="x.id">{{graph.nodes.find(n=>n.id===x.id)?.name}}：{{x.reason}}</p></details>
@@ -98,12 +98,12 @@ onBeforeUnmount(()=>{observer?.disconnect();map?.remove()})
     </div>
     <h3>连接道路</h3><label>从<select v-model="from"><option value="">请选择</option><option v-for="n in graph.nodes" :key="n.id" :value="n.id">{{n.name}}</option></select></label><label>到<select v-model="to"><option value="">请选择</option><option v-for="n in graph.nodes" :key="n.id" :value="n.id">{{n.name}}</option></select></label><button @click="addEdge">添加道路</button>
     <label>选择道路<select v-model="edgeId" @change="selected='';paint()"><option value="">请选择</option><option v-for="e in graph.edges" :key="e.id" :value="e.id">{{graph.nodes.find(n=>n.id===e.source)?.name}} → {{graph.nodes.find(n=>n.id===e.target)?.name}}</option></select></label>
-    <div v-if="edge" class="editor"><label class="check"><input v-model="edge.bidirectional" type="checkbox">双向道路</label><label class="check"><input v-model="edge.modes" type="checkbox" value="bike">允许骑行</label><label class="check"><input v-model="edge.modes" type="checkbox" value="walk">允许步行</label><label>通行时间乘数（1～10）<input v-model.number="edge.congestion" type="number" min="1" max="10" step="0.1"></label><label class="check"><input v-model="edge.verified" type="checkbox">已核验可通行{{dataset==='example'?'（示例）':''}}</label><button class="danger" @click="graph.edges=graph.edges.filter(e=>e.id!==edgeId);edgeId=''">删除道路</button></div>
+    <div v-if="edge" class="editor"><label class="check"><input v-model="edge.bidirectional" type="checkbox">双向道路</label><label class="check"><input v-model="edge.modes" type="checkbox" value="bike">允许骑行</label><label class="check"><input v-model="edge.modes" type="checkbox" value="walk">允许步行</label><label>通行时间乘数（1～10）<input v-model.number="edge.congestion" type="number" min="1" max="10" step="0.1"></label><label class="check"><input v-model="edge.verified" type="checkbox">启用参与规划{{dataset==='example'?'（示例）':''}}</label><button class="danger" @click="graph.edges=graph.edges.filter(e=>e.id!==edgeId);edgeId=''">删除道路</button></div>
     <p>{{graph.nodes.length}} 个节点 · {{graph.edges.length}} 条道路</p><button class="primary" :disabled="busy||!dirty" @click="save">保存路网到数据库</button>
     <div class="row"><button @click="exportGraph">导出 JSON</button><label class="import">导入 JSON<input type="file" accept=".json" @change="importGraph"></label></div><button :disabled="busy" @click="load()">重新加载已保存版本</button>
    </details>
    <details v-if="dataset==='campus'"><summary>停车容量配置</summary><label>停车区<select v-model="capacityArea"><option value="">请选择</option><option v-for="a in areas" :key="a.id" :value="a.id">{{a.name}}</option></select></label><label>容量<input v-model.number="capacityValue" type="number" min="1" max="100000"></label><button :disabled="!capacityArea||busy" @click="updateCapacity">保存容量</button><p class="hint">仅修改参考容量，空位仍为模拟数据。</p></details>
-  </aside><div class="mapwrap"><div ref="mapEl" class="editor-map"></div><div class="badge">{{dataset==='example'?'示例示意图 · 非真实校园路网':'校园道路录入 · 虚线为未核验道路'}}</div></div></div>
+  </aside><div class="mapwrap"><div ref="mapEl" class="editor-map"></div><div class="badge">{{dataset==='example'?'示例示意图 · 非真实校园路网':'校园道路录入 · 虚线为未启用道路'}}</div></div></div>
  </section>
 </template>
 <style scoped>

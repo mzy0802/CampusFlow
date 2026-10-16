@@ -29,6 +29,9 @@ async def upload(request: Request, filename: str = Query(min_length=1, max_lengt
         raise HTTPException(415, '支持 JPG、PNG、WebP、MP4、MOV、AVI、WebM。')
     if area_id and area_id not in {f['properties']['id'] for f in request.app.state.parking['features']}:
         raise HTTPException(404, '停车区域不存在。')
+    if area_id and hasattr(request.app.state, 'store'):
+        collection=request.app.state.store.parking(request.app.state.parking)
+        bicycle_capacity=next(f['properties']['capacity'] for f in collection['features'] if f['properties']['id']==area_id)
     if not readiness()['ready']:
         raise HTTPException(503, detail={'code': 'MODEL_NOT_READY', 'message': readiness()['message']})
     service = request.app.state.vision
@@ -64,7 +67,14 @@ async def upload(request: Request, filename: str = Query(min_length=1, max_lengt
 
 @router.get('/observations')
 def observations(request: Request):
-    return {'items': request.app.state.vision.observations(),
+    items=request.app.state.vision.observations()
+    capacities={f['properties']['id']:f['properties']['capacity'] for f in request.app.state.store.parking(request.app.state.parking)['features']}
+    from .vision_metrics import congestion
+    for item in items:
+        if item['area_id'] in capacities:
+            for key in ('bicycle','motorcycle','two_wheeler'):
+                if item.get(key): item[key]=congestion(item[key]['count'],capacities[item['area_id']])
+    return {'items': items,
             'source': 'upload_test', 'is_live': False}
 
 

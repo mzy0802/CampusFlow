@@ -86,7 +86,7 @@ class VisionService:
                 preview.write_bytes(encoded.tobytes())
                 preview.replace(directory / 'preview.jpg')
             result = summarize(samples, job['bicycle_capacity'], job['person_capacity'])
-            result.update(quality_status='unvalidated_qwen_visual_count', classification_note='Qwen 视觉估算：自行车、电动两轮车候选及类型不确定车辆；总数包含类型不确定车辆。', warning='云端计数未人工核验，可能漏计或重复计数；低估算占用不代表空闲。', preview_kind='original_no_boxes')
+            result.update(quality_status='qwen_visual_estimate', classification_note='Qwen 视觉估算：自行车、电动两轮车及类型不确定车辆；总数包含类型不确定车辆。', warning='上传画面估算，非实时监控。', preview_kind='original_no_boxes')
             result['samples'] = samples
             job.update(status='completed', progress=100, result=result, updated_at=utc_now(),
                        preview_url=f"/api/vision/jobs/{job['id']}/preview")
@@ -114,7 +114,12 @@ class VisionService:
                  'motorcycle': job['result'].get('motorcycle', {}).get('latest'),
                  'two_wheeler': job['result'].get('two_wheeler', {}).get('latest'),
                  'engine_revision': job.get('engine_revision', 'legacy-bicycle-only'),
-                 'person': job['result']['person']['latest']} for job in by_area.values()]
+                 'person': job['result']['person']['latest'],
+                 'illegal_count': job['result'].get('illegal_count'),
+                 'legal_count': job['result'].get('legal_count'),
+                 'unknown_location_count': job['result'].get('unknown_location_count'),
+                 'capture_group': job.get('capture_group'),
+                 'view_count': len(job.get('views',[]))} for job in by_area.values()]
 
     def close(self):
         self.executor.shutdown(wait=True)

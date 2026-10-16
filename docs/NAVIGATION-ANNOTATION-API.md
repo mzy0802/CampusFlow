@@ -9,7 +9,7 @@
 - POST `/api/navigation/route`：正文 `{origin:{longitude,latitude},destination:{longitude,latitude},mode:"walk"}`，mode也可为bike。
 - POST `/api/navigation/recommend`：同上，另加 preference 字符串；后端先计算步行、骑行候选，再让百炼选择合法候选ID。模型不生成坐标、路线或耗时。
 
-选择点投影到最近可用路段并临时切分，最多150米。不增加穿越建筑的假连接线；返回两端的接驳距离，预计耗时只含路网内路段。断路、禁行或单向导致不通时返回422。速度步行4.5km/h、骑行12km/h，人工拥堵乘数参与成本。未实现实时路况、公交、逐路口语音导航或GPS跟随。
+选择点投影到最近可用路段并临时切分，最多150米。不增加穿越建筑的假连接线；返回两端的接驳距离，预计耗时只含路网内路段。断路、禁行或单向导致不通时返回422。速度步行4.5km/h、骑行12km/h，人工拥堵乘数参与成本。公交路线和站点可编辑展示，但尚未加入班次、候车和换乘规划；未实现实时路况、逐路口语音导航或GPS跟随。
 
 AI配置复用后端百炼密钥与视觉模型；可选 NAV_AI_MODEL、NAV_AI_BASE_URL 覆盖。密钥只在服务端。错误返回503，前端提示改用普通导航，不伪造AI推荐。
 
@@ -28,13 +28,13 @@ PUT正文：
 
 坐标为原画面归一化xy：左上(0,0)、右下(1,1)。照片时间0，视频按秒。label只允许allowed。审核帧中所有多边形的并集内可停车，其余不可停车；不在reviewed_frames中的帧为unknown。空多边形＋审核帧表示该帧全部不可停车，空多边形＋无审核帧表示尚未标注。前端邻近时间显示容差0.08秒只是预览，不能当作整段视频的审核结果。
 
-拒绝越界、非有限值、重复顶点、退化、自相交多边形及超时长帧。乐观锁旧revision返回409，须导出草稿后重新读取，不自动覆盖。数据库保存标注，文件在storage/annotations。现有Qwen计数没有可靠定位框，本版不做区域内外自动违停统计。
+拒绝越界、非有限值、重复顶点、退化、自相交多边形及超时长帧。乐观锁旧revision返回409，须导出草稿后重新读取，不自动覆盖。数据库保存标注，文件在storage/annotations。保存时支持area_id、view_name和capture_group。联合识别可将原图与可停区域坐标一起发送Qwen，估算区内与周边违停；详见 [停车、公交与多角度说明](PARKING-TRANSIT-MULTIVIEW.md)。
 
 ## 地图停车区
 
 GET/PUT `/api/parking-editor` 使用 `{revision,collection}`，collection是GeoJSON FeatureCollection，Polygon坐标为WGS84经纬度，每个feature属性含唯一id、name和capacity。新画区域校验闭合、面积、相交；未改变的旧导入问题边界保留并标记legacy_boundary_needs_review。与路网停车入口关联的区域不可直接删除。
 
-保存几何后同步停车容量，停车状态仍为模拟值。数据保存在SQLite，不覆盖原始上传GeoJSON。版本历史保留在数据库中。地图边界不能直接映射到照片，需要相机标定或另行画面标注。
+保存几何后同步停车容量。应用概览优先读取该区最新识别估算，否则使用模拟值；source和updated_at指明来源及时间。数据保存在SQLite，不覆盖原始上传GeoJSON。版本历史保留在数据库中。地图边界不能直接映射到照片，需要另行画面标注；两者通过area_id关联。与标注素材关联的区域也不能直接删除。
 
 ## 道路来源与负责人确认
 

@@ -60,6 +60,12 @@ def save(body:SaveRequest,request:Request):
     if not linked<=ids:raise HTTPException(422,'待删除区域仍关联道路入口，请先在道路编辑中解除关联')
     with store.connect() as db:
         db.execute('BEGIN IMMEDIATE')
+        if db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='annotation_media'").fetchone():
+            assigned=set()
+            for row in db.execute('SELECT payload FROM annotation_media'):
+                payload=json.loads(row['payload'])
+                if isinstance(payload,dict) and payload.get('area_id'):assigned.add(payload['area_id'])
+            if not assigned<=ids:raise HTTPException(422,'待删除停车区仍关联标注素材，请先在标注工作台解除关联')
         old=db.execute('SELECT * FROM parking_geometry WHERE id=1').fetchone()
         if old['revision']!=body.revision:raise HTTPException(409,'区域已由其他页面修改，请导出草稿后重新加载')
         db.execute('INSERT INTO parking_geometry_history VALUES(?,?,?)',(old['revision'],old['payload'],now()))

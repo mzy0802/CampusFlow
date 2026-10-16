@@ -57,7 +57,7 @@ def plan(network,request,status):
         if not item or item['available']<request.min_available:
             excluded.append({'id':nid,'reason':'空位不足或状态缺失'});continue
         if nid not in bike_dist or nid not in walk_dist:
-            excluded.append({'id':nid,'reason':'骑行或步行道路不连通（仅使用已核验道路）'});continue
+            excluded.append({'id':nid,'reason':'骑行或步行道路不连通（仅使用启用道路）'});continue
         ride=segment(nodes,bike_prev,request.origin_id,nid,'bike')
         backward=segment(nodes,walk_prev,request.destination_id,nid,'walk')
         backward['node_ids'].reverse()
@@ -75,4 +75,4 @@ def plan(network,request,status):
             'assumptions':{'bike_speed_kmh':request.bike_speed_kmh,'walk_speed_kmh':request.walk_speed_kmh,'parking_minutes':request.parking_minutes,
                            'congestion':'道路时间乘数，由编辑者设置，非实测拥堵'},
             'transit':{'status':'not_configured','message':'公交线路与时刻尚未提供，不生成公交方案。'},
-            'warnings':['停车空位为模拟数据，预计耗时基于设定速度，并非实时预测。','路线只沿已核验的录入道路计算；未核验道路不参与规划。']}
+            'warnings':['停车空位为模拟数据，预计耗时基于设定速度，并非实时预测。','路线只沿启用的道路计算。']}

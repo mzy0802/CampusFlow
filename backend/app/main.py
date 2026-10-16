@@ -10,6 +10,8 @@ from .vision_service import VisionService
 from .annotations import router as annotation_router
 from .navigation import router as navigation_router
 from .parking_editor import router as parking_editor_router, ensure as load_parking_geometry
+from .transit import router as transit_router
+from .area_surveys import router as survey_router
 from pathlib import Path
 import os
 
@@ -38,6 +40,8 @@ app.include_router(parking_editor_router, prefix='/api')
 app.include_router(parking_router, prefix='/api')
 app.include_router(mobility_router, prefix='/api')
 app.include_router(vision_router, prefix='/api')
+app.include_router(transit_router, prefix='/api')
+app.include_router(survey_router, prefix='/api')
 
 
 @app.get('/api/health')

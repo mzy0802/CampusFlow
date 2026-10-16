@@ -41,6 +41,9 @@ class Polygon(BaseModel):
 
 class AnnotationSet(BaseModel):
     revision: int = Field(ge=0)
+    area_id: str | None = Field(None, max_length=80)
+    view_name: str = Field('', max_length=100)
+    capture_group: str = Field('', max_length=100)
     reviewed_frames: list[float] = Field(default_factory=list, max_length=1000)
     polygons: list[Polygon] = Field(default_factory=list, max_length=1000)
     @model_validator(mode='after')
@@ -69,6 +72,17 @@ def listing(request:Request):
     store,_=storage(request)
     with store.connect() as db: rows=db.execute('SELECT metadata,revision FROM annotation_media ORDER BY rowid DESC').fetchall()
     return {'items':[{**json.loads(r['metadata']),'revision':r['revision']} for r in rows]}
+
+@router.get('/views')
+def views(request:Request,area_id:str=Query(max_length=80),capture_group:str=Query(max_length=100)):
+    store,_=storage(request)
+    with store.connect() as db: rows=db.execute('SELECT id,metadata,payload,revision FROM annotation_media ORDER BY rowid DESC').fetchall()
+    items=[]
+    for row in rows:
+        p=json.loads(row['payload']);m=json.loads(row['metadata'])
+        if not isinstance(p,dict) or p.get('area_id')!=area_id or p.get('capture_group')!=capture_group:continue
+        for t in p.get('reviewed_frames',[]):items.append({'media_id':row['id'],'filename':m['filename'],'time_seconds':t,'view_name':p.get('view_name',''),'revision':row['revision']})
+    return {'items':items}
 
 @router.post('/media',status_code=201)
 async def upload(request:Request,filename:str=Query(min_length=1,max_length=200)):
@@ -123,14 +137,19 @@ def get(mid:str,request:Request):
     _,_,row=record(request,mid)
     payload=json.loads(row['payload'])
     if isinstance(payload,list): payload={'polygons':payload,'reviewed_frames':[]}
+    payload={'area_id':None,'view_name':'','capture_group':'',**payload}
     return {'media':json.loads(row['metadata']),'revision':row['revision'],**payload,'coordinate_system':'normalized_image_xy','scope':'single_frame','source':'manual_annotation','outside_policy':'forbidden_in_reviewed_frame','unreviewed_policy':'unknown'}
 
 @router.put('/media/{mid}')
 def save(mid:str,body:AnnotationSet,request:Request):
     store,_,row=record(request,mid);meta=json.loads(row['metadata'])
+    if body.area_id and body.area_id not in {f['properties']['id'] for f in request.app.state.parking['features']}:
+        raise HTTPException(422,'关联的地图停车区不存在')
     if any(t>meta['duration_seconds'] for t in body.reviewed_frames): raise HTTPException(422,'审核帧时间超出素材范围')
     if any(p.time_seconds>meta['duration_seconds'] or (meta['kind']=='image' and p.time_seconds!=0) for p in body.polygons): raise HTTPException(422,'标注时间超出素材范围')
     with store.connect() as db:
-        changed=db.execute('UPDATE annotation_media SET revision=revision+1,payload=? WHERE id=? AND revision=?',(json.dumps({'polygons':[p.model_dump() for p in body.polygons],'reviewed_frames':sorted(set(body.reviewed_frames+[p.time_seconds for p in body.polygons]))},ensure_ascii=False),mid,body.revision)).rowcount
+        payload=body.model_dump(exclude={'revision'})
+        payload['reviewed_frames']=sorted(set(body.reviewed_frames+[p.time_seconds for p in body.polygons]))
+        changed=db.execute('UPDATE annotation_media SET revision=revision+1,payload=? WHERE id=? AND revision=?',(json.dumps(payload,ensure_ascii=False),mid,body.revision)).rowcount
         if not changed: raise HTTPException(409,'其他页面已修改，请导出草稿后重新加载')
     return get(mid,request)

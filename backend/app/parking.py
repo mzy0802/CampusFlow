@@ -34,6 +34,12 @@ def status(request: Request):
     return snapshot(request.app.state.store.parking(request.app.state.parking))
 
 
+@router.get('/overview')
+def overview(request: Request):
+    from .parking_state import area_states
+    return area_states(request)
+
+
 @router.get('/{area_id}/status')
 def area_status(area_id: str, request: Request):
     result = snapshot(request.app.state.store.parking(request.app.state.parking))

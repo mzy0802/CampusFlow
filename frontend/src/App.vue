@@ -6,6 +6,7 @@ import MapIcon from './components/MapIcon.vue'
 import VisionPanel from './components/VisionPanel.vue'
 import RouteWorkbench from './components/RouteWorkbench.vue'
 import ParkingEditor from './components/ParkingEditor.vue'
+import TransitWorkbench from './components/TransitWorkbench.vue'
 const editingParking=ref(false)
 const areas=ref(null),snapshot=ref(null),observations=ref([]),error=ref(''),loading=ref(false)
 const selected=ref(''),tab=ref('parking'),moduleInfo=ref(''),useOsm=ref(true),tileError=ref(false)
@@ -20,7 +21,7 @@ const selectedArea=computed(()=>rows.value.find(item=>item.id===selected.value))
 const updated=computed(()=>snapshot.value?new Date(snapshot.value.updated_at).toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}):'等待连接')
 const tabs=[['parking','parking','停车'],['vision','people','人车识别'],['roads','road','道路'],['transit','bus','公交'],['routing','route','路线']]
 function color(item){return item?.observation ? colors[item.observation.two_wheeler?.level || 'unknown'] : colors[item?.state||'unknown']}
-function vehicleText(item){const m=item.observation?.two_wheeler;return m?`两轮车候选 ${m.count} 辆 · 估算 ${m.percent}% · 待核验`:'旧版结果，请重新上传识别'}
+function vehicleText(item){const m=item.observation?.two_wheeler;return m?`两轮车候选 ${m.count} 辆 · 估算 ${m.percent}%`:'旧版结果，请重新上传识别'}
 function fitAll(){
   if(!polygons?.getBounds().isValid())return
   const wide=window.innerWidth>760&&panelOpen.value
@@ -83,6 +84,7 @@ onBeforeUnmount(()=>{stopped=true;clearInterval(timer);resizeObserver?.disconnec
 <template>
   <main class="maps-app">
     <ParkingEditor v-if="editingParking" @close="editingParking=false;load()" />
+    <TransitWorkbench v-if="tab==='transit'" @close="tab='parking';refresh()" />
     <RouteWorkbench v-if="['roads','routing'].includes(tab)" :areas="rows" :parking-geo-json="areas" @close="tab='parking';refresh()" />
     <div ref="mapEl" class="full-map" aria-label="校园停车区域地图"></div>
     <nav class="rail" aria-label="主要功能"><div class="app-symbol"><MapIcon name="map" :size="29" /></div><button v-for="[key,icon,label] in tabs" :key="key" :class="{active:tab===key}" @click="switchTab(key)"><span><MapIcon :name="icon" /></span>{{label}}</button><div class="rail-bottom">DEMO</div></nav>
@@ -90,13 +92,13 @@ onBeforeUnmount(()=>{stopped=true;clearInterval(timer);resizeObserver?.disconnec
     <div class="map-chips" aria-label="地图快捷操作"><button class="chip active" @click="switchTab('parking');fitAll()"><MapIcon name="parking" :size="17" />周边停车</button><button class="chip" @click="switchTab('vision')"><MapIcon name="people" :size="17" />人车识别测试</button><span class="campus-label">长安大学 · 渭水校区</span></div>
     <aside v-show="panelOpen" class="side-panel" aria-label="区域与识别面板">
       <section v-show="tab==='parking'">
-        <div class="place-heading"><span class="eyebrow">CAMPUS MOBILITY</span><h1>修远楼周边</h1><p>校园停车与出行 · {{rows.length}} 个区域</p><div class="place-tags"><span><i class="dot green"></i>停车数据演示</span><span class="tag">用户导入边界 · 待核验</span></div></div>
+        <div class="place-heading"><span class="eyebrow">CAMPUS MOBILITY</span><h1>修远楼周边</h1><p>校园停车与出行 · {{rows.length}} 个区域</p><div class="place-tags"><span><i class="dot green"></i>停车数据演示</span><span class="tag">用户导入边界</span></div></div>
         <div class="overview"><div><strong>{{available}}</strong><span>模拟空位</span></div><div><strong>{{observations.length}}</strong><span>已有识别结果</span></div><button class="refresh-button" :disabled="loading" @click="refresh"><MapIcon name="refresh" :size="18" /><span>{{updated}} 更新</span></button></div>
         <div class="section-title"><h2>{{query?'搜索结果':'附近停车区域'}}</h2><button class="text-button" @click="fitAll">查看全部</button></div>
         <p v-if="error" class="alert error" role="alert">{{error}}<button class="text-button" @click="load">重新加载</button></p>
         <p v-if="!filtered.length" class="empty-state">{{query?'没有找到匹配的停车区域':'等待停车区域数据…'}}</p>
         <button v-for="item in filtered" :key="item.id" class="place-card" :class="{selected:selected===item.id}" @click="selectArea(item.id)"><div class="place-icon" :style="{color:color(item)}"><MapIcon name="parking" :size="25" /></div><div class="place-content"><div class="place-title"><h3>{{item.name}}</h3><MapIcon name="arrow" :size="16" /></div><p v-if="item.observation" class="place-state" :style="{color:color(item)}">{{vehicleText(item)}}</p><p v-else class="place-state" :style="{color:color(item)}">{{states[item.state]}} · {{item.available??'—'}} / {{item.capacity}} 空位</p><div class="card-meta"><span>{{item.observation?'上传识别 · 非实时':'停车状态 · 模拟'}}</span><span>{{item.id}}</span></div><div class="occupancy-track"><i :style="{background:color(item),width:`${Math.min(item.observation?.two_wheeler?.percent??((item.occupied||0)/item.capacity*100),100)}%`}"></i></div></div></button>
-        <div class="panel-note"><MapIcon name="people" :size="19" /><p>识别人数和自行车、查看拥挤度。<button class="text-button" @click="switchTab('vision')">上传照片或视频 →</button></p></div><p class="data-disclaimer">边界与容量来自上传文件，尚未独立核验。停车空位仍为模拟；上传识别是画面计数，不能自动等同于区域实时停车量。</p>
+        <div class="panel-note"><MapIcon name="people" :size="19" /><p>识别人数和自行车、查看拥挤度。<button class="text-button" @click="switchTab('vision')">上传照片或视频 →</button></p></div><p class="data-disclaimer">边界与容量来自上传文件，停车空位仍为模拟；上传识别是画面计数，不能自动等同于区域实时停车量。</p>
       </section>
       <VisionPanel v-show="tab==='vision'" :areas="rows" :selected-id="selected" @observation="refreshObservations" />
       <section v-if="!['parking','vision'].includes(tab)" class="future-panel"><div class="heading-icon blue"><MapIcon :name="tabs.find(t=>t[0]===tab)?.[1]" :size="30" /></div><h2>{{{roads:'校园道路',transit:'公交出行',routing:'路线规划'}[tab]}}</h2><p>{{moduleInfo||'正在加载…'}}</p><span class="tag">即将接入</span></section>
