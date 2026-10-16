@@ -35,3 +35,6 @@ SQLite 默认 backend/storage/traffic.sqlite3，可通过 TRAFFIC_DB 修改。�
 
 
 2026-10-16 道路更新：增加 OSM 校园路网，空白未编辑数据库重启后自动载入。全部待核验，入口仍需补充。最新完整后端测试 41 项通过，前端构建通过；浏览器已确认 1071 个节点、1259 条道路加载。此前的空路网说明和测试阻塞状态由本次更新取代。
+
+
+当前交付更新：应用页改为 /，所有内部工具改到 /debug。照片标注只保留可停范围，地图停车区可绘制保存。新增坐标导航和真实百炼AI候选选择，最新验收以 docs/NAVIGATION-ANNOTATION-API.md 和 docs/TEAM-ANNOTATION-HANDOFF.html 为准。

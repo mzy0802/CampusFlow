@@ -1,4 +1,4 @@
-# 修远楼周边智能停车与出行 Demo
+# CampusFlow · 校园导航与标注平台
 
 **Apple 芯片 MacBook 接收者请先看 [Mac 安装启动说明](START-HERE-MAC.md)。** 原生 Mac 安装使用 `scripts/setup-mac.sh`，不要使用下方 Windows 临时环境路径。
 
@@ -16,7 +16,14 @@ Vue 3 + Vite + Leaflet / OSM，FastAPI，Docker Compose。用于长安大学渭�
 
 ## 路网编辑与停车联合推荐
 
-点击“路线”打开工作台，可录入道路和入口、保存 SQLite、导入导出 JSON，计算最快或少走路方案。全新或未编辑的空白校园路网会自动载入 OSM 公开道路（全部待核验），独立虚构示例仍可直接演示。公开数据来源与限制见 [道路说明](docs/OSM-ROADS.md)。见 [验收说明](docs/MORNING-ACCEPTANCE.md) 和 [LLM 接口交接](docs/ROUTING-API.md)。
+点击“路线”打开工作台，可录入道路和入口、保存 SQLite、导入导出 JSON，计算最快或少走路方案。全新或未编辑的空白校园路网会自动载入 OSM 公开道路（已按负责人要求纳入规划），独立虚构示例仍可直接演示。公开数据来源与限制见 [道路说明](docs/OSM-ROADS.md)。见 [验收说明](docs/MORNING-ACCEPTANCE.md) 和 [LLM 接口交接](docs/ROUTING-API.md)。
+
+## 应用与内部工具分开使用
+
+- 应用页 `/`：起终点地点搜索、地图选点、步行/骑行路线和耗时、百炼 AI 推荐。
+- 调试页 `/debug`：照片/视频可停车范围标注、地图停车区编辑、Qwen识别测试、路网编辑。两页共用同一服务。
+- [给标注同学的操作交接](docs/TEAM-ANNOTATION-HANDOFF.html)（可双击打开或打印），[文字版](docs/TEAM-ANNOTATION-HANDOFF.md)。
+- [新增接口与数据规则](docs/NAVIGATION-ANNOTATION-API.md)。道路已按负责人要求纳入规划；服务道路不叠加显示，未删除其路网连接。
 
 ## Docker 一键启动
 

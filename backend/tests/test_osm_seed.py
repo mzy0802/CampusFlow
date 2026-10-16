@@ -10,7 +10,7 @@ def test_public_roads_preserve_original_coordinates():
     original = {f'osm_n{n["id"]}': (n['lon'],n['lat']) for n in raw['elements'] if n['type']=='node'}
     graph = Network.model_validate_json((DATA/'network.osm.json').read_text(encoding='utf-8'))
     assert len(graph.edges) > 100
-    assert all(not e.verified for e in graph.edges)
+    assert all(e.verified for e in graph.edges)
     assert all((n.longitude,n.latitude)==original[n.id] for n in graph.nodes)
     assert all(n.kind=='junction' for n in graph.nodes)
 

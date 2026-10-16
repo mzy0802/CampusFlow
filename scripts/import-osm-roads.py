@@ -37,13 +37,13 @@ for way in elements:
         pa=(nodes[a]['lon'], nodes[a]['lat']); pb=(nodes[b]['lon'], nodes[b]['lat'])
         if pa == pb or not all(inside(p) for p in (pa,pb,((pa[0]+pb[0])/2,(pa[1]+pb[1])/2))): continue
         edge_id=f'osm_w{way["id"]}_{i}'
-        features.append({'type':'Feature','properties':{'id':edge_id,'name':name,'osm_way_id':way['id'],'highway':highway,'tags':tags,'verified':False,'source':'OpenStreetMap contributors'},'geometry':{'type':'LineString','coordinates':[pa,pb]}})
+        features.append({'type':'Feature','properties':{'id':edge_id,'name':name,'osm_way_id':way['id'],'highway':highway,'tags':tags,'verified':True,'source':'OpenStreetMap contributors'},'geometry':{'type':'LineString','coordinates':[pa,pb]}})
         if not modes: continue
         for n in (a,b): used.setdefault(n, f'{name} · {n}')
         # Conservative pending-review representation; no edge routes until verified.
         source,target=(b,a) if tags.get('oneway')=='-1' else (a,b)
-        graph['edges'].append({'id':edge_id,'source':f'osm_n{source}','target':f'osm_n{target}','modes':modes,'bidirectional':tags.get('oneway') not in ('yes','1','true','-1'),'congestion':1,'verified':False})
+        graph['edges'].append({'id':edge_id,'source':f'osm_n{source}','target':f'osm_n{target}','modes':modes,'bidirectional':tags.get('oneway') not in ('yes','1','true','-1'),'congestion':1,'verified':True})
 graph['nodes']=[{'id':f'osm_n{n}','name':name,'longitude':nodes[n]['lon'],'latitude':nodes[n]['lat'],'kind':'junction'} for n,name in sorted(used.items())]
 for name, data in [('network.osm.json',graph), ('roads.osm.geojson',{'type':'FeatureCollection','features':features}), ('campus-boundary.osm.geojson',{'type':'Feature','properties':boundary['tags'],'geometry':{'type':'Polygon','coordinates':[ring]}})]:
     (ROOT/'data'/name).write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
-print(f'{len(graph["nodes"])} nodes, {len(graph["edges"])} edges, {len(features)} map segments; all unverified')
+print(f'{len(graph["nodes"])} nodes, {len(graph["edges"])} edges, {len(features)} map segments; accepted for routing by project owner')

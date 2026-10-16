@@ -2,6 +2,8 @@
 
 接口前缀 /api，本地后端 http://127.0.0.1:8000，完整字段和约束见 /docs。LLM 负责解析需求、调用工具、解释结果，不生成坐标或空位。
 
+本文保留节点式停车联合规划接口。新版应用页使用 /api/navigation 下的地点搜索、地图选点和路线接口，详见 [导航与标注 API](NAVIGATION-ANNOTATION-API.md)。应用页为 /，内部工具页为 /debug。
+
 ## 查询流程
 
 1. GET /places?dataset=campus 获取已保存节点，选择起终点。重名或输入不明确时请用户确认。
@@ -22,7 +24,7 @@ preference 可为 fastest 或 less_walking。默认 bike_speed_kmh=12、walk_spe
 
 | 接口 | 用途 |
 | --- | --- |
-| GET /network/campus | 校园路网，初始为空 |
+| GET /network/campus | 校园 OSM 路网；已按负责人要求纳入规划 |
 | GET /network/example | 独立虚构示意路网 |
 | PUT /network/{dataset} | 保存完整图，必须携带读取时的 revision |
 | GET /roads | 校园道路 GeoJSON，包含 verified 标志 |

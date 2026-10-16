@@ -5,6 +5,8 @@ import {getJson} from './api'
 import MapIcon from './components/MapIcon.vue'
 import VisionPanel from './components/VisionPanel.vue'
 import RouteWorkbench from './components/RouteWorkbench.vue'
+import ParkingEditor from './components/ParkingEditor.vue'
+const editingParking=ref(false)
 const areas=ref(null),snapshot=ref(null),observations=ref([]),error=ref(''),loading=ref(false)
 const selected=ref(''),tab=ref('parking'),moduleInfo=ref(''),useOsm=ref(true),tileError=ref(false)
 const query=ref(''),panelOpen=ref(true),mapEl=ref(null),layerOpen=ref(false)
@@ -80,6 +82,7 @@ onBeforeUnmount(()=>{stopped=true;clearInterval(timer);resizeObserver?.disconnec
 </script>
 <template>
   <main class="maps-app">
+    <ParkingEditor v-if="editingParking" @close="editingParking=false;load()" />
     <RouteWorkbench v-if="['roads','routing'].includes(tab)" :areas="rows" :parking-geo-json="areas" @close="tab='parking';refresh()" />
     <div ref="mapEl" class="full-map" aria-label="校园停车区域地图"></div>
     <nav class="rail" aria-label="主要功能"><div class="app-symbol"><MapIcon name="map" :size="29" /></div><button v-for="[key,icon,label] in tabs" :key="key" :class="{active:tab===key}" @click="switchTab(key)"><span><MapIcon :name="icon" /></span>{{label}}</button><div class="rail-bottom">DEMO</div></nav>
@@ -98,7 +101,7 @@ onBeforeUnmount(()=>{stopped=true;clearInterval(timer);resizeObserver?.disconnec
       <VisionPanel v-show="tab==='vision'" :areas="rows" :selected-id="selected" @observation="refreshObservations" />
       <section v-if="!['parking','vision'].includes(tab)" class="future-panel"><div class="heading-icon blue"><MapIcon :name="tabs.find(t=>t[0]===tab)?.[1]" :size="30" /></div><h2>{{{roads:'校园道路',transit:'公交出行',routing:'路线规划'}[tab]}}</h2><p>{{moduleInfo||'正在加载…'}}</p><span class="tag">即将接入</span></section>
     </aside>
-    <div class="top-status"><span class="status-dot"></span>校园出行实验室<span class="tag">Demo</span></div>
+    <div class="top-status"><a href="/" target="_blank" rel="noopener">打开应用页 ↗</a><button @click="editingParking=true">地图停车区标注</button><span class="tag">内部调试</span></div>
     <div v-if="tileError" class="map-message" role="status">底图暂时无法加载，停车区域仍可查看。</div>
     <div class="map-action-stack"><button class="map-action" aria-label="定位到全部停车区域" @click="fitAll"><MapIcon name="locate" /></button><button class="map-action" :class="{active:layerOpen}" aria-label="底图图层" @click="layerOpen=!layerOpen"><MapIcon name="layers" /></button></div>
     <div v-if="layerOpen" class="layer-popover"><strong>地图图层</strong><label><input v-model="useOsm" type="checkbox" @change="toggleOsm"> OpenStreetMap 底图</label><small>保留 OSM 版权署名 · 无需 API Key</small></div>

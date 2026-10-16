@@ -1,0 +1,1220 @@
+[
+  {
+    "type": "node",
+    "id": "11083682399",
+    "tags": {
+      "amenity": "fast_food",
+      "brand": "肯德基",
+      "brand:en": "KFC",
+      "brand:wikidata": "Q524757",
+      "brand:zh": "肯德基",
+      "cuisine": "chicken",
+      "name": "肯德基",
+      "name:en": "KFC",
+      "name:zh": "肯德基",
+      "takeaway": "yes"
+    },
+    "source_url": "https://www.openstreetmap.org/node/11083682399"
+  },
+  {
+    "type": "node",
+    "id": "11083682400",
+    "tags": {
+      "amenity": "cafe",
+      "brand": "瑞幸咖啡",
+      "brand:en": "Luckin Coffee",
+      "brand:wikidata": "Q56811344",
+      "brand:zh": "瑞幸咖啡",
+      "cuisine": "coffee_shop",
+      "name": "瑞幸咖啡",
+      "name:en": "Luckin Coffee",
+      "name:zh": "瑞幸咖啡",
+      "not:brand:wikidata": "Q37158",
+      "takeaway": "yes"
+    },
+    "source_url": "https://www.openstreetmap.org/node/11083682400"
+  },
+  {
+    "type": "node",
+    "id": "11083682401",
+    "tags": {
+      "brand": "7-Eleven",
+      "brand:wikidata": "Q259340",
+      "name": "7-Eleven",
+      "shop": "convenience"
+    },
+    "source_url": "https://www.openstreetmap.org/node/11083682401"
+  },
+  {
+    "type": "node",
+    "id": "11134151643",
+    "tags": {
+      "amenity": "public_bath",
+      "name": "西区浴室"
+    },
+    "source_url": "https://www.openstreetmap.org/node/11134151643"
+  },
+  {
+    "type": "node",
+    "id": "11134151644",
+    "tags": {
+      "amenity": "public_bath",
+      "bath:open_air": "no",
+      "bath:sand_bath": "no",
+      "fee": "yes",
+      "name": "东区浴室"
+    },
+    "source_url": "https://www.openstreetmap.org/node/11134151644"
+  },
+  {
+    "type": "node",
+    "id": "11134164705",
+    "tags": {
+      "amenity": "cafe",
+      "brand": "瑞幸咖啡",
+      "brand:en": "Luckin Coffee",
+      "brand:wikidata": "Q56811344",
+      "brand:zh": "瑞幸咖啡",
+      "cuisine": "coffee_shop",
+      "name": "瑞幸咖啡",
+      "name:en": "Luckin Coffee",
+      "name:zh": "瑞幸咖啡",
+      "takeaway": "yes"
+    },
+    "source_url": "https://www.openstreetmap.org/node/11134164705"
+  },
+  {
+    "type": "node",
+    "id": "11143986080",
+    "tags": {
+      "name": "天猫超市",
+      "payment:alipay": "yes",
+      "payment:wechat": "yes",
+      "shop": "convenience"
+    },
+    "source_url": "https://www.openstreetmap.org/node/11143986080"
+  },
+  {
+    "type": "node",
+    "id": "11144005087",
+    "tags": {
+      "name": "长大一九五一便利店",
+      "shop": "convenience"
+    },
+    "source_url": "https://www.openstreetmap.org/node/11144005087"
+  },
+  {
+    "type": "node",
+    "id": "11144005278",
+    "tags": {
+      "name": "长大一九五一便利店",
+      "shop": "convenience"
+    },
+    "source_url": "https://www.openstreetmap.org/node/11144005278"
+  },
+  {
+    "type": "node",
+    "id": "11144005342",
+    "tags": {
+      "name": "长大一九五一便利店",
+      "shop": "convenience"
+    },
+    "source_url": "https://www.openstreetmap.org/node/11144005342"
+  },
+  {
+    "type": "node",
+    "id": "11166560620",
+    "tags": {
+      "access": "permit",
+      "barrier": "gate",
+      "bicycle": "permit",
+      "foot": "permit",
+      "horse": "no",
+      "motor_vehicle": "no",
+      "name": "东门",
+      "opening_hours": "24/7",
+      "wheelchair": "yes"
+    },
+    "source_url": "https://www.openstreetmap.org/node/11166560620"
+  },
+  {
+    "type": "node",
+    "id": "11166560621",
+    "tags": {
+      "access": "permit",
+      "barrier": "gate",
+      "name": "北门",
+      "opening_hours": "24/7",
+      "wheelchair": "yes"
+    },
+    "source_url": "https://www.openstreetmap.org/node/11166560621"
+  },
+  {
+    "type": "node",
+    "id": "11166560622",
+    "tags": {
+      "name": "长大一九五一便利店",
+      "shop": "convenience"
+    },
+    "source_url": "https://www.openstreetmap.org/node/11166560622"
+  },
+  {
+    "type": "node",
+    "id": "11166560624",
+    "tags": {
+      "amenity": "cafe",
+      "bar": "yes",
+      "brand": "瑞幸咖啡",
+      "brand:en": "Luckin Coffee",
+      "brand:wikidata": "Q56811344",
+      "brand:zh": "瑞幸咖啡",
+      "cuisine": "coffee_shop",
+      "name": "瑞幸咖啡",
+      "name:en": "Luckin Coffee",
+      "name:zh": "瑞幸咖啡",
+      "takeaway": "yes"
+    },
+    "source_url": "https://www.openstreetmap.org/node/11166560624"
+  },
+  {
+    "type": "node",
+    "id": "11173204320",
+    "tags": {
+      "amenity": "restaurant",
+      "name": "泰熙家"
+    },
+    "source_url": "https://www.openstreetmap.org/node/11173204320"
+  },
+  {
+    "type": "node",
+    "id": "11173204321",
+    "tags": {
+      "name": "长大一九五一便利店",
+      "shop": "convenience"
+    },
+    "source_url": "https://www.openstreetmap.org/node/11173204321"
+  },
+  {
+    "type": "node",
+    "id": "11173238525",
+    "tags": {
+      "access": "permit",
+      "barrier": "gate",
+      "horse": "no",
+      "motor_vehicle": "no",
+      "name": "南门",
+      "wheelchair": "yes"
+    },
+    "source_url": "https://www.openstreetmap.org/node/11173238525"
+  },
+  {
+    "type": "node",
+    "id": "11173238526",
+    "tags": {
+      "access": "permit",
+      "barrier": "gate",
+      "bicycle": "no",
+      "foot": "no",
+      "horse": "no",
+      "name": "南门"
+    },
+    "source_url": "https://www.openstreetmap.org/node/11173238526"
+  },
+  {
+    "type": "node",
+    "id": "11211275007",
+    "tags": {
+      "name": "卡务中心",
+      "office": "yes"
+    },
+    "source_url": "https://www.openstreetmap.org/node/11211275007"
+  },
+  {
+    "type": "node",
+    "id": "11211275009",
+    "tags": {
+      "amenity": "cafe",
+      "cuisine": "coffee_shop",
+      "name": "明远创客咖啡",
+      "outdoor_seating": "yes"
+    },
+    "source_url": "https://www.openstreetmap.org/node/11211275009"
+  },
+  {
+    "type": "node",
+    "id": "11286130657",
+    "tags": {
+      "access": "permit",
+      "barrier": "gate",
+      "name": "北门"
+    },
+    "source_url": "https://www.openstreetmap.org/node/11286130657"
+  },
+  {
+    "type": "node",
+    "id": "11402910941",
+    "tags": {
+      "amenity": "post_office",
+      "brand": "菜鸟驿站",
+      "brand:en": "CAI NIAO",
+      "brand:wikidata": "Q16947973",
+      "brand:zh": "菜鸟驿站",
+      "name": "东区菜鸟驿站",
+      "name:en": "CAI NIAO",
+      "name:zh": "东区菜鸟驿站"
+    },
+    "source_url": "https://www.openstreetmap.org/node/11402910941"
+  },
+  {
+    "type": "node",
+    "id": "11402910942",
+    "tags": {
+      "amenity": "post_office",
+      "brand": "顺丰速运",
+      "brand:en": "SF Express",
+      "brand:wikidata": "Q7390019",
+      "brand:zh": "顺丰速运",
+      "name": "东区顺丰速运",
+      "name:en": "SF Express",
+      "name:zh": "东区顺丰速运",
+      "short_name": "顺丰"
+    },
+    "source_url": "https://www.openstreetmap.org/node/11402910942"
+  },
+  {
+    "type": "node",
+    "id": "11402910943",
+    "tags": {
+      "amenity": "post_office",
+      "brand": "京东物流",
+      "brand:en": "JD Logistics",
+      "brand:wikidata": "Q67936681",
+      "brand:zh": "京东物流",
+      "name": "东区京东物流",
+      "name:en": "JD Logistics",
+      "name:zh": "东区京东物流",
+      "short_name": "京东"
+    },
+    "source_url": "https://www.openstreetmap.org/node/11402910943"
+  },
+  {
+    "type": "node",
+    "id": "11402910944",
+    "tags": {
+      "amenity": "post_office",
+      "brand": "菜鸟驿站",
+      "brand:en": "Cainiao",
+      "brand:wikidata": "Q16947973",
+      "brand:zh": "菜鸟驿站",
+      "name": "西区菜鸟驿站",
+      "name:en": "CAI NIAO",
+      "name:zh": "西区菜鸟驿站"
+    },
+    "source_url": "https://www.openstreetmap.org/node/11402910944"
+  },
+  {
+    "type": "node",
+    "id": "11402910945",
+    "tags": {
+      "amenity": "post_office",
+      "brand": "京东物流",
+      "brand:en": "JD Logistics",
+      "brand:short": "京东",
+      "brand:wikidata": "Q67936681",
+      "brand:zh": "京东物流",
+      "name": "西区京东物流",
+      "name:en": "JD Logistics",
+      "name:zh": "西区京东物流",
+      "short_name": "京东"
+    },
+    "source_url": "https://www.openstreetmap.org/node/11402910945"
+  },
+  {
+    "type": "node",
+    "id": "11402910946",
+    "tags": {
+      "amenity": "post_office",
+      "brand": "顺丰速运",
+      "brand:en": "SF Express",
+      "brand:short": "顺丰",
+      "brand:wikidata": "Q7390019",
+      "brand:zh": "顺丰速运",
+      "name": "西区顺丰速运",
+      "name:en": "SF Express",
+      "name:zh": "西区顺丰速运",
+      "short_name": "顺丰"
+    },
+    "source_url": "https://www.openstreetmap.org/node/11402910946"
+  },
+  {
+    "type": "node",
+    "id": "11402910948",
+    "tags": {
+      "amenity": "post_office",
+      "name": "长大驿站"
+    },
+    "source_url": "https://www.openstreetmap.org/node/11402910948"
+  },
+  {
+    "type": "node",
+    "id": "14070630853",
+    "tags": {
+      "access": "permit",
+      "barrier": "gate",
+      "locked": "no",
+      "name": "西南门"
+    },
+    "source_url": "https://www.openstreetmap.org/node/14070630853"
+  },
+  {
+    "type": "way",
+    "id": "255692666",
+    "tags": {
+      "building": "college",
+      "name": "实验楼"
+    },
+    "source_url": "https://www.openstreetmap.org/way/255692666"
+  },
+  {
+    "type": "way",
+    "id": "255695907",
+    "tags": {
+      "building": "college",
+      "name": "现代工程训练中心",
+      "name:en": "Modern Engineering Training Center",
+      "name:zh": "现代工程训练中心"
+    },
+    "source_url": "https://www.openstreetmap.org/way/255695907"
+  },
+  {
+    "type": "way",
+    "id": "255695908",
+    "tags": {
+      "amenity": "community_centre",
+      "building": "yes",
+      "name": "大学生活动中心",
+      "name:en": "Student Center",
+      "name:zh": "大学生活动中心"
+    },
+    "source_url": "https://www.openstreetmap.org/way/255695908"
+  },
+  {
+    "type": "way",
+    "id": "255695909",
+    "tags": {
+      "amenity": "restaurant",
+      "building": "yes",
+      "name": "树蕙园餐厅",
+      "name:en": "Shuhuiyuan Canteen",
+      "name:zh": "树蕙园餐厅"
+    },
+    "source_url": "https://www.openstreetmap.org/way/255695909"
+  },
+  {
+    "type": "way",
+    "id": "255695910",
+    "tags": {
+      "amenity": "restaurant",
+      "building": "yes",
+      "name": "滋兰苑餐厅",
+      "name:en": "Zilanyuan Canteen",
+      "name:zh": "滋兰苑餐厅",
+      "name:zh-Latn-pinyin": "Zīlányuàn Cāntīng"
+    },
+    "source_url": "https://www.openstreetmap.org/way/255695910"
+  },
+  {
+    "type": "way",
+    "id": "255696165",
+    "tags": {
+      "building": "university",
+      "name": "明远教学楼D栋",
+      "note": "物理、化学实验室"
+    },
+    "source_url": "https://www.openstreetmap.org/way/255696165"
+  },
+  {
+    "type": "way",
+    "id": "255696166",
+    "tags": {
+      "building": "university",
+      "layer": "1",
+      "name": "明远教学楼A栋"
+    },
+    "source_url": "https://www.openstreetmap.org/way/255696166"
+  },
+  {
+    "type": "way",
+    "id": "255697337",
+    "tags": {
+      "building": "apartments",
+      "hoops": "8",
+      "name": "23号宿舍楼"
+    },
+    "source_url": "https://www.openstreetmap.org/way/255697337"
+  },
+  {
+    "type": "way",
+    "id": "255891571",
+    "tags": {
+      "building": "dormitory",
+      "name": "鸿翔园2号公寓"
+    },
+    "source_url": "https://www.openstreetmap.org/way/255891571"
+  },
+  {
+    "type": "way",
+    "id": "255891572",
+    "tags": {
+      "building": "dormitory",
+      "name": "鸿翔园1号公寓"
+    },
+    "source_url": "https://www.openstreetmap.org/way/255891572"
+  },
+  {
+    "type": "way",
+    "id": "255892120",
+    "tags": {
+      "building": "college",
+      "name": "明远教学楼E栋"
+    },
+    "source_url": "https://www.openstreetmap.org/way/255892120"
+  },
+  {
+    "type": "way",
+    "id": "255892814",
+    "tags": {
+      "building": "yes",
+      "name": "交通馆",
+      "name:en": "Transportation Museum",
+      "name:zh": "交通馆",
+      "tourism": "museum"
+    },
+    "source_url": "https://www.openstreetmap.org/way/255892814"
+  },
+  {
+    "type": "way",
+    "id": "393548943",
+    "tags": {
+      "building": "apartments",
+      "name": "朝晖园16号公寓"
+    },
+    "source_url": "https://www.openstreetmap.org/way/393548943"
+  },
+  {
+    "type": "way",
+    "id": "393548944",
+    "tags": {
+      "building": "apartments",
+      "name": "朝晖园22号公寓"
+    },
+    "source_url": "https://www.openstreetmap.org/way/393548944"
+  },
+  {
+    "type": "way",
+    "id": "393548968",
+    "tags": {
+      "building": "apartments",
+      "name": "景行教师公寓"
+    },
+    "source_url": "https://www.openstreetmap.org/way/393548968"
+  },
+  {
+    "type": "way",
+    "id": "393548969",
+    "tags": {
+      "building": "hospital",
+      "name": "长安大学医院",
+      "name:en": "Hospital of Chang'an University",
+      "name:zh": "长安大学医院"
+    },
+    "source_url": "https://www.openstreetmap.org/way/393548969"
+  },
+  {
+    "type": "way",
+    "id": "393548970",
+    "tags": {
+      "building": "college",
+      "name": "建筑馆",
+      "name:en": "Architectural Museum",
+      "name:zh": "建筑馆",
+      "tourism": "museum"
+    },
+    "source_url": "https://www.openstreetmap.org/way/393548970"
+  },
+  {
+    "type": "way",
+    "id": "393548971",
+    "tags": {
+      "building": "college",
+      "name": "水力实验室",
+      "name:en": "Hydraulic Laboratory",
+      "name:zh": "水力实验室"
+    },
+    "source_url": "https://www.openstreetmap.org/way/393548971"
+  },
+  {
+    "type": "way",
+    "id": "438534293",
+    "tags": {
+      "building": "dormitory",
+      "name": "鸿翔园3号公寓"
+    },
+    "source_url": "https://www.openstreetmap.org/way/438534293"
+  },
+  {
+    "type": "way",
+    "id": "438534295",
+    "tags": {
+      "building": "dormitory",
+      "name": "鸿翔园4号公寓"
+    },
+    "source_url": "https://www.openstreetmap.org/way/438534295"
+  },
+  {
+    "type": "way",
+    "id": "438534297",
+    "tags": {
+      "building": "dormitory",
+      "name": "鸿翔园6号公寓"
+    },
+    "source_url": "https://www.openstreetmap.org/way/438534297"
+  },
+  {
+    "type": "way",
+    "id": "438534300",
+    "tags": {
+      "building": "dormitory",
+      "name": "鸿翔园5号公寓"
+    },
+    "source_url": "https://www.openstreetmap.org/way/438534300"
+  },
+  {
+    "type": "way",
+    "id": "438548219",
+    "tags": {
+      "building": "dormitory",
+      "name": "朝晖园7号公寓"
+    },
+    "source_url": "https://www.openstreetmap.org/way/438548219"
+  },
+  {
+    "type": "way",
+    "id": "438548220",
+    "tags": {
+      "building": "dormitory",
+      "name": "朝晖园8号公寓"
+    },
+    "source_url": "https://www.openstreetmap.org/way/438548220"
+  },
+  {
+    "type": "way",
+    "id": "438548221",
+    "tags": {
+      "building": "dormitory",
+      "name": "朝晖园9号公寓"
+    },
+    "source_url": "https://www.openstreetmap.org/way/438548221"
+  },
+  {
+    "type": "way",
+    "id": "438548222",
+    "tags": {
+      "building": "dormitory",
+      "name": "朝晖园10号公寓"
+    },
+    "source_url": "https://www.openstreetmap.org/way/438548222"
+  },
+  {
+    "type": "way",
+    "id": "438548223",
+    "tags": {
+      "building": "dormitory",
+      "name": "朝晖园11号公寓"
+    },
+    "source_url": "https://www.openstreetmap.org/way/438548223"
+  },
+  {
+    "type": "way",
+    "id": "438548224",
+    "tags": {
+      "building": "dormitory",
+      "name": "朝晖园12号公寓"
+    },
+    "source_url": "https://www.openstreetmap.org/way/438548224"
+  },
+  {
+    "type": "way",
+    "id": "438548225",
+    "tags": {
+      "building": "dormitory",
+      "name": "朝晖园13号公寓"
+    },
+    "source_url": "https://www.openstreetmap.org/way/438548225"
+  },
+  {
+    "type": "way",
+    "id": "438712793",
+    "tags": {
+      "building": "dormitory",
+      "name": "朝晖园15号公寓"
+    },
+    "source_url": "https://www.openstreetmap.org/way/438712793"
+  },
+  {
+    "type": "way",
+    "id": "438712794",
+    "tags": {
+      "building": "dormitory",
+      "name": "朝晖园14号公寓"
+    },
+    "source_url": "https://www.openstreetmap.org/way/438712794"
+  },
+  {
+    "type": "way",
+    "id": "438712796",
+    "tags": {
+      "building": "college",
+      "name": "实验楼"
+    },
+    "source_url": "https://www.openstreetmap.org/way/438712796"
+  },
+  {
+    "type": "way",
+    "id": "440689409",
+    "tags": {
+      "building": "university",
+      "layer": "1",
+      "name": "明远教学楼C栋"
+    },
+    "source_url": "https://www.openstreetmap.org/way/440689409"
+  },
+  {
+    "type": "way",
+    "id": "440689410",
+    "tags": {
+      "building": "university",
+      "name": "明远教学楼B栋"
+    },
+    "source_url": "https://www.openstreetmap.org/way/440689410"
+  },
+  {
+    "type": "way",
+    "id": "831071154",
+    "tags": {
+      "building": "apartments",
+      "name": "教师公寓5#"
+    },
+    "source_url": "https://www.openstreetmap.org/way/831071154"
+  },
+  {
+    "type": "way",
+    "id": "831071156",
+    "tags": {
+      "building": "apartments",
+      "name": "教师公寓4#"
+    },
+    "source_url": "https://www.openstreetmap.org/way/831071156"
+  },
+  {
+    "type": "way",
+    "id": "831071157",
+    "tags": {
+      "building": "apartments",
+      "name": "教师公寓7#"
+    },
+    "source_url": "https://www.openstreetmap.org/way/831071157"
+  },
+  {
+    "type": "way",
+    "id": "831071159",
+    "tags": {
+      "building": "apartments",
+      "name": "教师公寓13#"
+    },
+    "source_url": "https://www.openstreetmap.org/way/831071159"
+  },
+  {
+    "type": "way",
+    "id": "831071161",
+    "tags": {
+      "building": "apartments",
+      "name": "教师公寓11#"
+    },
+    "source_url": "https://www.openstreetmap.org/way/831071161"
+  },
+  {
+    "type": "way",
+    "id": "831071162",
+    "tags": {
+      "building": "apartments",
+      "name": "教师公寓12#"
+    },
+    "source_url": "https://www.openstreetmap.org/way/831071162"
+  },
+  {
+    "type": "way",
+    "id": "831071163",
+    "tags": {
+      "building": "apartments",
+      "name": "教师公寓8#"
+    },
+    "source_url": "https://www.openstreetmap.org/way/831071163"
+  },
+  {
+    "type": "way",
+    "id": "831071164",
+    "tags": {
+      "building": "apartments",
+      "name": "教师公寓6#"
+    },
+    "source_url": "https://www.openstreetmap.org/way/831071164"
+  },
+  {
+    "type": "way",
+    "id": "831071165",
+    "tags": {
+      "building": "apartments",
+      "name": "教师公寓2#"
+    },
+    "source_url": "https://www.openstreetmap.org/way/831071165"
+  },
+  {
+    "type": "way",
+    "id": "831071166",
+    "tags": {
+      "building": "apartments",
+      "name": "教师公寓3#"
+    },
+    "source_url": "https://www.openstreetmap.org/way/831071166"
+  },
+  {
+    "type": "way",
+    "id": "831071168",
+    "tags": {
+      "building": "dormitory",
+      "name": "鸿渐园20号公寓"
+    },
+    "source_url": "https://www.openstreetmap.org/way/831071168"
+  },
+  {
+    "type": "way",
+    "id": "831071171",
+    "tags": {
+      "building": "dormitory",
+      "layer": "2",
+      "name": "鸿渐园18号公寓"
+    },
+    "source_url": "https://www.openstreetmap.org/way/831071171"
+  },
+  {
+    "type": "way",
+    "id": "831071186",
+    "tags": {
+      "building": "apartments",
+      "name": "教师公寓1#"
+    },
+    "source_url": "https://www.openstreetmap.org/way/831071186"
+  },
+  {
+    "type": "way",
+    "id": "831071189",
+    "tags": {
+      "building": "apartments",
+      "name": "教师公寓9#"
+    },
+    "source_url": "https://www.openstreetmap.org/way/831071189"
+  },
+  {
+    "type": "way",
+    "id": "831071191",
+    "tags": {
+      "building": "apartments",
+      "name": "教师公寓10#"
+    },
+    "source_url": "https://www.openstreetmap.org/way/831071191"
+  },
+  {
+    "type": "way",
+    "id": "831071198",
+    "tags": {
+      "alt_name": "小食空餐厅",
+      "amenity": "restaurant",
+      "building": "yes",
+      "name": "采芹苑餐厅",
+      "name:en": "Caiqinyuan Canteen",
+      "name:zh": "采芹苑餐厅",
+      "name:zh-Latn-pinyin": "Cǎiqínyuàn Cāntīng"
+    },
+    "source_url": "https://www.openstreetmap.org/way/831071198"
+  },
+  {
+    "type": "way",
+    "id": "831071200",
+    "tags": {
+      "building": "dormitory",
+      "name": "鸿渐园19号公寓"
+    },
+    "source_url": "https://www.openstreetmap.org/way/831071200"
+  },
+  {
+    "type": "way",
+    "id": "831071201",
+    "tags": {
+      "building": "dormitory",
+      "layer": "1",
+      "name": "鸿渐园17号公寓"
+    },
+    "source_url": "https://www.openstreetmap.org/way/831071201"
+  },
+  {
+    "type": "way",
+    "id": "831073210",
+    "tags": {
+      "building": "university",
+      "name": "鸿远教学楼一区"
+    },
+    "source_url": "https://www.openstreetmap.org/way/831073210"
+  },
+  {
+    "type": "way",
+    "id": "831073211",
+    "tags": {
+      "building": "university",
+      "name": "鸿远教学楼二区"
+    },
+    "source_url": "https://www.openstreetmap.org/way/831073211"
+  },
+  {
+    "type": "way",
+    "id": "831093251",
+    "tags": {
+      "building": "commercial",
+      "name": "西区后勤管理中心"
+    },
+    "source_url": "https://www.openstreetmap.org/way/831093251"
+  },
+  {
+    "type": "way",
+    "id": "1091739067",
+    "tags": {
+      "building": "college",
+      "building:levels": "7",
+      "name": "明德园智通大厦",
+      "name:en": "Zhitongdasha",
+      "name:zh": "明德园智通大厦",
+      "name:zh-Latn-pinyin": "Zhìtōng Dàshà"
+    },
+    "source_url": "https://www.openstreetmap.org/way/1091739067"
+  },
+  {
+    "type": "way",
+    "id": "1091739068",
+    "tags": {
+      "building": "college",
+      "building:levels": "7",
+      "name": "明德园创新大厦",
+      "name:en": "Chuangxindasha",
+      "name:zh": "明德园创新大厦",
+      "name:zh-Latn-pinyin": "Chuàngxīn Dàshà"
+    },
+    "source_url": "https://www.openstreetmap.org/way/1091739068"
+  },
+  {
+    "type": "way",
+    "id": "1091739069",
+    "tags": {
+      "building": "college",
+      "building:levels": "7",
+      "name": "明德园扶轮大厦",
+      "name:en": "Fulundasha",
+      "name:zh": "明德园扶轮大厦",
+      "name:zh-Latn-pinyin": "Fúlún Dàshà"
+    },
+    "source_url": "https://www.openstreetmap.org/way/1091739069"
+  },
+  {
+    "type": "way",
+    "id": "1091739070",
+    "tags": {
+      "access": "permit",
+      "air_conditioning": "yes",
+      "amenity": "library",
+      "building": "yes",
+      "image": "https://www.chd.edu.cn/__local/5/90/84/55C5638381C8CCC8086C8ACF01B_AB4F2083_94D51.jpg?e=.jpg",
+      "internet_access": "wlan",
+      "internet_access:fee": "customers",
+      "name": "逸夫图书馆",
+      "name:en": "Yifu Library",
+      "name:zh": "逸夫图书馆",
+      "operator": "长安大学",
+      "operator:type": "university",
+      "website": "https://lib.chd.edu.cn/index.htm"
+    },
+    "source_url": "https://www.openstreetmap.org/way/1091739070"
+  },
+  {
+    "type": "way",
+    "id": "1110912807",
+    "tags": {
+      "building": "university",
+      "building:levels": "2",
+      "name": "风洞实验室",
+      "name:en": "Wind Tunnel Laboratory",
+      "name:zh": "风洞实验室"
+    },
+    "source_url": "https://www.openstreetmap.org/way/1110912807"
+  },
+  {
+    "type": "way",
+    "id": "1110912809",
+    "tags": {
+      "building": "yes",
+      "building:levels": "2",
+      "name": "安保人员公寓"
+    },
+    "source_url": "https://www.openstreetmap.org/way/1110912809"
+  },
+  {
+    "type": "way",
+    "id": "1194022842",
+    "tags": {
+      "amenity": "restaurant",
+      "building": "yes",
+      "name": "天行健餐厅",
+      "name:en": "Tianxingjian Canteen",
+      "name:zh": "天行健餐厅",
+      "toilets": "yes"
+    },
+    "source_url": "https://www.openstreetmap.org/way/1194022842"
+  },
+  {
+    "type": "way",
+    "id": "1194022843",
+    "tags": {
+      "building": "university",
+      "name": "师生服务大厅"
+    },
+    "source_url": "https://www.openstreetmap.org/way/1194022843"
+  },
+  {
+    "type": "way",
+    "id": "1194022844",
+    "tags": {
+      "building": "office",
+      "name": "北辰楼"
+    },
+    "source_url": "https://www.openstreetmap.org/way/1194022844"
+  },
+  {
+    "type": "way",
+    "id": "1194022845",
+    "tags": {
+      "building": "office",
+      "name": "北辰楼会议中心"
+    },
+    "source_url": "https://www.openstreetmap.org/way/1194022845"
+  },
+  {
+    "type": "way",
+    "id": "1194022846",
+    "tags": {
+      "access": "permissive",
+      "alt_name": "风雨操场",
+      "building": "university",
+      "leisure": "sports_hall",
+      "name": "乾健体育馆",
+      "name:en": "Qianjian Gymnasium",
+      "sport": "basketball;table_tennis;badminton;fitness"
+    },
+    "source_url": "https://www.openstreetmap.org/way/1194022846"
+  },
+  {
+    "type": "way",
+    "id": "1194050476",
+    "tags": {
+      "building": "university",
+      "building:levels": "2",
+      "name": "图书馆教学楼",
+      "name:en": "Library Teaching Building",
+      "name:zh": "图书馆教学楼"
+    },
+    "source_url": "https://www.openstreetmap.org/way/1194050476"
+  },
+  {
+    "type": "way",
+    "id": "1194050479",
+    "tags": {
+      "building": "yes",
+      "leisure": "sports_centre",
+      "name": "攀岩场地",
+      "sport": "climbing"
+    },
+    "source_url": "https://www.openstreetmap.org/way/1194050479"
+  },
+  {
+    "type": "way",
+    "id": "1200833711",
+    "tags": {
+      "alt_name": "弘毅大厦",
+      "building": "college",
+      "name": "公路学院",
+      "name:en": "Highway College"
+    },
+    "source_url": "https://www.openstreetmap.org/way/1200833711"
+  },
+  {
+    "type": "way",
+    "id": "1200833712",
+    "tags": {
+      "building": "college",
+      "name": "致远大厦",
+      "name:en": "Zhiyuandasha",
+      "name:zh": "致远大厦",
+      "name:zh-Latn-pinyin": "Zhìyuǎn Dàshà"
+    },
+    "source_url": "https://www.openstreetmap.org/way/1200833712"
+  },
+  {
+    "type": "way",
+    "id": "1200833729",
+    "tags": {
+      "building": "college",
+      "name": "水与环境原位试验场"
+    },
+    "source_url": "https://www.openstreetmap.org/way/1200833729"
+  },
+  {
+    "type": "way",
+    "id": "1202005685",
+    "tags": {
+      "building": "college",
+      "building:levels": "2",
+      "name": "体育部"
+    },
+    "source_url": "https://www.openstreetmap.org/way/1202005685"
+  },
+  {
+    "type": "way",
+    "id": "1202005693",
+    "tags": {
+      "building": "university",
+      "building:levels": "2",
+      "layer": "1",
+      "name": "朝晖园学生社区示范性园区",
+      "name:zh": "朝晖园学生社区示范性园区"
+    },
+    "source_url": "https://www.openstreetmap.org/way/1202005693"
+  },
+  {
+    "type": "way",
+    "id": "1202682512",
+    "tags": {
+      "building": "apartments",
+      "name": "鸿渐园21号公寓A座"
+    },
+    "source_url": "https://www.openstreetmap.org/way/1202682512"
+  },
+  {
+    "type": "way",
+    "id": "1202682513",
+    "tags": {
+      "building": "apartments",
+      "name": "鸿渐园21号公寓B座"
+    },
+    "source_url": "https://www.openstreetmap.org/way/1202682513"
+  },
+  {
+    "type": "way",
+    "id": "1202682514",
+    "tags": {
+      "building": "college",
+      "name": "弘毅园道路实验中心",
+      "name:en": "Hongyiyuan Road Experiment Center",
+      "name:zh": "弘毅园道路实验中心"
+    },
+    "source_url": "https://www.openstreetmap.org/way/1202682514"
+  },
+  {
+    "type": "way",
+    "id": "1204076600",
+    "tags": {
+      "building": "college",
+      "name": "弘毅园桥结实验中心",
+      "name:en": "Hongyiyuan Bridge Structure Experiment Center"
+    },
+    "source_url": "https://www.openstreetmap.org/way/1204076600"
+  },
+  {
+    "type": "way",
+    "id": "1204076601",
+    "tags": {
+      "building": "college",
+      "name": "弘毅园岩隧实验中心",
+      "name:en": "Hongyiyuan Tunnel Experimental Center"
+    },
+    "source_url": "https://www.openstreetmap.org/way/1204076601"
+  },
+  {
+    "type": "way",
+    "id": "1204076603",
+    "tags": {
+      "building": "university",
+      "name": "配电间"
+    },
+    "source_url": "https://www.openstreetmap.org/way/1204076603"
+  },
+  {
+    "type": "way",
+    "id": "1209037156",
+    "tags": {
+      "building": "grandstand",
+      "name": "主看台"
+    },
+    "source_url": "https://www.openstreetmap.org/way/1209037156"
+  },
+  {
+    "type": "way",
+    "id": "1234004780",
+    "tags": {
+      "building": "university",
+      "building:levels": "4",
+      "name": "修远教学楼一区",
+      "name:zh": "修远教学楼一区"
+    },
+    "source_url": "https://www.openstreetmap.org/way/1234004780"
+  },
+  {
+    "type": "way",
+    "id": "1234004781",
+    "tags": {
+      "building": "university",
+      "building:levels": "4",
+      "name": "修远教学楼三区",
+      "name:zh": "修远教学楼三区"
+    },
+    "source_url": "https://www.openstreetmap.org/way/1234004781"
+  },
+  {
+    "type": "way",
+    "id": "1234004782",
+    "tags": {
+      "building": "university",
+      "building:levels": "5",
+      "name": "修远教学楼二区",
+      "name:zh": "修远教学楼二区"
+    },
+    "source_url": "https://www.openstreetmap.org/way/1234004782"
+  },
+  {
+    "type": "way",
+    "id": "1547090977",
+    "tags": {
+      "amenity": "community_centre",
+      "building": "yes",
+      "community_centre": "community_hall",
+      "name": "鸿翔园学生社区"
+    },
+    "source_url": "https://www.openstreetmap.org/way/1547090977"
+  }
+]

@@ -2,6 +2,8 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { getJson } from '../api'
 import MapIcon from './MapIcon.vue'
+import AnnotationWorkbench from './AnnotationWorkbench.vue'
+const annotating=ref(false)
 const props = defineProps({ areas: { type: Array, default: () => [] }, selectedId: String })
 const emit = defineEmits(['observation'])
 const health=ref(null), file=ref(null), areaId=ref(''), bicycleCapacity=ref(100), personCapacity=ref(50)
@@ -66,6 +68,8 @@ onBeforeUnmount(()=>{stopped=true;clearTimeout(pollTimer);xhr?.abort()})
 </script>
 <template>
   <div class="vision-panel">
+    <AnnotationWorkbench v-if="annotating" @close="annotating=false" />
+    <button class="primary-button" @click="annotating=true">可停车范围标注 · 批量素材</button>
     <div class="panel-heading"><span class="heading-icon blue"><MapIcon name="people" /></span><div><h2>人车识别实验室</h2><p>上传测试 · 后端分析 · 数据呈现</p></div></div>
     <div class="model-status" :class="{ready:health?.ready}"><i></i><span>{{health?.ready?'识别引擎就绪':health?.message||'正在检查识别引擎…'}}</span><button class="icon-button" aria-label="重新检查识别引擎" @click="checkHealth"><MapIcon name="refresh" :size="16" /></button></div>
     <p v-if="health?.ready" class="muted">{{health.model}} · Qwen 云端视觉计数 · 准确率待核验</p>

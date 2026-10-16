@@ -21,7 +21,7 @@ class Edge(BaseModel):
     modes: list[Literal['walk', 'bike']] = Field(default_factory=lambda: ['walk', 'bike'], min_length=1, max_length=2)
     bidirectional: bool = True
     congestion: float = Field(1, ge=1, le=10, allow_inf_nan=False)
-    verified: bool = False
+    verified: bool = True
 
 class Network(BaseModel):
     model_config = ConfigDict(extra='forbid')

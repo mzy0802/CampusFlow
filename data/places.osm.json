@@ -1,0 +1,1023 @@
+{
+  "source": "OpenStreetMap contributors / ODbL",
+  "retrieved_date": "2026-10-16",
+  "items": [
+    {
+      "id": "osm_node_11083682399",
+      "name": "肯德基",
+      "longitude": 108.9031711,
+      "latitude": 34.3755925,
+      "source": "OpenStreetMap",
+      "location_type": "poi",
+      "verified": false
+    },
+    {
+      "id": "osm_node_11083682400",
+      "name": "瑞幸咖啡",
+      "longitude": 108.9031711,
+      "latitude": 34.3754123,
+      "source": "OpenStreetMap",
+      "location_type": "poi",
+      "verified": false
+    },
+    {
+      "id": "osm_node_11083682401",
+      "name": "7-Eleven",
+      "longitude": 108.9033579,
+      "latitude": 34.3757087,
+      "source": "OpenStreetMap",
+      "location_type": "poi",
+      "verified": false
+    },
+    {
+      "id": "osm_node_11134151643",
+      "name": "西区浴室",
+      "longitude": 108.8941912,
+      "latitude": 34.3714002,
+      "source": "OpenStreetMap",
+      "location_type": "poi",
+      "verified": false
+    },
+    {
+      "id": "osm_node_11134151644",
+      "name": "东区浴室",
+      "longitude": 108.9038523,
+      "latitude": 34.3758497,
+      "source": "OpenStreetMap",
+      "location_type": "poi",
+      "verified": false
+    },
+    {
+      "id": "osm_node_11134164705",
+      "name": "瑞幸咖啡",
+      "longitude": 108.9013248,
+      "latitude": 34.3704586,
+      "source": "OpenStreetMap",
+      "location_type": "poi",
+      "verified": false
+    },
+    {
+      "id": "osm_node_11143986080",
+      "name": "天猫超市",
+      "longitude": 108.9029032,
+      "latitude": 34.3761728,
+      "source": "OpenStreetMap",
+      "location_type": "poi",
+      "verified": false
+    },
+    {
+      "id": "osm_node_11144005087",
+      "name": "长大一九五一便利店",
+      "longitude": 108.9066165,
+      "latitude": 34.3749785,
+      "source": "OpenStreetMap",
+      "location_type": "poi",
+      "verified": false
+    },
+    {
+      "id": "osm_node_11144005278",
+      "name": "长大一九五一便利店",
+      "longitude": 108.9046712,
+      "latitude": 34.3747015,
+      "source": "OpenStreetMap",
+      "location_type": "poi",
+      "verified": false
+    },
+    {
+      "id": "osm_node_11144005342",
+      "name": "长大一九五一便利店",
+      "longitude": 108.8923967,
+      "latitude": 34.3700572,
+      "source": "OpenStreetMap",
+      "location_type": "poi",
+      "verified": false
+    },
+    {
+      "id": "osm_node_11166560620",
+      "name": "东门",
+      "longitude": 108.9087651,
+      "latitude": 34.3738972,
+      "source": "OpenStreetMap",
+      "location_type": "poi",
+      "verified": false
+    },
+    {
+      "id": "osm_node_11166560621",
+      "name": "北门",
+      "longitude": 108.9046937,
+      "latitude": 34.377075,
+      "source": "OpenStreetMap",
+      "location_type": "poi",
+      "verified": false
+    },
+    {
+      "id": "osm_node_11166560622",
+      "name": "长大一九五一便利店",
+      "longitude": 108.8931355,
+      "latitude": 34.3708604,
+      "source": "OpenStreetMap",
+      "location_type": "poi",
+      "verified": false
+    },
+    {
+      "id": "osm_node_11166560624",
+      "name": "瑞幸咖啡",
+      "longitude": 108.8877644,
+      "latitude": 34.3692706,
+      "source": "OpenStreetMap",
+      "location_type": "poi",
+      "verified": false
+    },
+    {
+      "id": "osm_node_11173204320",
+      "name": "泰熙家",
+      "longitude": 108.887523,
+      "latitude": 34.3691299,
+      "source": "OpenStreetMap",
+      "location_type": "poi",
+      "verified": false
+    },
+    {
+      "id": "osm_node_11173204321",
+      "name": "长大一九五一便利店",
+      "longitude": 108.8878957,
+      "latitude": 34.3692923,
+      "source": "OpenStreetMap",
+      "location_type": "poi",
+      "verified": false
+    },
+    {
+      "id": "osm_node_11173238525",
+      "name": "南门",
+      "longitude": 108.9011372,
+      "latitude": 34.3696999,
+      "source": "OpenStreetMap",
+      "location_type": "poi",
+      "verified": false
+    },
+    {
+      "id": "osm_node_11173238526",
+      "name": "南门",
+      "longitude": 108.9006143,
+      "latitude": 34.3695509,
+      "source": "OpenStreetMap",
+      "location_type": "poi",
+      "verified": false
+    },
+    {
+      "id": "osm_node_11211275007",
+      "name": "卡务中心",
+      "longitude": 108.9036427,
+      "latitude": 34.373822,
+      "source": "OpenStreetMap",
+      "location_type": "poi",
+      "verified": false
+    },
+    {
+      "id": "osm_node_11211275009",
+      "name": "明远创客咖啡",
+      "longitude": 108.8989682,
+      "latitude": 34.3707935,
+      "source": "OpenStreetMap",
+      "location_type": "poi",
+      "verified": false
+    },
+    {
+      "id": "osm_node_11286130657",
+      "name": "北门",
+      "longitude": 108.9047904,
+      "latitude": 34.3770959,
+      "source": "OpenStreetMap",
+      "location_type": "poi",
+      "verified": false
+    },
+    {
+      "id": "osm_node_11402910941",
+      "name": "东区菜鸟驿站",
+      "longitude": 108.9046682,
+      "latitude": 34.3750332,
+      "source": "OpenStreetMap",
+      "location_type": "poi",
+      "verified": false
+    },
+    {
+      "id": "osm_node_11402910942",
+      "name": "东区顺丰速运",
+      "longitude": 108.9048126,
+      "latitude": 34.3750077,
+      "source": "OpenStreetMap",
+      "location_type": "poi",
+      "verified": false
+    },
+    {
+      "id": "osm_node_11402910943",
+      "name": "东区京东物流",
+      "longitude": 108.9047876,
+      "latitude": 34.3750791,
+      "source": "OpenStreetMap",
+      "location_type": "poi",
+      "verified": false
+    },
+    {
+      "id": "osm_node_11402910944",
+      "name": "西区菜鸟驿站",
+      "longitude": 108.8924255,
+      "latitude": 34.3699361,
+      "source": "OpenStreetMap",
+      "location_type": "poi",
+      "verified": false
+    },
+    {
+      "id": "osm_node_11402910945",
+      "name": "西区京东物流",
+      "longitude": 108.8923939,
+      "latitude": 34.3699636,
+      "source": "OpenStreetMap",
+      "location_type": "poi",
+      "verified": false
+    },
+    {
+      "id": "osm_node_11402910946",
+      "name": "西区顺丰速运",
+      "longitude": 108.8923284,
+      "latitude": 34.3699465,
+      "source": "OpenStreetMap",
+      "location_type": "poi",
+      "verified": false
+    },
+    {
+      "id": "osm_node_11402910948",
+      "name": "长大驿站",
+      "longitude": 108.8913073,
+      "latitude": 34.3722275,
+      "source": "OpenStreetMap",
+      "location_type": "poi",
+      "verified": false
+    },
+    {
+      "id": "osm_node_14070630853",
+      "name": "西南门",
+      "longitude": 108.889332,
+      "latitude": 34.3665602,
+      "source": "OpenStreetMap",
+      "location_type": "poi",
+      "verified": false
+    },
+    {
+      "id": "osm_way_255692666",
+      "name": "实验楼",
+      "longitude": 108.90749665000001,
+      "latitude": 34.3721954,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_255695907",
+      "name": "现代工程训练中心",
+      "longitude": 108.9059954,
+      "latitude": 34.37228125,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_255695908",
+      "name": "大学生活动中心",
+      "longitude": 108.90567285,
+      "latitude": 34.37386445,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_255695909",
+      "name": "树蕙园餐厅",
+      "longitude": 108.90487285,
+      "latitude": 34.37391165,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_255695910",
+      "name": "滋兰苑餐厅",
+      "longitude": 108.89448435,
+      "latitude": 34.37097345,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_255696165",
+      "name": "明远教学楼D栋",
+      "longitude": 108.899648,
+      "latitude": 34.3707527,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_255696166",
+      "name": "明远教学楼A栋",
+      "longitude": 108.8982716,
+      "latitude": 34.370782250000005,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_255697337",
+      "name": "23号宿舍楼",
+      "longitude": 108.90451005,
+      "latitude": 34.37643785,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_255891571",
+      "name": "鸿翔园2号公寓",
+      "longitude": 108.89315505,
+      "latitude": 34.37056715,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_255891572",
+      "name": "鸿翔园1号公寓",
+      "longitude": 108.89334790000001,
+      "latitude": 34.370125099999996,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_255892120",
+      "name": "明远教学楼E栋",
+      "longitude": 108.899891,
+      "latitude": 34.36998385,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_255892814",
+      "name": "交通馆",
+      "longitude": 108.90754575,
+      "latitude": 34.37308935,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_393548943",
+      "name": "朝晖园16号公寓",
+      "longitude": 108.90351390000001,
+      "latitude": 34.37644735000001,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_393548944",
+      "name": "朝晖园22号公寓",
+      "longitude": 108.903617,
+      "latitude": 34.3761061,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_393548968",
+      "name": "景行教师公寓",
+      "longitude": 108.90882735,
+      "latitude": 34.37192795,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_393548969",
+      "name": "长安大学医院",
+      "longitude": 108.90766629999999,
+      "latitude": 34.371600099999995,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_393548970",
+      "name": "建筑馆",
+      "longitude": 108.90740865000001,
+      "latitude": 34.37259915,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_393548971",
+      "name": "水力实验室",
+      "longitude": 108.90632295,
+      "latitude": 34.37122935,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_438534293",
+      "name": "鸿翔园3号公寓",
+      "longitude": 108.89297255,
+      "latitude": 34.37100685,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_438534295",
+      "name": "鸿翔园4号公寓",
+      "longitude": 108.8959863,
+      "latitude": 34.370959049999996,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_438534297",
+      "name": "鸿翔园6号公寓",
+      "longitude": 108.89561265,
+      "latitude": 34.3718387,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_438534300",
+      "name": "鸿翔园5号公寓",
+      "longitude": 108.8958044,
+      "latitude": 34.3713948,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_438548219",
+      "name": "朝晖园7号公寓",
+      "longitude": 108.9038079,
+      "latitude": 34.3728838,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_438548220",
+      "name": "朝晖园8号公寓",
+      "longitude": 108.90361225000001,
+      "latitude": 34.37334625,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_438548221",
+      "name": "朝晖园9号公寓",
+      "longitude": 108.9034177,
+      "latitude": 34.373804449999994,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_438548222",
+      "name": "朝晖园10号公寓",
+      "longitude": 108.90319145000001,
+      "latitude": 34.3742298,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_438548223",
+      "name": "朝晖园11号公寓",
+      "longitude": 108.9048741,
+      "latitude": 34.374539850000005,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_438548224",
+      "name": "朝晖园12号公寓",
+      "longitude": 108.90464835,
+      "latitude": 34.37501415,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_438548225",
+      "name": "朝晖园13号公寓",
+      "longitude": 108.9044609,
+      "latitude": 34.375477149999995,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_438712793",
+      "name": "朝晖园15号公寓",
+      "longitude": 108.9067451,
+      "latitude": 34.37425805,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_438712794",
+      "name": "朝晖园14号公寓",
+      "longitude": 108.90659155,
+      "latitude": 34.3746084,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_438712796",
+      "name": "实验楼",
+      "longitude": 108.90854165,
+      "latitude": 34.3724984,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_440689409",
+      "name": "明远教学楼C栋",
+      "longitude": 108.89866839999999,
+      "latitude": 34.36957905,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_440689410",
+      "name": "明远教学楼B栋",
+      "longitude": 108.89801545,
+      "latitude": 34.37005585,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_831071154",
+      "name": "教师公寓5#",
+      "longitude": 108.88741855,
+      "latitude": 34.3713823,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_831071156",
+      "name": "教师公寓4#",
+      "longitude": 108.88980875,
+      "latitude": 34.3726654,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_831071157",
+      "name": "教师公寓7#",
+      "longitude": 108.89008475,
+      "latitude": 34.3720882,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_831071159",
+      "name": "教师公寓13#",
+      "longitude": 108.89029604999999,
+      "latitude": 34.37075175,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_831071161",
+      "name": "教师公寓11#",
+      "longitude": 108.88820204999999,
+      "latitude": 34.3701856,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_831071162",
+      "name": "教师公寓12#",
+      "longitude": 108.88905905,
+      "latitude": 34.37039955,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_831071163",
+      "name": "教师公寓8#",
+      "longitude": 108.88736985,
+      "latitude": 34.370632400000005,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_831071164",
+      "name": "教师公寓6#",
+      "longitude": 108.88893615,
+      "latitude": 34.371263400000004,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_831071165",
+      "name": "教师公寓2#",
+      "longitude": 108.88828889999999,
+      "latitude": 34.372232350000004,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_831071166",
+      "name": "教师公寓3#",
+      "longitude": 108.8890835,
+      "latitude": 34.37242745,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_831071168",
+      "name": "鸿渐园20号公寓",
+      "longitude": 108.8888239,
+      "latitude": 34.3692335,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_831071171",
+      "name": "鸿渐园18号公寓",
+      "longitude": 108.88873459999999,
+      "latitude": 34.36975795,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_831071186",
+      "name": "教师公寓1#",
+      "longitude": 108.88750504999999,
+      "latitude": 34.3721483,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_831071189",
+      "name": "教师公寓9#",
+      "longitude": 108.89024864999999,
+      "latitude": 34.37143675,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_831071191",
+      "name": "教师公寓10#",
+      "longitude": 108.88733465,
+      "latitude": 34.36991315,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_831071198",
+      "name": "采芹苑餐厅",
+      "longitude": 108.89035145,
+      "latitude": 34.370121,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_831071200",
+      "name": "鸿渐园19号公寓",
+      "longitude": 108.88967575,
+      "latitude": 34.3694604,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_831071201",
+      "name": "鸿渐园17号公寓",
+      "longitude": 108.88941919999999,
+      "latitude": 34.36996355,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_831073210",
+      "name": "鸿远教学楼一区",
+      "longitude": 108.89516055,
+      "latitude": 34.3693673,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_831073211",
+      "name": "鸿远教学楼二区",
+      "longitude": 108.895437,
+      "latitude": 34.368707799999996,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_831093251",
+      "name": "西区后勤管理中心",
+      "longitude": 108.89160670000001,
+      "latitude": 34.3711759,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_1091739067",
+      "name": "明德园智通大厦",
+      "longitude": 108.8965922,
+      "latitude": 34.37314755,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_1091739068",
+      "name": "明德园创新大厦",
+      "longitude": 108.89748184999999,
+      "latitude": 34.373509999999996,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_1091739069",
+      "name": "明德园扶轮大厦",
+      "longitude": 108.89838235,
+      "latitude": 34.3734513,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_1091739070",
+      "name": "逸夫图书馆",
+      "longitude": 108.89955194999999,
+      "latitude": 34.372651149999996,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_1110912807",
+      "name": "风洞实验室",
+      "longitude": 108.89853790000001,
+      "latitude": 34.373877449999995,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_1110912809",
+      "name": "安保人员公寓",
+      "longitude": 108.8997885,
+      "latitude": 34.373796549999994,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_1194022842",
+      "name": "天行健餐厅",
+      "longitude": 108.90238425,
+      "latitude": 34.376398300000005,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_1194022843",
+      "name": "师生服务大厅",
+      "longitude": 108.9010543,
+      "latitude": 34.37113765,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_1194022844",
+      "name": "北辰楼",
+      "longitude": 108.9013908,
+      "latitude": 34.370600550000006,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_1194022845",
+      "name": "北辰楼会议中心",
+      "longitude": 108.90184554999999,
+      "latitude": 34.37011,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_1194022846",
+      "name": "乾健体育馆",
+      "longitude": 108.88943725,
+      "latitude": 34.3673165,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_1194050476",
+      "name": "图书馆教学楼",
+      "longitude": 108.9006083,
+      "latitude": 34.3724435,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_1194050479",
+      "name": "攀岩场地",
+      "longitude": 108.9079557,
+      "latitude": 34.3741605,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_1200833711",
+      "name": "公路学院",
+      "longitude": 108.88922605,
+      "latitude": 34.36856645,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_1200833712",
+      "name": "致远大厦",
+      "longitude": 108.88789535000001,
+      "latitude": 34.3666592,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_1200833729",
+      "name": "水与环境原位试验场",
+      "longitude": 108.90421755,
+      "latitude": 34.370626349999995,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_1202005685",
+      "name": "体育部",
+      "longitude": 108.8938297,
+      "latitude": 34.36775155,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_1202005693",
+      "name": "朝晖园学生社区示范性园区",
+      "longitude": 108.90323484999999,
+      "latitude": 34.3739338,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_1202682512",
+      "name": "鸿渐园21号公寓A座",
+      "longitude": 108.8876113,
+      "latitude": 34.3689011,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_1202682513",
+      "name": "鸿渐园21号公寓B座",
+      "longitude": 108.8875084,
+      "latitude": 34.369413949999995,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_1202682514",
+      "name": "弘毅园道路实验中心",
+      "longitude": 108.8878013,
+      "latitude": 34.36824125,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_1204076600",
+      "name": "弘毅园桥结实验中心",
+      "longitude": 108.8876058,
+      "latitude": 34.367255,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_1204076601",
+      "name": "弘毅园岩隧实验中心",
+      "longitude": 108.88850105,
+      "latitude": 34.36746975,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_1204076603",
+      "name": "配电间",
+      "longitude": 108.88835184999999,
+      "latitude": 34.36971065,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_1209037156",
+      "name": "主看台",
+      "longitude": 108.9057911,
+      "latitude": 34.375973599999995,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_1234004780",
+      "name": "修远教学楼一区",
+      "longitude": 108.8969961,
+      "latitude": 34.37208245,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_1234004781",
+      "name": "修远教学楼三区",
+      "longitude": 108.8973341,
+      "latitude": 34.3714149,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_1234004782",
+      "name": "修远教学楼二区",
+      "longitude": 108.89722764999999,
+      "latitude": 34.371780400000006,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    },
+    {
+      "id": "osm_way_1547090977",
+      "name": "鸿翔园学生社区",
+      "longitude": 108.892836,
+      "latitude": 34.37021885,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false
+    }
+  ]
+}

@@ -24,3 +24,4 @@ MANIFEST-SHA256.json
 
 *.sqlite3
 *.sqlite3-*
+backups/

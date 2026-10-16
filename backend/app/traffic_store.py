@@ -52,12 +52,26 @@ class Store:
         """Initialize untouched campus data only; never overwrite user edits."""
         if not path or not Path(path).is_file(): return False
         graph = Network.model_validate_json(Path(path).read_text(encoding='utf-8'))
-        if graph.dataset != 'campus' or any(e.verified for e in graph.edges):
-            raise ValueError('公开道路初始数据必须属于校园且全部待核验')
+        if graph.dataset != 'campus':
+            raise ValueError('公开道路初始数据必须属于校园')
         current = self.get('campus')
         if current['revision'] != 0 or current['nodes'] or current['edges']: return False
         self.save(graph.model_copy(update={'revision': current['revision']}))
         return True
+    def accept_current_roads(self):
+        """One-time owner-requested acceptance, retaining the pre-change revision."""
+        with self.connect() as db:
+            db.execute('CREATE TABLE IF NOT EXISTS settings(key TEXT PRIMARY KEY,value TEXT)')
+            db.execute('BEGIN IMMEDIATE')
+            if db.execute("SELECT 1 FROM settings WHERE key='owner_roads_20261016'").fetchone(): return
+            row=db.execute("SELECT * FROM networks WHERE dataset='campus'").fetchone()
+            graph=json.loads(row['payload'])
+            if any(not e['verified'] for e in graph['edges']):
+                db.execute('INSERT OR IGNORE INTO network_history VALUES(?,?,?,?)',('campus',row['revision'],row['payload'],row['updated_at']))
+                for e in graph['edges']: e['verified']=True
+                graph['revision']=row['revision']+1
+                db.execute("UPDATE networks SET revision=?,payload=?,updated_at=? WHERE dataset='campus'",(graph['revision'],json.dumps(graph,ensure_ascii=False),now()))
+            db.execute("INSERT INTO settings VALUES('owner_roads_20261016','accepted by project owner; not an independent field survey')")
     def save(self,graph):
         with self.connect() as db:
             db.execute('BEGIN IMMEDIATE')

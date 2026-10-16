@@ -6,6 +6,7 @@ const emit=defineEmits(['close'])
 const dataset=ref('campus'), graph=ref({nodes:[],edges:[],revision:0,dataset:'campus'}), saved=ref(''), selected=ref(''), edgeId=ref(''), error=ref(''), message=ref(''), busy=ref(false), tool=ref('select'), mapEl=ref(null)
 const origin=ref(''),destination=ref(''),preference=ref('fastest'),result=ref(null),activePlan=ref(null),from=ref(''),to=ref(''),capacityArea=ref(''),capacityValue=ref(100)
 let map,layer,routeLayer,tiles,observer,parkingLayer
+let roadMetadata=new Map()
 const node=computed(()=>graph.value.nodes.find(n=>n.id===selected.value))
 const edge=computed(()=>graph.value.edges.find(e=>e.id===edgeId.value))
 const dirty=computed(()=>JSON.stringify(graph.value)!==saved.value)
@@ -26,14 +27,14 @@ function fit(){
 async function load(value=dataset.value){
  if(dirty.value&&saved.value&&!confirm('有未保存修改，切换后将丢弃。需要保留请先取消并导出。'))return
  busy.value=true;error.value=''
- try{const data=await api('/network/'+value);dataset.value=value;graph.value=data;saved.value=JSON.stringify(data);selected.value='';edgeId.value='';from.value='';to.value='';origin.value=data.nodes[0]?.id||'';destination.value=data.nodes.find(n=>n.kind==='entrance')?.id||'';invalidate();await nextTick();paint();fit();message.value=value==='example'?'独立虚构示例：不是渭水校区道路。':'公开道路已标出（如有）；虚线待核验，停车入口需关联。'}catch(e){error.value=e.message}finally{busy.value=false}
+ try{const data=await api('/network/'+value);if(value==='campus'){const roads=await api('/navigation/map?include_service=true');roadMetadata=new Map(roads.features.map(f=>[f.properties.id,f.properties]))}dataset.value=value;graph.value=data;saved.value=JSON.stringify(data);selected.value='';edgeId.value='';from.value='';to.value='';origin.value=data.nodes[0]?.id||'';destination.value=data.nodes.find(n=>n.kind==='entrance')?.id||'';invalidate();await nextTick();paint();fit();message.value=value==='example'?'独立虚构示例：不是渭水校区道路。':'道路按负责人要求纳入规划；停车入口需关联。'}catch(e){error.value=e.message}finally{busy.value=false}
 }
 async function save(){busy.value=true;error.value='';try{const data=await api('/network/'+dataset.value,'PUT',graph.value);graph.value=data;saved.value=JSON.stringify(data);message.value='已保存到数据库 · 版本 '+data.revision;invalidate()}catch(e){error.value=e.message}finally{busy.value=false}}
 function addNode(latlng){
  const id=uid('n');graph.value.nodes.push({id,name:'新节点 '+(graph.value.nodes.length+1),longitude:Number(latlng.lng.toFixed(7)),latitude:Number(latlng.lat.toFixed(7)),kind:'junction',parking_id:null,capacity:100,available:50});selected.value=id;edgeId.value=''
 }
 function deleteNode(){if(!node.value)return;const id=node.value.id;graph.value.nodes=graph.value.nodes.filter(n=>n.id!==id);graph.value.edges=graph.value.edges.filter(e=>e.source!==id&&e.target!==id);if(origin.value===id)origin.value='';if(destination.value===id)destination.value='';if(from.value===id)from.value='';if(to.value===id)to.value='';selected.value=''}
-function addEdge(){if(!from.value||!to.value||from.value===to.value){error.value='请选择两个不同节点';return}const id=uid('e');graph.value.edges.push({id,source:from.value,target:to.value,modes:['walk','bike'],bidirectional:true,congestion:1,verified:false});edgeId.value=id;selected.value='';error.value=''}
+function addEdge(){if(!from.value||!to.value||from.value===to.value){error.value='请选择两个不同节点';return}const id=uid('e');graph.value.edges.push({id,source:from.value,target:to.value,modes:['walk','bike'],bidirectional:true,congestion:1,verified:true});edgeId.value=id;selected.value='';error.value=''}
 function paint(){
  if(!map)return
  layer.clearLayers()
@@ -41,9 +42,12 @@ function paint(){
  if(dataset.value==='campus'){if(!map.hasLayer(tiles))tiles.addTo(map)}else if(map.hasLayer(tiles))map.removeLayer(tiles)
  const validNodes=graph.value.nodes.filter(n=>Number.isFinite(n.latitude)&&Number.isFinite(n.longitude)&&Math.abs(n.latitude)<=85&&Math.abs(n.longitude)<=180)
  const nodes=new Map(validNodes.map(n=>[n.id,n]))
+ const named=new Set()
  for(const e of graph.value.edges){const a=nodes.get(e.source),b=nodes.get(e.target);if(!a||!b)continue
- const line=L.polyline([[a.latitude,a.longitude],[b.latitude,b.longitude]],{color:e.id===edgeId.value?'#ef6c00':e.verified?'#64748b':'#a1a1aa',weight:6,dashArray:e.verified?null:'7 7'}).addTo(layer)
- const label=document.createElement('span');label.textContent=`${a.name} → ${b.name} · ${e.bidirectional?'双向':'单向'} · ${e.verified?'已核验':'未核验'}`;line.bindTooltip(label)
+ const meta=roadMetadata.get(e.id);if(dataset.value==='campus'&&meta?.highway==='service')continue
+ const roadColor=meta?.highway==='cycleway'?'#22a447':['footway','pedestrian','steps'].includes(meta?.highway)?'#66CCFF':'#f6c344'
+ const line=L.polyline([[a.latitude,a.longitude],[b.latitude,b.longitude]],{color:e.id===edgeId.value?'#ef6c00':roadColor,weight:5,dashArray:e.verified?null:'7 7'}).addTo(layer)
+ const label=document.createElement('span');label.textContent=`${a.name} → ${b.name} · ${e.bidirectional?'双向':'单向'} · ${e.verified?'已核验':'未核验'}`;if(meta?.name){label.textContent=meta.name;line.bindTooltip(label,{permanent:!named.has(meta.name),direction:'center'});named.add(meta.name)}else line.bindTooltip(label)
  line.on('click',ev=>{L.DomEvent.stopPropagation(ev);edgeId.value=e.id;selected.value='';paint()})}
  for(const n of validNodes){
  const circle=L.circleMarker([n.latitude,n.longitude],{radius:n.id===selected.value?10:7,color:n.kind==='parking'?'#188038':n.kind==='entrance'?'#9333ea':'#2563eb',fillOpacity:1,weight:3}).addTo(layer)
@@ -70,7 +74,7 @@ onBeforeUnmount(()=>{observer?.disconnect();map?.remove()})
   <div class="workbody"><aside>
    <div class="scene"><button :class="{chosen:dataset==='campus'}" :disabled="busy" @click="load('campus')">校园数据</button><button :class="{chosen:dataset==='example'}" :disabled="busy" @click="load('example')">独立示例</button></div>
    <p v-if="error" role="alert" class="err">{{error}}</p><p v-if="message" role="status" class="hint">{{message}}</p>
-   <p v-if="dataset==='campus'" class="hint">道路来源：<a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap contributors · ODbL</a>。公开数据可能缺失；虚线不代表已核验可通行。节点过多时悬停显示名称。</p>
+   <p v-if="dataset==='campus'" class="hint">道路来源：<a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap contributors · ODbL</a>。公开数据可能缺失；已按负责人要求纳入规划，非独立实地核验。节点过多时悬停显示名称。</p>
    <h2>路线与停车推荐</h2>
    <p class="hint">先选择已录入节点作为起终点。蓝色为骑行，绿色虚线为步行；预计时间和空位均为演示数据。</p>
    <label>起点<select v-model="origin"><option value="">请选择</option><option v-for="n in graph.nodes" :key="n.id" :value="n.id">{{n.name}}</option></select></label>
