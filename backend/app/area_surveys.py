@@ -21,6 +21,8 @@ class Survey(BaseModel):
     views:list[View]=Field(min_length=1,max_length=6)
     @model_validator(mode='after')
     def unique(self):
+        self.area_id=self.area_id.strip();self.capture_group=self.capture_group.strip()
+        if not self.area_id or not self.capture_group:raise ValueError('请选择停车区并填写采集批次')
         if len({(v.media_id,v.time_seconds) for v in self.views})!=len(self.views):raise ValueError('不能重复选择同一帧')
         return self
 
@@ -71,10 +73,11 @@ def submit(body:Survey,request:Request):
     inputs=[]
     for view in body.views:
         _,root,row=record(request,view.media_id);meta=json.loads(row['metadata']);payload=json.loads(row['payload'])
-        if not isinstance(payload,dict) or payload.get('area_id')!=body.area_id or payload.get('capture_group')!=body.capture_group:
+        if not isinstance(payload,dict) or (payload.get('area_id') or '').strip()!=body.area_id or payload.get('capture_group','').strip()!=body.capture_group:
             raise HTTPException(422,'所有视角必须保存为同一个地图停车区和同一采集批次')
         # Exact saved frame only: a neighbouring frame must not inherit polygons.
-        matching=[t for t in payload.get('reviewed_frames',[]) if abs(t-view.time_seconds)<0.00001]
+        frames=payload.get('reviewed_frames',[])+[p['time_seconds'] for p in payload.get('polygons',[])]
+        matching=[t for t in frames if abs(t-view.time_seconds)<0.00001]
         if not matching:raise HTTPException(422,'请先保存所选帧的可停车范围')
         if view.time_seconds>meta['duration_seconds']:raise HTTPException(422,'视频帧超出时长')
         polygons=[p['points'] for p in payload['polygons'] if abs(p['time_seconds']-view.time_seconds)<0.00001]

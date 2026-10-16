@@ -68,6 +68,27 @@ def test_surveys_reject_unannotated_frame_and_foreign_area():
         assert c.post('/api/vision/surveys',json={'area_id':area,'capture_group':'same-instant','views':[{'media_id':mid,'time_seconds':.01}]}).status_code==422
         assert c.put('/api/annotations/media/'+mid,json={'revision':1,'area_id':'missing','polygons':[]}).status_code==422
 
+def test_saved_views_trim_batches_explain_empty_results_and_preserve_frames():
+    with TestClient(app) as c:
+        area=c.get('/api/parking/areas').json()['features'][0]['properties']['id']
+        mid=bind(c,area,group='  morning  ')
+        saved=c.get('/api/annotations/media/'+mid).json()
+        assert saved['capture_group']=='morning'
+        found=c.get('/api/annotations/views',params={'area_id':area,'capture_group':' morning '}).json()
+        assert len(found['items'])==1 and found['matched_media_count']==1
+        empty=c.get('/api/annotations/views',params={'area_id':area,'capture_group':'afternoon'}).json()
+        assert empty['items']==[] and empty['area_media_count']==1 and empty['available_groups']==['morning']
+        # Mirrors the UI's save-before-read: changing metadata never adds an empty frame.
+        response=c.put('/api/annotations/media/'+mid,json={**saved,'capture_group':'afternoon'})
+        assert response.status_code==200 and response.json()['reviewed_frames']==[0]
+        assert response.json()['polygons']==saved['polygons']
+        assert len(c.get('/api/annotations/views',params={'area_id':area,'capture_group':'afternoon'}).json()['items'])==1
+        new=c.post('/api/annotations/media?filename=unannotated.png',content=png()).json()['id']
+        c.put('/api/annotations/media/'+new,json={'revision':0,'area_id':area,'capture_group':'empty','polygons':[],'reviewed_frames':[]})
+        empty=c.get('/api/annotations/views',params={'area_id':area,'capture_group':'empty'}).json()
+        assert empty['matched_media_count']==1 and empty['unannotated_media_count']==1 and empty['items']==[]
+        assert c.get('/api/annotations/views',params={'area_id':area,'capture_group':'  '}).status_code==422
+
 def test_multiview_prompt_and_validation(monkeypatch):
     engine=VisionEngine();captured=[]
     def completion(content):

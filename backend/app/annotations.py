@@ -48,6 +48,9 @@ class AnnotationSet(BaseModel):
     polygons: list[Polygon] = Field(default_factory=list, max_length=1000)
     @model_validator(mode='after')
     def unique(self):
+        self.area_id=self.area_id.strip() or None if self.area_id else None
+        self.capture_group=self.capture_group.strip()
+        self.view_name=self.view_name.strip()
         if any(not math.isfinite(t) or t<0 for t in self.reviewed_frames): raise ValueError('帧时间不合法')
         if len({p.id for p in self.polygons}) != len(self.polygons): raise ValueError('标注 ID 重复')
         return self
@@ -74,15 +77,27 @@ def listing(request:Request):
     return {'items':[{**json.loads(r['metadata']),'revision':r['revision']} for r in rows]}
 
 @router.get('/views')
-def views(request:Request,area_id:str=Query(max_length=80),capture_group:str=Query(max_length=100)):
+def views(request:Request,area_id:str=Query(min_length=1,max_length=80),capture_group:str=Query(min_length=1,max_length=100)):
     store,_=storage(request)
     with store.connect() as db: rows=db.execute('SELECT id,metadata,payload,revision FROM annotation_media ORDER BY rowid DESC').fetchall()
-    items=[]
+    area_id=area_id.strip();capture_group=capture_group.strip()
+    if not area_id or not capture_group:raise HTTPException(422,'请选择停车区并填写采集批次')
+    items=[];area_media_count=matched_media_count=unannotated_media_count=ungrouped_media_count=0;groups=set()
     for row in rows:
         p=json.loads(row['payload']);m=json.loads(row['metadata'])
-        if not isinstance(p,dict) or p.get('area_id')!=area_id or p.get('capture_group')!=capture_group:continue
-        for t in p.get('reviewed_frames',[]):items.append({'media_id':row['id'],'filename':m['filename'],'time_seconds':t,'view_name':p.get('view_name',''),'revision':row['revision']})
-    return {'items':items}
+        if not isinstance(p,dict) or (p.get('area_id') or '').strip()!=area_id:continue
+        area_media_count+=1
+        group=p.get('capture_group','').strip()
+        if group:groups.add(group)
+        else:ungrouped_media_count+=1
+        if group!=capture_group:continue
+        matched_media_count+=1
+        # Retain compatibility with early polygon-only frame records.
+        frames=sorted(set(p.get('reviewed_frames',[])+[v['time_seconds'] for v in p.get('polygons',[])]))
+        if not frames:unannotated_media_count+=1
+        for t in frames:items.append({'media_id':row['id'],'filename':m['filename'],'time_seconds':t,'view_name':p.get('view_name',''),'revision':row['revision']})
+    return {'items':items,'area_media_count':area_media_count,'matched_media_count':matched_media_count,
+            'unannotated_media_count':unannotated_media_count,'ungrouped_media_count':ungrouped_media_count,'available_groups':sorted(groups)}
 
 @router.post('/media',status_code=201)
 async def upload(request:Request,filename:str=Query(min_length=1,max_length=200)):
