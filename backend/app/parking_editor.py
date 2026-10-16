@@ -16,6 +16,27 @@ def ensure(store,default):
         row=db.execute('SELECT * FROM parking_geometry WHERE id=1').fetchone()
     return {'revision':row['revision'],'collection':json.loads(row['payload'])}
 
+def merge_import_batch(store,default,batch_id):
+    """Append a supplied batch once; never replace edits or restore later deletions."""
+    current=ensure(store,default)
+    incoming=[f for f in default['features'] if f['properties'].get('import_batch')==batch_id]
+    if not incoming:return current
+    with store.connect() as db:
+        db.execute('CREATE TABLE IF NOT EXISTS settings(key TEXT PRIMARY KEY,value TEXT)')
+        db.execute('BEGIN IMMEDIATE')
+        row=db.execute('SELECT * FROM parking_geometry WHERE id=1').fetchone()
+        if db.execute('SELECT 1 FROM settings WHERE key=?',('parking_import:'+batch_id,)).fetchone():
+            return {'revision':row['revision'],'collection':json.loads(row['payload'])}
+        collection=json.loads(row['payload']);ids={f['properties']['id'] for f in collection['features']}
+        added=[f for f in incoming if f['properties']['id'] not in ids]
+        revision=row['revision']
+        if added:
+            db.execute('INSERT INTO parking_geometry_history VALUES(?,?,?)',(revision,row['payload'],now()))
+            collection['features'].extend(added);revision+=1
+            db.execute('UPDATE parking_geometry SET revision=?,payload=? WHERE id=1',(revision,json.dumps(collection,ensure_ascii=False)))
+        db.execute('INSERT INTO settings VALUES(?,?)',('parking_import:'+batch_id,json.dumps({'added_ids':[f['properties']['id'] for f in added],'at':now()})))
+    return {'revision':revision,'collection':collection}
+
 def validate_collection(collection,existing=None):
     if collection.get('type')!='FeatureCollection' or not isinstance(collection.get('features'),list) or len(collection['features'])>500:raise ValueError('需要最多500个区域的GeoJSON FeatureCollection')
     ids=set();features=[]
@@ -37,7 +58,9 @@ def validate_collection(collection,existing=None):
         except ValueError:
             if not unchanged:raise ValueError(f'{name}：区域边界自相交或有重复顶点，请重画')
             validation='legacy_boundary_needs_review'
-        features.append({'type':'Feature','properties':{'id':pid,'name':name.strip(),'capacity':capacity,'source':'manual_map_annotation','geometry_validation':validation},'geometry':geo})
+        old_props=next((old['properties'] for old in (existing or {}).get('features',[]) if old['properties']['id']==pid),{})
+        metadata={k:old_props[k] for k in ('import_batch','source_file','capacity_source','name_source') if k in old_props}
+        features.append({'type':'Feature','properties':{'id':pid,'name':name.strip(),'capacity':capacity,'source':'manual_map_annotation','geometry_validation':validation,**metadata},'geometry':geo})
     return {'type':'FeatureCollection','is_example':False,'features':features,'source':'manual_map_annotation'}
 
 class SaveRequest(BaseModel):

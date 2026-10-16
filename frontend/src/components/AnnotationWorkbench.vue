@@ -77,10 +77,10 @@ onBeforeUnmount(()=>{stopped=true;viewsRequest++;clearTimeout(surveyTimer);windo
    <p v-if="message" role="status">{{message}}</p><p v-if="error" role="alert" class="error">{{error}}</p>
    <template v-if="current">
     <h3>关联地图停车区</h3><label>本画面归属<select v-model="areaId" :disabled="busy||viewsLoading"><option value="">暂不关联</option><option v-for="a in areas" :key="a.id" :value="a.id">{{a.name}} · 容量 {{a.capacity}}</option></select></label>
-    <label>视角名称<input v-model="viewName" maxlength="100" placeholder="如：东侧俯拍" :disabled="busy||viewsLoading"></label><label>同一时刻采集批次<input v-model="captureGroup" maxlength="100" placeholder="如：10月16日-修远楼-14点" :disabled="busy||viewsLoading"></label>
+    <label>视角名称<input v-model="viewName" maxlength="100" placeholder="如：东侧俯拍" :disabled="busy||viewsLoading"></label><label>同一时刻采集批次<input v-model="captureGroup" maxlength="100" placeholder="如：10月16日-停车区A-14点" :disabled="busy||viewsLoading"></label>
     <p>本帧所有可停区域关联到所选地图停车区；画面周边违停也归属此区，并已包含在总数中。同一区域同一时段的不同角度填写相同批次，跨时段另建批次。画面应只覆盖此区及其负责的周边。</p>
     <h3>画区域</h3><label>标注类型<select v-model="label"><option v-for="(v,k) in names" :value="k" :key="k">{{v}}</option></select></label>
-    <label>备注<input v-model="note" maxlength="500" placeholder="如：修远楼西侧白线内"></label>
+    <label>备注<input v-model="note" maxlength="500" placeholder="如：西侧白线内"></label>
     <p>在画面上依次点击边界顶点，再点“完成区域”。只画可停车范围。确认本帧后，所有绿色区域以外均为不可停车；未标注帧保持未知。</p>
     <div class="actions"><button :disabled="draft.length<3" @click="finish">完成区域（{{draft.length}}点）</button><button :disabled="!draft.length" @click="draft.pop()">撤销顶点</button><button @click="draft=[]">清空草稿</button></div>
     <p v-if="current.kind==='video'">当前 {{time.toFixed(2)}} 秒。先暂停再画区域；标注只对应当前帧，不会自动沿用到移动镜头或其他时刻。</p>

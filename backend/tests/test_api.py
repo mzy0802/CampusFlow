@@ -13,7 +13,7 @@ def test_parking_contract():
         areas = client.get('/api/parking/areas').json()
         status = client.get('/api/parking/status').json()
         assert areas['is_example'] is False
-        assert len(areas['features']) == 7
+        assert len(areas['features']) == len(load_parking()['features'])
         assert status['mode'] == 'simulated'
         assert {f['properties']['id'] for f in areas['features']} == {s['id'] for s in status['items']}
         for item in status['items']:

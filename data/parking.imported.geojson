@@ -1,7 +1,7 @@
 {
   "type": "FeatureCollection",
   "is_example": false,
-  "description": "用户上传区域；由原始 LineString 闭合生成 Polygon，容量由 capility 转为 capacity。边界与容量尚未独立核验；停车状态仍为模拟。",
+  "description": "用户提供的校园停车区；包含修远与明远区域。容量来自用户文件，状态来源另行标记。",
   "features": [
     {
       "type": "Feature",
@@ -325,6 +325,729 @@
             [
               108.897732,
               34.37182
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "WM1001",
+        "name": "明远1西侧",
+        "capacity": 20,
+        "source": "user_upload",
+        "source_file": "parking.mingyuan.original.geojson",
+        "import_batch": "mingyuan-20261016",
+        "capacity_source": "user_file"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              108.899015,
+              34.371042
+            ],
+            [
+              108.899023,
+              34.371013
+            ],
+            [
+              108.899144,
+              34.371048
+            ],
+            [
+              108.899135,
+              34.371077
+            ],
+            [
+              108.899015,
+              34.371042
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "WM4005",
+        "name": "明远4东北角",
+        "capacity": 30,
+        "source": "user_upload",
+        "source_file": "parking.mingyuan.original.geojson",
+        "import_batch": "mingyuan-20261016",
+        "capacity_source": "user_file"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              108.899186,
+              34.371074
+            ],
+            [
+              108.899221,
+              34.370979
+            ],
+            [
+              108.899262,
+              34.370987
+            ],
+            [
+              108.899227,
+              34.371087
+            ],
+            [
+              108.899205,
+              34.371081
+            ],
+            [
+              108.899186,
+              34.371074
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "WM1002",
+        "name": "明远1东南",
+        "capacity": 60,
+        "source": "user_upload",
+        "source_file": "parking.mingyuan.original.geojson",
+        "import_batch": "mingyuan-20261016",
+        "capacity_source": "user_file"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              108.897504,
+              34.370395
+            ],
+            [
+              108.897572,
+              34.370377
+            ],
+            [
+              108.897639,
+              34.370387
+            ],
+            [
+              108.897679,
+              34.370419
+            ],
+            [
+              108.897705,
+              34.370458
+            ],
+            [
+              108.89773,
+              34.370443
+            ],
+            [
+              108.897699,
+              34.37041
+            ],
+            [
+              108.897646,
+              34.370374
+            ],
+            [
+              108.897567,
+              34.370363
+            ],
+            [
+              108.897494,
+              34.370379
+            ],
+            [
+              108.897503,
+              34.370394
+            ],
+            [
+              108.897504,
+              34.370394
+            ],
+            [
+              108.897504,
+              34.370395
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "WM1003",
+        "name": "明远1中1",
+        "capacity": 80,
+        "source": "user_upload",
+        "source_file": "parking.mingyuan.original.geojson",
+        "import_batch": "mingyuan-20261016",
+        "capacity_source": "user_file"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              108.897768,
+              34.370912
+            ],
+            [
+              108.897903,
+              34.370646
+            ],
+            [
+              108.897934,
+              34.370655
+            ],
+            [
+              108.897817,
+              34.370924
+            ],
+            [
+              108.897807,
+              34.370923
+            ],
+            [
+              108.897768,
+              34.370912
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "WM1004",
+        "name": "明远1中2",
+        "capacity": 60,
+        "source": "user_upload",
+        "source_file": "parking.mingyuan.original.geojson",
+        "import_batch": "mingyuan-20261016",
+        "capacity_source": "user_file"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              108.897837,
+              34.370928
+            ],
+            [
+              108.897952,
+              34.370658
+            ],
+            [
+              108.897984,
+              34.370669
+            ],
+            [
+              108.897878,
+              34.370939
+            ],
+            [
+              108.897837,
+              34.370928
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "WM4001",
+        "name": "明远4南侧",
+        "capacity": 30,
+        "source": "user_upload",
+        "source_file": "parking.mingyuan.original.geojson",
+        "import_batch": "mingyuan-20261016",
+        "capacity_source": "user_file"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              108.899771,
+              34.370309
+            ],
+            [
+              108.899794,
+              34.370256
+            ],
+            [
+              108.899794,
+              34.370255
+            ],
+            [
+              108.900072,
+              34.370327
+            ],
+            [
+              108.900045,
+              34.370386
+            ],
+            [
+              108.899771,
+              34.370309
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "WM5001",
+        "name": "明远5北侧",
+        "capacity": 40,
+        "source": "user_upload",
+        "source_file": "parking.mingyuan.original.geojson",
+        "import_batch": "mingyuan-20261016",
+        "capacity_source": "user_file"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              108.899805,
+              34.370202
+            ],
+            [
+              108.899822,
+              34.370167
+            ],
+            [
+              108.899824,
+              34.370167
+            ],
+            [
+              108.900111,
+              34.370238
+            ],
+            [
+              108.900092,
+              34.370279
+            ],
+            [
+              108.899805,
+              34.370202
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "WM3001",
+        "name": "明远3东南",
+        "capacity": 20,
+        "source": "user_upload",
+        "source_file": "parking.mingyuan.original.geojson",
+        "import_batch": "mingyuan-20261016",
+        "capacity_source": "user_file"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              108.899447,
+              34.369742
+            ],
+            [
+              108.899456,
+              34.36972
+            ],
+            [
+              108.899458,
+              34.369717
+            ],
+            [
+              108.899578,
+              34.36975
+            ],
+            [
+              108.899567,
+              34.369777
+            ],
+            [
+              108.899447,
+              34.369742
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "WM5002",
+        "name": "明远5西侧",
+        "capacity": 20,
+        "source": "user_upload",
+        "source_file": "parking.mingyuan.original.geojson",
+        "import_batch": "mingyuan-20261016",
+        "capacity_source": "user_file"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              108.899582,
+              34.369745
+            ],
+            [
+              108.899621,
+              34.369661
+            ],
+            [
+              108.899652,
+              34.369671
+            ],
+            [
+              108.899613,
+              34.369752
+            ],
+            [
+              108.899582,
+              34.369745
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "WM4002",
+        "name": "明远4东南2",
+        "capacity": 20,
+        "source": "user_upload",
+        "source_file": "parking.mingyuan.original.geojson",
+        "import_batch": "mingyuan-20261016",
+        "capacity_source": "user_file"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              108.899497,
+              34.369629
+            ],
+            [
+              108.899507,
+              34.369599
+            ],
+            [
+              108.89963,
+              34.369628
+            ],
+            [
+              108.899619,
+              34.369655
+            ],
+            [
+              108.899497,
+              34.369629
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "WM4003",
+        "name": "明远4东南3",
+        "capacity": 20,
+        "source": "user_upload",
+        "source_file": "parking.mingyuan.original.geojson",
+        "import_batch": "mingyuan-20261016",
+        "capacity_source": "user_file"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              108.899442,
+              34.369706
+            ],
+            [
+              108.899473,
+              34.369632
+            ],
+            [
+              108.899499,
+              34.36964
+            ],
+            [
+              108.899472,
+              34.369714
+            ],
+            [
+              108.899442,
+              34.369706
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "WM3002",
+        "name": "明远3南侧",
+        "capacity": 30,
+        "source": "user_upload",
+        "source_file": "parking.mingyuan.original.geojson",
+        "import_batch": "mingyuan-20261016",
+        "capacity_source": "user_file"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              108.899197,
+              34.369611
+            ],
+            [
+              108.899232,
+              34.36952
+            ],
+            [
+              108.899252,
+              34.369527
+            ],
+            [
+              108.899215,
+              34.369616
+            ],
+            [
+              108.899197,
+              34.369611
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "WM3003",
+        "name": "明远3南侧2",
+        "capacity": 20,
+        "source": "user_upload",
+        "source_file": "parking.mingyuan.original.geojson",
+        "import_batch": "mingyuan-20261016",
+        "capacity_source": "user_file"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              108.899205,
+              34.369501
+            ],
+            [
+              108.899242,
+              34.369416
+            ],
+            [
+              108.899256,
+              34.369422
+            ],
+            [
+              108.89922,
+              34.369505
+            ],
+            [
+              108.899205,
+              34.369501
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "WM3004",
+        "name": "明远3南侧3",
+        "capacity": 100,
+        "source": "user_upload",
+        "source_file": "parking.mingyuan.original.geojson",
+        "import_batch": "mingyuan-20261016",
+        "capacity_source": "user_file"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              108.898625,
+              34.369398
+            ],
+            [
+              108.898632,
+              34.369384
+            ],
+            [
+              108.898632,
+              34.369383
+            ],
+            [
+              108.899104,
+              34.369503
+            ],
+            [
+              108.899093,
+              34.369524
+            ],
+            [
+              108.898625,
+              34.369398
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "WM3005",
+        "name": "明远3南侧4",
+        "capacity": 30,
+        "source": "user_upload",
+        "source_file": "parking.mingyuan.original.geojson",
+        "import_batch": "mingyuan-20261016",
+        "capacity_source": "user_file"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              108.898358,
+              34.369418
+            ],
+            [
+              108.898394,
+              34.369333
+            ],
+            [
+              108.898438,
+              34.369346
+            ],
+            [
+              108.898401,
+              34.369429
+            ],
+            [
+              108.898358,
+              34.369418
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "WM2001",
+        "name": "明远2西侧",
+        "capacity": 30,
+        "source": "user_upload",
+        "source_file": "parking.mingyuan.original.geojson",
+        "import_batch": "mingyuan-20261016",
+        "capacity_source": "user_file"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              108.897392,
+              34.369852
+            ],
+            [
+              108.897403,
+              34.369813
+            ],
+            [
+              108.897491,
+              34.369835
+            ],
+            [
+              108.897478,
+              34.369873
+            ],
+            [
+              108.897392,
+              34.369852
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "WM4004",
+        "name": "明远4北侧2",
+        "capacity": 30,
+        "source": "user_upload",
+        "source_file": "parking.mingyuan.original.geojson",
+        "import_batch": "mingyuan-20261016",
+        "capacity_source": "user_file"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              108.899278,
+              34.371402
+            ],
+            [
+              108.899295,
+              34.371366
+            ],
+            [
+              108.899476,
+              34.371403
+            ],
+            [
+              108.899461,
+              34.371448
+            ],
+            [
+              108.899401,
+              34.371433
+            ],
+            [
+              108.899278,
+              34.371402
             ]
           ]
         ]

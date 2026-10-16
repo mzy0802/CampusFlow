@@ -2,15 +2,15 @@
 
 **Apple 芯片 MacBook 接收者请先看 [Mac 安装启动说明](START-HERE-MAC.md)。** 原生 Mac 安装使用 `scripts/setup-mac.sh`，不要使用下方 Windows 临时环境路径。
 
-Vue 3 + Vite + Leaflet / OSM，FastAPI，Docker Compose。用于长安大学渭水校区修远楼周边项目的开发演示。
+Vue 3 + Vite + Leaflet / OSM，FastAPI，Docker Compose。用于长安大学渭水校区校园停车与出行项目的开发演示。
 
 当前网页识别默认使用 **Qwen3-VL-Plus**，由后端调用百炼。支持照片、最多12帧的视频抽样计数，以及1～6个原尺寸视角联合估算。显示自行车、电动两轮车、类型不确定车辆及总数；容载率可超过100%。预览为原图，不生成检测框。关联地图停车区与可停车范围后，可联合估算区内及周边违停，违停已包含在该区总数中。
 
 将 `.env.example` 复制为 `.env`，填写自己的百炼密钥和对应地域/工作空间的接口地址。密钥只在后端读取，不提交 Git。安装及限制见 [Qwen 识别说明](docs/QWEN-VISION.md)。旧 YOLO 文档和脚本保留供实验参考，不是当前网页默认引擎。
 
-**当前默认加载用户上传的 7 个停车区。** 数据文件为 `data/parking.imported.geojson`，原文件保存在 `data/parking.upload.original.geojson`。边界和容量支持在调试页修改并持久化。应用页状态优先使用该区最近Qwen上传估算，没有结果则明确显示模拟数据；均附数据来源和时间。原来的虚构示例另存于 `data/parking.example.geojson`，不参与当前展示。
+**当前默认加载用户上传的24个停车区：修远7个、明远17个。** 合并数据为 `data/parking.imported.geojson`；原文件分别保存在 `data/parking.upload.original.geojson` 和 `data/parking.mingyuan.original.geojson`。新版明远文件的17个区域名称、ID和容量均完整，容量合计640，未使用参考容量。已有数据库在启动时只追加本批新增区域，保留现有修改；不会在以后重启时恢复用户删除的区域。边界和容量支持在调试页修改并持久化。应用页状态优先使用该区最近Qwen上传估算，没有结果则明确显示模拟数据；均附数据来源和时间。原来的虚构示例另存于 `data/parking.example.geojson`，不参与当前展示。
 
-本次导入将 7 条带 ID、名称的 LineString 按原有坐标顺序闭合成 Polygon，将 `capility` 转为 `capacity`，移除连续重复坐标；2 个无属性的单点线条仅保留在原文件，不计为停车区。未补造地理点位。边界中心为 `[108.897283, 34.372000]`（经度、纬度），由上传文件计算。
+原修远区域导入将7条带ID、名称的LineString按原坐标顺序闭合成Polygon，将`capility`转为`capacity`；2个无属性的单点线条仅保留在原文件。明远区域导入将`space`转为`capacity`，闭合WM1002的LineString，移除两处连续重复顶点；所有经纬度沿用用户文件，未补造地理点位。
 
 重启当前电脑的后端：在旧后端终端按 Ctrl+C，进入本项目目录执行 `python run_backend.py`，再刷新页面。首次安装后端依赖执行 `python -m pip install -r backend/requirements.txt`，并配置百炼密钥。
 
