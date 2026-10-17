@@ -50,6 +50,15 @@ NAV_ASR_BASE_URL=
 导航其余功能不受影响。`NAV_ASR_BASE_URL` 填兼容 API 根路径，代码会追加 `/chat/completions`，
 音频以 `input_audio` 的 base64 data URL 提交。本地回环地址允许明文 HTTP，其他地址强制 HTTPS。
 
+## 兼容性
+
+`system` 上下文消息不是所有兼容端点都接受，实测 dashscope 旧域名返回 `400 does not support this input`。
+首次遇到该错误时降级为不带 system 重试一次，并按 `BASE_URL + MODEL` 把结论缓存到进程内，
+之后不再重复这次必然失败的请求。识别结果不受影响——校园地名纠错本来就由本地 `repair_places` 完成。
+
+只有确认是 system 相关的 400 才缓存；`audio format not supported`、`invalid api key` 这类错误不会被误判成
+上下文问题，下一句仍会带上地名上下文。
+
 ## 地点纠错
 
 地名听错会让整句话无法匹配目录，只能退化成追问，所以转写后加了一层修正：

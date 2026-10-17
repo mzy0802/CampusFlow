@@ -1,6 +1,8 @@
 """Voice input stays an input method: audio is transcribed to text, never routed."""
 import base64
+import io
 import json
+import urllib.error
 import urllib.request
 
 import pytest
@@ -152,3 +154,83 @@ def test_asr_failure_never_falls_back_to_guessing(monkeypatch):
     monkeypatch.setattr(nav_voice, 'config', lambda: {})
     with pytest.raises(ValueError, match='尚未配置'):
         nav_voice.asr_settings()
+
+
+ROUTE = ('https://asr.example.invalid', 'qwen3-asr-flash')
+
+
+def _http_400(message):
+    return urllib.error.HTTPError('https://asr.example.invalid/chat/completions', 400, 'Bad Request',
+                                  {}, io.BytesIO(json.dumps({'error': {'message': message}}).encode('utf-8')))
+
+
+def test_rejected_context_is_remembered_so_only_one_request_is_wasted(monkeypatch):
+    """The endpoint's refusal is learned once; every later utterance goes out without it."""
+    from app import navigation
+    nav_voice._SYSTEM_SUPPORT.clear()
+    roles = []
+
+    def fake(request, timeout=None):
+        body = json.loads(request.data.decode('utf-8'))
+        roles.append([message['role'] for message in body['messages']])
+        if body['messages'][0]['role'] == 'system':
+            raise _http_400('does not support this input')
+        return _Response({'choices': [{'message': {'content': '我要去修远楼'}}]})
+
+    monkeypatch.setattr(urllib.request, 'urlopen', fake)
+    monkeypatch.setattr(nav_voice, 'config', lambda: ASR_ENV)
+    monkeypatch.setattr(navigation, 'campus_places', lambda request: [])
+    try:
+        client = TestClient(app)
+        for _ in range(2):
+            response = client.post('/api/navigation/transcribe', json={'audio': WAV, 'mime': 'audio/wav'})
+            assert response.status_code == 200, response.text
+        assert roles == [['system', 'user'], ['user'], ['user']]
+        assert nav_voice._SYSTEM_SUPPORT[ROUTE] is False
+    finally:
+        nav_voice._SYSTEM_SUPPORT.clear()
+
+
+def test_an_unrelated_400_keeps_the_context_for_the_next_request(monkeypatch):
+    """A 400 about the audio must not disable the campus-name context permanently."""
+    from app import navigation
+    nav_voice._SYSTEM_SUPPORT.clear()
+    roles = []
+
+    def fake(request, timeout=None):
+        body = json.loads(request.data.decode('utf-8'))
+        roles.append([message['role'] for message in body['messages']])
+        if body['messages'][0]['role'] == 'system':
+            raise _http_400('audio format not supported')
+        return _Response({'choices': [{'message': {'content': '好的'}}]})
+
+    monkeypatch.setattr(urllib.request, 'urlopen', fake)
+    monkeypatch.setattr(nav_voice, 'config', lambda: ASR_ENV)
+    monkeypatch.setattr(navigation, 'campus_places', lambda request: [])
+    try:
+        client = TestClient(app)
+        for _ in range(2):
+            assert client.post('/api/navigation/transcribe',
+                               json={'audio': WAV, 'mime': 'audio/wav'}).status_code == 200
+        assert roles == [['system', 'user'], ['user'], ['system', 'user'], ['user']]
+        assert ROUTE not in nav_voice._SYSTEM_SUPPORT
+    finally:
+        nav_voice._SYSTEM_SUPPORT.clear()
+
+
+def test_other_http_errors_are_not_mistaken_for_a_context_problem(monkeypatch):
+    from app import navigation
+    nav_voice._SYSTEM_SUPPORT.clear()
+
+    def fake(request, timeout=None):
+        raise _http_400('invalid api key')
+
+    monkeypatch.setattr(urllib.request, 'urlopen', fake)
+    monkeypatch.setattr(nav_voice, 'config', lambda: ASR_ENV)
+    monkeypatch.setattr(navigation, 'campus_places', lambda request: [])
+    try:
+        response = TestClient(app).post('/api/navigation/transcribe', json={'audio': WAV, 'mime': 'audio/wav'})
+        assert response.status_code == 503
+        assert ROUTE not in nav_voice._SYSTEM_SUPPORT
+    finally:
+        nav_voice._SYSTEM_SUPPORT.clear()

@@ -8,6 +8,7 @@ import binascii
 import json
 import re
 import unicodedata
+import urllib.error
 import urllib.request
 from difflib import SequenceMatcher
 
@@ -82,34 +83,62 @@ def message_text(message):
     return ''
 
 
-def call_asr(key, base, model, raw, mime, language, vocabulary):
-    hint = '、'.join(vocabulary[:VOCABULARY_HINT])
-    user = {'role': 'user', 'content': [{'type': 'input_audio', 'input_audio': {'data': f'data:{mime};base64,{base64.b64encode(raw).decode()}'}}]}
-    payload = {
-        'model': model,
-        'messages': [
-            {'role': 'system', 'content': '你是长安大学渭水校区导航语音转写。只输出简体中文口语原文，保留楼栋编号、方位词以及"去""到"等动词。不要回答问题，不要加标点以外的格式。校园常见地点：' + hint},
-            user,
-        ],
-        'stream': False,
-        'asr_options': {'enable_itn': False, 'language': language},
-    }
+SYSTEM_PROMPT = ('你是长安大学渭水校区导航语音转写。只输出简体中文口语原文，保留楼栋编号、方位词以及"去""到"等动词。'
+                 '不要回答问题，不要加标点以外的格式。校园常见地点：')
+# Compatibility cache keyed by (base, model). Some compatible endpoints reject
+# system messages with 400 "does not support this input"; remembering that means
+# only the first utterance of a process pays for the failed round trip instead
+# of every one. Unknown stays None so the first request still tries the context.
+_SYSTEM_SUPPORT = {}
 
-    def post(body):
-        request = urllib.request.Request(base + '/chat/completions', data=json.dumps(body).encode('utf-8'),
-                                         headers={'Authorization': 'Bearer ' + key, 'Content-Type': 'application/json'})
-        with urllib.request.urlopen(request, timeout=45) as response:
-            return json.load(response)
+
+def _post(endpoint, key, body):
+    request = urllib.request.Request(endpoint, data=json.dumps(body).encode('utf-8'),
+                                     headers={'Authorization': 'Bearer ' + key, 'Content-Type': 'application/json'})
+    with urllib.request.urlopen(request, timeout=45) as response:
+        return json.load(response)
+
+
+def _rejects_context(error):
+    """True when the 400 is about the system message rather than the audio itself."""
+    try:
+        detail = error.read().decode('utf-8', 'replace').lower()
+    except Exception:
+        return False
+    # Both halves are needed: "audio format not supported" must not disable the context.
+    named = 'system' in detail or 'input' in detail
+    refused = 'not support' in detail or 'unsupported' in detail or '不支持' in detail
+    return named and refused
+
+
+def call_asr(key, base, model, raw, mime, language, vocabulary):
+    """Transcribe one clip, passing campus names as context when the endpoint accepts it."""
+    endpoint = base + '/chat/completions'
+    route = (base, model)
+    user = {'role': 'user', 'content': [{'type': 'input_audio', 'input_audio': {'data': f'data:{mime};base64,{base64.b64encode(raw).decode()}'}}]}
+    body = {'model': model, 'stream': False, 'asr_options': {'enable_itn': False, 'language': language}}
+
+    def ask(with_context):
+        if with_context:
+            hint = {'role': 'system', 'content': SYSTEM_PROMPT + '、'.join(vocabulary[:VOCABULARY_HINT])}
+            return _post(endpoint, key, {**body, 'messages': [hint, user]})
+        return _post(endpoint, key, {**body, 'messages': [user]})
 
     try:
-        try:
-            payload = post(payload)
-        except urllib.error.HTTPError as e:
-            # 部分接入方/地域不支持 system 上下文消息（400 does not support this input），
-            # 降级为不带 system 重试一次，地名纠错仍由本地 repair_places 完成。
-            if e.code != 400:
-                raise
-            payload = post({**payload, 'messages': [user]})
+        if _SYSTEM_SUPPORT.get(route) is False:
+            payload = ask(False)
+        else:
+            try:
+                payload = ask(True)
+                _SYSTEM_SUPPORT[route] = True
+            except urllib.error.HTTPError as error:
+                if error.code != 400:
+                    raise
+                # 部分接入方/地域不支持 system 上下文消息，降级为不带 system 重试一次；
+                # 地名纠错仍由本地 repair_places 完成。
+                if _rejects_context(error):
+                    _SYSTEM_SUPPORT[route] = False
+                payload = ask(False)
     except Exception:
         raise ValueError('语音识别服务连接失败，请稍后重试或直接打字') from None
     choices = payload.get('choices') or []
