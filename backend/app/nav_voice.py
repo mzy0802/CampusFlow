@@ -82,7 +82,47 @@ def message_text(message):
     return ''
 
 
+def _mime_to_format(mime):
+    """DashScope native ASR wants an explicit format such as wav/mp3/opus."""
+    sub = mime.split('/')[-1].lower()
+    return {'mpeg': 'mp3', 'mp3': 'mp3', 'x-wav': 'wav'}.get(sub, sub)
+
+
+def _native_url(base):
+    """Derive the DashScope multimodal-generation endpoint from the configured base."""
+    from urllib.parse import urlparse
+    host = urlparse(base)
+    return f'{host.scheme}://{host.netloc}/api/v1/services/aigc/multimodal-generation/generation'
+
+
+def call_asr_native(key, base, model, raw, mime, vocabulary):
+    """Qwen-Audio-3.x-ASR-Flash: DashScope protocol, hotwords + no system message."""
+    uri = f'data:{mime};base64,{base64.b64encode(raw).decode()}'
+    parameters = {'format': _mime_to_format(mime), 'sample_rate': '16000'}
+    hotwords = {w: 5 for w in vocabulary[:VOCABULARY_HINT] if w}
+    if hotwords:
+        parameters['vocabulary'] = hotwords
+    payload = {
+        'model': model,
+        'input': {'messages': [{'role': 'user', 'content': [{'type': 'input_audio', 'input_audio': {'data': uri}}]}]},
+        'parameters': parameters,
+    }
+    request = urllib.request.Request(_native_url(base), data=json.dumps(payload).encode('utf-8'),
+                                     headers={'Authorization': 'Bearer ' + key, 'Content-Type': 'application/json'})
+    try:
+        with urllib.request.urlopen(request, timeout=45) as response:
+            payload = json.load(response)
+    except Exception:
+        raise ValueError('语音识别服务连接失败，请稍后重试或直接打字') from None
+    text = str((payload.get('output') or {}).get('text') or '').strip()
+    if not text:
+        raise ValueError('没有听清，请靠近麦克风再说一次')
+    return text, model
+
+
 def call_asr(key, base, model, raw, mime, language, vocabulary):
+    if model.startswith('qwen-audio'):
+        return call_asr_native(key, base, model, raw, mime, vocabulary)
     hint = '、'.join(vocabulary[:VOCABULARY_HINT])
     user = {'role': 'user', 'content': [{'type': 'input_audio', 'input_audio': {'data': f'data:{mime};base64,{base64.b64encode(raw).decode()}'}}]}
     payload = {
