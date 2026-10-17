@@ -9,6 +9,7 @@ from .vision import router as vision_router
 from .vision_service import VisionService
 from .annotations import router as annotation_router
 from .navigation import router as navigation_router
+from .nav_voice import router as nav_voice_router
 from .parking_editor import router as parking_editor_router, merge_import_batch, replace_import_batch
 from .transit import router as transit_router
 from .area_surveys import router as survey_router
@@ -48,6 +49,7 @@ app.include_router(simulation_router, prefix='/api')
 app.include_router(network_router, prefix='/api')
 app.include_router(annotation_router, prefix='/api')
 app.include_router(navigation_router, prefix='/api')
+app.include_router(nav_voice_router, prefix='/api')
 app.include_router(parking_editor_router, prefix='/api')
 app.include_router(parking_router, prefix='/api')
 app.include_router(mobility_router, prefix='/api')

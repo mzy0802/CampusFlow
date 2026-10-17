@@ -1,13 +1,14 @@
 <script setup>
-import {ref,reactive,onMounted,onBeforeUnmount} from 'vue'
+import {ref,reactive,computed,onMounted,onBeforeUnmount} from 'vue'
 import L from 'leaflet'
 import MapIcon from './components/MapIcon.vue'
 const props=defineProps({sharedMap:Object,trafficContext:Object,alwaysOn:Boolean})
 const emit=defineEmits(['close'])
-const mapEl=ref(null),panel=ref(false),query=ref(''),focused=ref('place'),suggestions=ref([]),place=ref(null),picking=ref(''),mode=ref('bike'),ai=ref(false),preference=ref(''),messages=ref([]),error=ref(''),parkingError=ref(''),busy=ref(false),result=ref(null),recommendations=ref([]),options=ref([]),chosenOption=ref(-1),listening=ref(false)
+const mapEl=ref(null),panel=ref(false),query=ref(''),focused=ref('place'),suggestions=ref([]),place=ref(null),picking=ref(''),mode=ref('bike'),ai=ref(false),preference=ref(''),messages=ref([]),error=ref(''),parkingError=ref(''),busy=ref(false),result=ref(null),recommendations=ref([]),options=ref([]),chosenOption=ref(-1),voice=ref('idle'),voiceNote=ref(''),asr=ref(null)
+const listening=computed(()=>voice.value!=='idle')
 const endpoints=reactive({origin:{text:'',point:null},destination:{text:'',point:null}})
 const showParking=ref(true),showBus=ref(false),parkingItems=ref([]),bus=ref({routes:[],stops:[],vehicles:[]})
-let map,roads,markers,routeLayer,parkingLayer,percentLayer,busLayer,observer,timer,searchTimer,searchId=0,runId=0,stopped=false,lastTraffic=null,recognizer=null
+let map,roads,markers,routeLayer,parkingLayer,percentLayer,busLayer,observer,timer,searchTimer,searchId=0,runId=0,stopped=false,lastTraffic=null,recognizer=null,micStream=null,micCtx=null,micNode=null,micRate=0,micChunks=[]
 async function api(path,body){const r=await fetch('/api'+path,{...(body?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:{}),signal:AbortSignal.timeout(60000)});const d=await r.json();if(!r.ok)throw Error(typeof d.detail==='string'?d.detail:'请求失败');return d}
 function invalidate(){runId++;result.value=null;recommendations.value=[];routeLayer?.clearLayers();error.value='';parkingError.value='';if(parkingLayer)drawParking()}
 function drawMarkers(){markers?.clearLayers();for(const [key,e] of Object.entries(endpoints)){if(!e.point)continue;const name=document.createElement('span');name.textContent=e.text;L.circleMarker([e.point.latitude,e.point.longitude],{pane:'navigation-markers',radius:8,color:'white',weight:3,fillColor:key==='origin'?'#1a73e8':'#e94235',fillOpacity:1}).bindTooltip(name).addTo(markers)}}
@@ -31,15 +32,76 @@ async function chatNavigate(){
  }catch(e){if(token===runId&&!stopped)error.value=e.message}finally{busy.value=false}
 }
 function applyOption(o,i){chosenOption.value=i;mode.value=o.mode;renderRoute({...o.route,traffic:lastTraffic})}
-function toggleVoice(){
+const MAX_VOICE_SECONDS=30
+function mergeChunks(list){const n=list.reduce((a,c)=>a+c.length,0);const out=new Float32Array(n);let o=0;for(const c of list){out.set(c,o);o+=c.length}return out}
+function resample(input,from,to){if(from===to||!from)return input
+ const step=from/to,out=new Float32Array(Math.floor(input.length/step))
+ for(let i=0;i<out.length;i++){const p=i*step,i0=Math.floor(p),i1=Math.min(i0+1,input.length-1),f=p-i0;out[i]=input[i0]*(1-f)+input[i1]*f}
+ return out}
+function encodeWav(samples,rate){const view=new DataView(new ArrayBuffer(44+samples.length*2))
+ const tag=(offset,text)=>{for(let i=0;i<text.length;i++)view.setUint8(offset+i,text.charCodeAt(i))}
+ tag(0,'RIFF');view.setUint32(4,36+samples.length*2,true);tag(8,'WAVE');tag(12,'fmt ')
+ view.setUint32(16,16,true);view.setUint16(20,1,true);view.setUint16(22,1,true)
+ view.setUint32(24,rate,true);view.setUint32(28,rate*2,true);view.setUint16(32,2,true);view.setUint16(34,16,true)
+ tag(36,'data');view.setUint32(40,samples.length*2,true)
+ for(let i=0;i<samples.length;i++){const v=Math.max(-1,Math.min(1,samples[i]));view.setInt16(44+i*2,v<0?v*0x8000:v*0x7FFF,true)}
+ return view.buffer}
+function toBase64(buffer){const bytes=new Uint8Array(buffer);let text=''
+ for(let i=0;i<bytes.length;i+=0x8000)text+=String.fromCharCode.apply(null,bytes.subarray(i,i+0x8000));return btoa(text)}
+async function checkAsr(){try{const d=await api('/navigation/asr');asr.value=d.ready?d:false}catch(e){asr.value=false}}
+function applyTranscript(d){
+ preference.value=(d.text||'').slice(0,2000)
+ voiceNote.value=d.corrections?.length?'已校正听错的地点：'+d.corrections.map(c=>`${c.from} → ${c.to}`).join('，'):''
+}
+async function sendAudio(flat,rate){
+ voice.value='transcribing';voiceNote.value=''
+ try{const pcm=resample(flat,rate,16000)
+  const d=await api('/navigation/transcribe',{audio:toBase64(encodeWav(pcm,16000)),mime:'audio/wav',language:'zh'})
+  if(!stopped)applyTranscript(d)
+ }catch(e){
+  if(!stopped)error.value=e.message
+  if(/尚未配置/.test(e.message)){asr.value=false;setTimeout(()=>{if(voice.value==='transcribing')startBrowserVoice()},0)}
+ }finally{if(voice.value==='transcribing')voice.value='idle'}
+}
+function stopVoice(){
+ const rate=micRate,chunks=micChunks
+ try{micNode?.disconnect()}catch(e){}
+ try{micStream?.getTracks().forEach(t=>t.stop())}catch(e){}
+ try{micCtx?.close()}catch(e){}
+ micNode=micCtx=micStream=null;micChunks=[];micRate=0;voice.value='idle'
+ const flat=mergeChunks(chunks)
+ if(!rate||flat.length<rate*0.3){error.value='没听到声音，请再说一次';return}
+ sendAudio(flat,rate)
+}
+async function startVoice(){
+ error.value='';voiceNote.value=''
+ try{micStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}})}
+ catch(e){error.value='无法使用麦克风，请检查浏览器权限';return}
+ micCtx=new (window.AudioContext||window.webkitAudioContext)()
+ micRate=micCtx.sampleRate;micChunks=[]
+ const source=micCtx.createMediaStreamSource(micStream)
+ micNode=micCtx.createScriptProcessor(4096,1,1)
+ let total=0
+ micNode.onaudioprocess=e=>{const data=new Float32Array(e.inputBuffer.getChannelData(0));micChunks.push(data);total+=data.length
+  if(total>micRate*MAX_VOICE_SECONDS)stopVoice()}
+ source.connect(micNode);micNode.connect(micCtx.destination)
+ voice.value='recording'
+}
+function startBrowserVoice(){
  const SR=window.SpeechRecognition||window.webkitSpeechRecognition
  if(!SR){error.value='当前浏览器不支持语音输入，请直接打字';return}
- if(listening.value){recognizer?.stop();return}
  recognizer=new SR();recognizer.lang='zh-CN';recognizer.interimResults=true;recognizer.continuous=false
- recognizer.onresult=e=>{let text='';for(const r of e.results)text+=r[0].transcript;preference.value=text.slice(0,2000)}
- recognizer.onend=()=>{listening.value=false}
- recognizer.onerror=()=>{listening.value=false}
- listening.value=true;recognizer.start()
+ recognizer.onresult=e=>{let text='';for(const r of e.results)text+=r[0].transcript;preference.value=text.slice(0,2000);voiceNote.value='浏览器语音识别，未做校园地名校正，请核对后再发送'}
+ recognizer.onend=()=>{voice.value='idle'}
+ recognizer.onerror=()=>{voice.value='idle'}
+ voice.value='recording';voiceNote.value='';recognizer.start()
+}
+async function toggleVoice(){
+ if(voice.value==='recording'){recognizer?recognizer.stop():stopVoice();return}
+ if(asr.value===null)await checkAsr()
+ if(asr.value){recognizer=null;startVoice()}
+ else if(window.SpeechRecognition||window.webkitSpeechRecognition)startBrowserVoice()
+ else error.value='语音识别未配置，且当前浏览器不支持语音输入，请直接打字'
 }
 function resetChat(){messages.value=[];preference.value='';options.value=[];chosenOption.value=-1;endpoints.origin={text:'',point:null};endpoints.destination={text:'',point:null};invalidate();drawMarkers()}
 function swap(){[endpoints.origin,endpoints.destination]=[endpoints.destination,endpoints.origin];invalidate();drawMarkers()}
@@ -60,8 +122,11 @@ function pickOnMap(e){if(picking.value&&!busy.value)choose(picking.value,{name:`
 function setupRoutePanes(){for(const [name,z] of [['navigation-routes',675],['navigation-markers',680]]){const pane=map.getPane(name)||map.createPane(name);pane.style.zIndex=z;pane.style.pointerEvents='none'}}
 function closeNavigation(){invalidate();markers?.clearLayers();panel.value=false;place.value=null;ai.value=false;picking.value='';suggestions.value=[];options.value=[];if(props.sharedMap&&!props.alwaysOn)emit('close')}
 function replan(){if(ai.value){const last=[...messages.value].reverse().find(m=>m.role==='user');if(last){preference.value=last.content;chatNavigate()}}else navigate()}
-onMounted(async()=>{if(props.sharedMap){map=props.sharedMap;setupRoutePanes();markers=L.layerGroup().addTo(map);routeLayer=L.featureGroup().addTo(map);parkingLayer=L.featureGroup();percentLayer=L.layerGroup();busLayer=L.layerGroup();map.on('click',pickOnMap);return}map=L.map(mapEl.value,{zoomControl:false,center:[0,0],zoom:16});setupRoutePanes();L.control.zoom({position:'bottomright'}).addTo(map);L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'}).addTo(map);markers=L.layerGroup().addTo(map);routeLayer=L.featureGroup().addTo(map);parkingLayer=L.featureGroup();percentLayer=L.layerGroup();busLayer=L.layerGroup();map.on('click',e=>{if(picking.value&&!busy.value)choose(picking.value,{name:`地图选点 ${e.latlng.lat.toFixed(5)}, ${e.latlng.lng.toFixed(5)}`,latitude:e.latlng.lat,longitude:e.latlng.lng})});observer=new ResizeObserver(()=>map.invalidateSize());observer.observe(mapEl.value);try{const d=await api('/navigation/map');if(stopped)return;const named=new Set();roads=L.geoJSON(d,{style:f=>({color:f.properties.name==='修远大道'?'#e9a149':f.properties.highway==='cycleway'?'#22a447':['footway','pedestrian','steps'].includes(f.properties.highway)?'#a3947c':'#e9a149',weight:4}),onEachFeature(f,l){if(f.properties.name){const text=document.createElement('span');text.textContent=f.properties.name;l.bindTooltip(text,{permanent:!named.has(f.properties.name),direction:'center',className:'campus-road-name'});named.add(f.properties.name)}}}).addTo(map);fitCampus();await refreshData();if(!stopped)timer=setInterval(refreshData,15000)}catch(e){if(!stopped)error.value=e.message}})
-onBeforeUnmount(()=>{stopped=true;clearInterval(timer);clearTimeout(searchTimer);recognizer?.stop();searchId++;runId++;observer?.disconnect();if(props.sharedMap){map.off('click',pickOnMap);for(const layer of [markers,routeLayer,parkingLayer,percentLayer,busLayer])layer?.remove()}else map?.remove()})
+onMounted(async()=>{checkAsr();if(props.sharedMap){map=props.sharedMap;setupRoutePanes();markers=L.layerGroup().addTo(map);routeLayer=L.featureGroup().addTo(map);parkingLayer=L.featureGroup();percentLayer=L.layerGroup();busLayer=L.layerGroup();map.on('click',pickOnMap);return}map=L.map(mapEl.value,{zoomControl:false,center:[0,0],zoom:16});setupRoutePanes();L.control.zoom({position:'bottomright'}).addTo(map);L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'}).addTo(map);markers=L.layerGroup().addTo(map);routeLayer=L.featureGroup().addTo(map);parkingLayer=L.featureGroup();percentLayer=L.layerGroup();busLayer=L.layerGroup();map.on('click',e=>{if(picking.value&&!busy.value)choose(picking.value,{name:`地图选点 ${e.latlng.lat.toFixed(5)}, ${e.latlng.lng.toFixed(5)}`,latitude:e.latlng.lat,longitude:e.latlng.lng})});observer=new ResizeObserver(()=>map.invalidateSize());observer.observe(mapEl.value);try{const d=await api('/navigation/map');if(stopped)return;const named=new Set();roads=L.geoJSON(d,{style:f=>({color:f.properties.name==='修远大道'?'#e9a149':f.properties.highway==='cycleway'?'#22a447':['footway','pedestrian','steps'].includes(f.properties.highway)?'#a3947c':'#e9a149',weight:4}),onEachFeature(f,l){if(f.properties.name){const text=document.createElement('span');text.textContent=f.properties.name;l.bindTooltip(text,{permanent:!named.has(f.properties.name),direction:'center',className:'campus-road-name'});named.add(f.properties.name)}}}).addTo(map);fitCampus();await refreshData();if(!stopped)timer=setInterval(refreshData,15000)}catch(e){if(!stopped)error.value=e.message}})
+onBeforeUnmount(()=>{stopped=true;clearInterval(timer);clearTimeout(searchTimer);recognizer?.stop();
+ try{micNode?.disconnect()}catch(e){}
+ try{micStream?.getTracks().forEach(t=>t.stop())}catch(e){}
+ try{micCtx?.close()}catch(e){}searchId++;runId++;observer?.disconnect();if(props.sharedMap){map.off('click',pickOnMap);for(const layer of [markers,routeLayer,parkingLayer,percentLayer,busLayer])layer?.remove()}else map?.remove()})
 </script>
 <template>
  <main class="navigation-app" :class="{embedded:sharedMap}">
@@ -78,7 +143,8 @@ onBeforeUnmount(()=>{stopped=true;clearInterval(timer);clearTimeout(searchTimer)
      <p class="muted">告诉我你在哪、要去哪，也可以补充出行偏好，无需手动选点。</p>
      <div class="chat-messages" aria-live="polite"><p v-if="!messages.length" class="chat-message assistant">你现在在哪栋楼？想去哪里？例如：我在鸿翔园5号公寓，要去明远教学楼A栋，尽量少走路。也可以点 🎤 直接说话。</p><p v-for="(m,i) in messages" :key="i" class="chat-message" :class="m.role">{{m.content}}</p></div>
      <div v-if="options.length" class="route-options" aria-label="候选路线"><button v-for="(o,i) in options" :key="i" type="button" :class="{chosen:chosenOption===i||(chosenOption<0&&i===0)}" @click="applyOption(o,i)"><b>{{i===0?'推荐 · ':''}}{{o.label}}</b><span>{{o.duration_minutes}} 分钟 · {{o.distance_m}} 米</span></button></div>
-     <form @submit.prevent="chatNavigate"><textarea v-model="preference" :disabled="busy" maxlength="2000" aria-label="告诉AI你的出行需求" placeholder="我在……，我要去……" @keydown.ctrl.enter.prevent="chatNavigate"></textarea><div class="chat-send"><button type="button" class="voice" :class="{on:listening}" :aria-label="listening?'停止语音输入':'语音输入'" :title="listening?'点击停止':'语音输入'" @click="toggleVoice">{{listening?'■':'🎤'}}</button><button class="primary" :disabled="busy||!preference.trim()" type="submit">{{busy?'正在理解并规划…':'发送并指路'}}</button></div></form>
+     <form @submit.prevent="chatNavigate"><textarea v-model="preference" :disabled="busy" maxlength="2000" aria-label="告诉AI你的出行需求" placeholder="我在……，我要去……" @keydown.ctrl.enter.prevent="chatNavigate"></textarea><div class="chat-send"><button type="button" class="voice" :class="{on:listening}" :aria-label="listening?'停止语音输入':'语音输入'" :title="listening?'点击停止':'语音输入'" @click="toggleVoice">{{voice==='recording'?'■':voice==='transcribing'?'…':'🎤'}}</button><button class="primary" :disabled="busy||!preference.trim()" type="submit">{{busy?'正在理解并规划…':'发送并指路'}}</button></div></form>
+     <p v-if="voiceNote" class="muted voice-note">{{voiceNote}}</p>
      <div class="chat-actions"><button :disabled="busy" @click="resetChat">新对话</button><button :disabled="busy" @click="ai=false">普通导航</button></div>
     </section>
     <p v-if="sharedMap" class="muted">当前早高峰时刻 {{snapshotClock(trafficContext.time_seconds)}} · 可拖动底部时间轴，再次规划</p><section v-if="result" class="route-result"><strong>{{result.duration_minutes}} 分钟</strong><span>{{result.area_id?'经 '+result.name:result.mode==='walk'?'步行':'骑行'}} · {{result.distance_m}} 米</span><p v-if="result.ai">{{result.ai.reason}}</p><p>{{result.notice}}</p><p v-if="result.traffic">规划时刻 {{snapshotClock(result.traffic.time_seconds)}} · 路上 {{result.traffic.road_users}} 人 · {{result.traffic.busy_segments}} 段有流量道路</p><button v-if="sharedMap" :disabled="busy" @click="replan">按当前时刻重新规划</button></section>
@@ -98,6 +164,7 @@ onBeforeUnmount(()=>{stopped=true;clearInterval(timer);clearTimeout(searchTimer)
 
 .chat-messages{display:flex;flex-direction:column;gap:10px;margin:16px 0;max-height:32vh;overflow:auto}.chat-message{margin:0;padding:11px 13px;border-radius:12px;background:#f1f3f4;white-space:pre-wrap;overflow-wrap:anywhere}.chat-message.user{background:#e8f0fe;margin-left:24px}.chat-message.assistant{margin-right:12px}.chat-actions{display:flex;gap:8px;margin-top:10px}.chat-actions button{font-size:12px}
 .route-options{display:grid;gap:8px;margin:0 0 12px}.route-options button{text-align:left;border-radius:12px;padding:10px 13px;display:grid;gap:3px;border:1px solid #dadce0}.route-options button.chosen{border-color:#1a73e8;background:#e8f0fe}.route-options b{font-size:13px}.route-options span{font-size:11px;color:#64748b}.chat-send{display:flex;gap:8px;align-items:stretch}.chat-send .primary{flex:1;margin:14px 0 2px}.voice{width:46px;margin:14px 0 2px;border-radius:9px;font-size:17px;display:flex;align-items:center;justify-content:center}.voice.on{background:#fde7e4;border-color:#d93025;color:#d93025;animation:voice-pulse 1s infinite alternate}@keyframes voice-pulse{to{box-shadow:0 0 0 4px #d9302522}}
+.voice-note{margin:6px 0 0;font-size:12px;line-height:1.5}
 
 .navigation-app{height:100dvh;min-height:550px;position:relative;color:#202124;font:14px/1.5 var(--app-font)}.navigation-map{position:absolute;inset:0;background:#e9eee8}.brand{position:absolute;right:20px;top:20px;z-index:700;background:white;padding:10px 16px;border-radius:24px;display:flex;gap:12px;box-shadow:0 2px 10px #0002}.brand b{color:#1a73e8}.brand span,.brand a{font-size:11px;color:#64748b}.search-shell{position:absolute;top:20px;left:20px;width:390px;z-index:900;background:white;padding:8px 12px;border-radius:30px;box-shadow:0 3px 16px #0003;display:flex;align-items:center;gap:10px}.search-shell input{flex:1;min-width:0;border:0;padding:8px 0;outline:none}.search-shell button{color:#1a73e8;border:0!important;border-left:1px solid #ddd!important;border-radius:0!important;display:flex;align-items:center;font-weight:700}.navigation-app button{cursor:pointer;border:1px solid #dadce0;background:white;color:inherit;border-radius:20px;padding:9px 12px}.navigation-app button:disabled{opacity:.5;cursor:default}.navigation-panel{position:absolute;top:20px;left:20px;bottom:70px;width:390px;z-index:800;background:white;border-radius:18px;box-shadow:0 3px 16px #0003;padding:22px;overflow:auto}.navigation-panel.compact{top:88px;bottom:auto;max-height:calc(100dvh - 160px)}.panel-head{display:flex;align-items:center;justify-content:space-between}.panel-head h1{font-size:21px;margin:0}.endpoint{margin-top:18px}.endpoint label{font-size:12px;font-weight:600}.entry{display:flex;gap:6px;margin-top:5px}.entry input{width:100%;min-width:0;border:1px solid #dadce0;border-radius:8px;padding:11px}.entry button{white-space:nowrap;border-radius:8px;font-size:11px}.mode-row{display:flex;gap:6px;margin-top:18px}.mode-row button{font-size:12px;flex:1;padding:8px}.navigation-app button.active{background:#e8f0fe;color:#1967d2;border-color:#aecbfa}.navigation-app .primary{width:100%;background:#1a73e8;border:0;color:white;border-radius:9px;padding:13px;margin:14px 0 2px;font-weight:600}.suggestions,.place-suggestions{list-style:none;padding:5px 0;margin:5px 0;background:white;max-height:230px;overflow:auto}.suggestions button,.place-suggestions button{width:100%;text-align:left;border:0;border-radius:0;padding:13px}.suggestions button:hover,.place-suggestions button:hover{background:#f1f5f9}.place-suggestions{position:absolute;left:20px;top:80px;width:390px;z-index:950;border-radius:12px;box-shadow:0 3px 12px #0002}.route-result{border-top:1px solid #eee;margin-top:20px;padding-top:16px}.route-result strong{display:block;font-size:28px;color:#188038}.route-result span{display:block}.route-result p,.muted{color:#64748b;font-size:12px;line-height:1.8}.parking-results h2{font-size:16px;margin:20px 0 3px}.parking-results .parking-card{width:100%;border:1px solid #e2e8f0;border-radius:10px;text-align:left;margin:7px 0;display:block;padding:14px}.parking-card b,.parking-card span,.parking-card small{display:block}.parking-card span{margin:6px 0;font-size:12px}.parking-card em{float:right;font-style:normal;font-size:17px;font-weight:700}.parking-card small{font-size:11px;color:#64748b}.tip{background:#e8f0fe;color:#1967d2;padding:8px;border-radius:6px}textarea{box-sizing:border-box;width:100%;min-height:80px;border:1px solid #dadce0;padding:10px;border-radius:8px;margin-top:14px}.error{background:#fef2f2;color:#b91c1c;padding:12px;border-radius:8px}.floating-error{position:absolute;top:90px;left:20px;z-index:750}.layer-switches{position:absolute;right:20px;top:80px;z-index:700;background:white;padding:10px 14px;border-radius:14px;box-shadow:0 2px 8px #0002;display:flex;gap:14px;font-size:12px}.layer-switches label{display:flex;gap:5px;align-items:center;cursor:pointer}.campus-fit{position:absolute;bottom:95px;right:12px;z-index:700}.road-legend{position:absolute;bottom:25px;left:50%;background:white;z-index:700;border-radius:18px;padding:8px 14px;display:flex;gap:12px;box-shadow:0 2px 8px #0002;font-size:11px}.road-legend i{display:inline-block;width:18px;height:4px;margin-right:5px;vertical-align:middle}:global(.campus-road-name){background:#fff9dd;border:0;box-shadow:none;font-size:11px;font-weight:600;color:#5d4e14;padding:2px 5px}@media(max-width:720px){.brand{top:10px;right:10px;padding:5px 10px}.brand span,.brand a{display:none}.search-shell{top:55px;left:10px;right:10px;width:auto}.place-suggestions{left:10px;right:10px;width:auto;top:110px}.navigation-panel,.navigation-panel.compact{left:10px;right:10px;bottom:15px;top:auto;width:auto;max-height:55vh;padding:18px}.layer-switches{left:10px;right:auto;top:115px;gap:10px;font-size:11px}.road-legend{top:163px;left:10px;bottom:auto;padding:6px 10px;gap:8px}.campus-fit{bottom:calc(55vh + 40px)}}
 @media(max-width:720px){.embedded .navigation-panel{top:auto;bottom:90px;max-height:45vh}.embedded .navigation-panel.compact{top:auto;bottom:90px;max-height:35vh}}
