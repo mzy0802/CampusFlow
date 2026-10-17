@@ -26,6 +26,16 @@ def aliases(item):
     match=re.search(r'(修远|鸿远)教学楼([一二三四五1-5])区',name)
     if match:
         number=normalize(match[2]);result.update([f'{match[1]}{number}',f'{match[1]}{number}区',f'{match[1]}{number}号楼'])
+    # Dormitories: people say "15号楼" without the park prefix; map it to the numbered building.
+    match=re.search(r'^(.*?)(\d{1,2})\s*号\s*(?:学生)?(?:公寓|宿舍楼|宿舍)',name)
+    if match:
+        prefix,number=match.group(1).strip(),str(int(match.group(2)))
+        result.update([f'{number}号楼',f'{number}栋',f'{number}号公寓'])
+        if prefix:result.update([f'{prefix}{number}号楼',f'{prefix}{number}栋',f'{prefix}{number}号'])
+    match=re.search(r'^教师公寓(\d{1,2})\s*#',name)
+    if match:
+        number=str(int(match.group(1)))
+        result.update([f'教师公寓{number}号楼',f'教师公寓{number}栋',f'教师公寓{number}号',f'{number}号楼',f'{number}栋'])
     return sorted(result)
 
 

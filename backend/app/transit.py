@@ -62,9 +62,9 @@ def ensure(store):
         CREATE TABLE IF NOT EXISTS bus_observations(vehicle_id TEXT PRIMARY KEY,payload TEXT);''')
         db.execute('INSERT OR IGNORE INTO transit_config VALUES(1,0,?)',(json.dumps({'stops':[],'routes':[],'vehicles':[]}),))
 
-@router.get('')
-def get(request:Request):
-    store=request.app.state.store;ensure(store)
+def configured(store):
+    """Current stops/routes/vehicles with live crowding merged in."""
+    ensure(store)
     with store.connect() as db:
         row=db.execute('SELECT * FROM transit_config WHERE id=1').fetchone()
         observations={r['vehicle_id']:json.loads(r['payload']) for r in db.execute('SELECT * FROM bus_observations')}
@@ -72,6 +72,14 @@ def get(request:Request):
     for v in data['vehicles']:
         obs=observations.get(v['id'])
         v['observation']={**obs,**congestion(obs['count'],v['capacity'])} if obs else None
+    return data
+
+@router.get('')
+def get(request:Request):
+    store=request.app.state.store;ensure(store)
+    with store.connect() as db:
+        row=db.execute('SELECT * FROM transit_config WHERE id=1').fetchone()
+    data=configured(store)
     return {**data,'revision':row['revision'],'status':'configured' if data['routes'] else 'not_configured','message':'已保存公交线路与站点' if data['routes'] else '请在公交工作台绘制线路与站点'}
 
 @router.put('')

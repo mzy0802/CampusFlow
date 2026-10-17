@@ -2,6 +2,7 @@
 import json
 import math
 import os
+import re
 import urllib.request
 from pathlib import Path
 from typing import Literal
@@ -229,15 +230,35 @@ class ChatNavigationRequest(BaseModel):
     traffic_context:TrafficContext|None=None
 
 
+def mention_hints(messages,items):
+    """Deterministic resolution of "N号楼" mentions, injected into the prompt so the LLM cannot guess."""
+    from .place_search import search_places,normalize
+    text=' '.join(m.content for m in messages if m.role=='user')
+    hints=[];seen=set()
+    for match in re.finditer(r'(?<!\d)(\d{1,2})\s*号\s*(?:楼|栋|公寓|宿舍)?',text):
+        number=str(int(match.group(1)))
+        if number in seen:continue
+        seen.add(number)
+        key=normalize(f'{number}号楼')
+        exact=[it for it in items if key in [normalize(it['name'])]+[normalize(a) for a in it.get('aliases',[])]]
+        if len(exact)==1:
+            hints.append(f"用户说的“{number}号楼”唯一对应目录条目「{exact[0]['name']}」(id={exact[0]['id']})，必须选它，禁止换成其他号码的楼")
+        elif 2<=len(exact)<=6:
+            listing='、'.join(f"「{it['name']}」(id={it['id']})" for it in exact)
+            hints.append(f"用户说的“{number}号楼”可能指{listing}，按对话上下文选择；无法确定就在reply里追问，origin_id/destination_id填null")
+    return hints
+
 def parse_trip(messages,items):
     """Resolve language to catalog IDs; the model never invents coordinates or geometry."""
     c=config();key=c.get('NAV_AI_API_KEY') or c.get('LLM_API_KEY')
     base=c.get('NAV_AI_BASE_URL');model=c.get('NAV_AI_MODEL')
     if not key or not base or not model:raise ValueError('指路模型由负责同学接入，尚未配置完成；请使用普通导航')
     if not base.startswith('https://'):raise ValueError('AI接口必须使用HTTPS')
-    system='''你是长安大学渭水校区出行助手。根据对话解析用户现在在哪、要去哪以及出行方式。仅从地点目录选择完整且唯一的id，不得编造地点或坐标。缺少起点、终点或地点有歧义时，以简短中文追问，不猜测具体楼号。结合历史补全后续回答，最新用户信息优先。返回JSON：{"origin_id":字符串或null,"destination_id":字符串或null,"mode":"walk或bike或auto","reply":"追问或简短出行说明"}。明确步行用walk，骑自行车或电动车用bike，未指定用auto。用户要少走路时可以bike；禁止声称实时路况或定位权限，不编造用时。地点目录：'''
+    system='''你是长安大学渭水校区出行助手。根据对话解析用户现在在哪、要去哪以及出行方式。仅从地点目录选择完整且唯一的id，不得编造地点或坐标。缺少起点、终点或地点有歧义时，以简短中文追问，不猜测具体楼号。用户提到的楼号必须在目录的名称或别名中完全匹配；匹配不到就在reply里追问确认，origin_id或destination_id填null，禁止用相近号码（如把15号楼当成9号、10号）替代。结合历史补全后续回答，最新用户信息优先。返回JSON：{"origin_id":字符串或null,"destination_id":字符串或null,"mode":"walk或bike或auto","reply":"追问或简短出行说明"}。明确步行用walk，骑自行车或电动车用bike，未指定用auto。用户要少走路时可以bike；禁止声称实时路况或定位权限，不编造用时。地点目录：'''
     catalog=[{'id':str(p['id']),'name':p['name'],'aliases':p.get('aliases',[])} for p in items]
-    payload={'model':model,'messages':[{'role':'system','content':system+json.dumps(catalog,ensure_ascii=False)}]+[m.model_dump() for m in messages],
+    hints=mention_hints(messages,items)
+    hint_text=('\n地点消歧提示（优先级最高）：'+'；'.join(hints)+'。') if hints else ''
+    payload={'model':model,'messages':[{'role':'system','content':system+json.dumps(catalog,ensure_ascii=False)+hint_text}]+[m.model_dump() for m in messages],
              'stream':False,'temperature':0,'max_tokens':500,'response_format':{'type':'json_object'}}
     # Qwen accepts this option; other providers retain their own defaults.
     if 'qwen' in model.lower():payload['enable_thinking']=False
@@ -279,6 +300,80 @@ def demo_parse(messages,items):
     return {'origin_id':str(origin['id']),'destination_id':str(destination['id']),'mode':mode,'reply':''}
 
 
+BUS_SPEED_KMH=18
+BUS_WAIT_MINUTES=5
+
+def bus_options(graph,body,request):
+    """Walk-to-stop → ride the drawn line → walk-to-destination, per configured route."""
+    from .transit import configured
+    try:data=configured(request.app.state.store)
+    except Exception:return []
+    stops={s['id']:s for s in data['stops']}
+    if not stops:return []
+    def walk_between(a,b):
+        try:return route(graph,NavigationRequest(origin=a,destination=b,mode='walk'),'walk')
+        except ValueError:return None
+    out=[]
+    for r in data['routes']:
+        seq=[stops[i] for i in r['stop_ids'] if i in stops]
+        pts=[dict(p) for p in r['points']]
+        if len(seq)<2 or len(pts)<2:continue
+        cum=[0.0]
+        for a,b in zip(pts,pts[1:]):cum.append(cum[-1]+distance(a,b))
+        def vertex(s):
+            ds=[distance({'longitude':s['longitude'],'latitude':s['latitude']},p) for p in pts]
+            return ds.index(min(ds))
+        vi=[vertex(s) for s in seq]
+        def nearest(point):
+            ds=[distance(point.model_dump(),{'longitude':s['longitude'],'latitude':s['latitude']}) for s in seq]
+            i=min(range(len(ds)),key=lambda k:ds[k]);return i,ds[i]
+        oi,o_gap=nearest(body.origin);di,d_gap=nearest(body.destination)
+        if oi==di or o_gap>800 or d_gap>800:continue
+        w1=walk_between(body.origin,Point(longitude=seq[oi]['longitude'],latitude=seq[oi]['latitude']))
+        w2=walk_between(Point(longitude=seq[di]['longitude'],latitude=seq[di]['latitude']),body.destination)
+        if not w1 or not w2:continue
+        a,b=sorted((vi[oi],vi[di]))
+        ride_m=cum[b]-cum[a]
+        if ride_m<30:continue
+        crowd=[v['observation']['percent'] for v in data['vehicles'] if v['route_id']==r['id'] and v.get('observation')]
+        minutes=w1['duration_minutes']+BUS_WAIT_MINUTES+ride_m/(BUS_SPEED_KMH/3.6)/60+w2['duration_minutes']
+        out.append({'id':'bus:'+r['id'],'mode':'bus','route_name':r['name'],'color':r['color'],
+                    'board_stop':seq[oi]['name'],'alight_stop':seq[di]['name'],
+                    'wait_minutes':BUS_WAIT_MINUTES,'crowding_percent':round(sum(crowd)/len(crowd)) if crowd else None,
+                    'duration_minutes':round(minutes,1),'distance_m':round(w1['distance_m']+ride_m+w2['distance_m'],1),
+                    'geojson':{'type':'FeatureCollection','features':[
+                        {'type':'Feature','properties':{'segment':'walk','mode':'walk'},'geometry':w1['geojson']['geometry']},
+                        {'type':'Feature','properties':{'segment':'bus','mode':'bus','color':r['color'],'route_name':r['name']},'geometry':{'type':'LineString','coordinates':[[p['longitude'],p['latitude']] for p in pts[a:b+1]]}},
+                        {'type':'Feature','properties':{'segment':'walk','mode':'walk'},'geometry':w2['geojson']['geometry']}]},
+                    'notice':f"公交按平均候车{BUS_WAIT_MINUTES}分钟、时速{BUS_SPEED_KMH}km/h估算，不含实时班次；拥挤度来自车内观测或手动测试。"})
+    out.sort(key=lambda o:o['duration_minutes'])
+    return out[:2]
+
+def choose_option(preference,options,traffic):
+    """AI weighs time, walking, parking availability, bus crowding and live accidents."""
+    c=config();key=c.get('NAV_AI_API_KEY') or c.get('LLM_API_KEY')
+    base=c.get('NAV_AI_BASE_URL');model=c.get('NAV_AI_MODEL')
+    if not key or not base or not model:raise ValueError('unconfigured')
+    if not base.startswith('https://'):raise ValueError('AI接口必须使用HTTPS')
+    opts=[{'id':o['id'],'label':o['label'],'minutes':o['duration_minutes'],'meters':o['distance_m'],
+           'walk_minutes':o.get('walk_minutes'),'parking_free':o.get('free'),'parking_percent':o.get('percent'),
+           'bus_crowding_percent':o.get('crowding_percent'),'bus_wait_minutes':o.get('wait_minutes')} for o in options]
+    current={'active_accidents':(traffic or {}).get('active_accidents') or 0,'road_users':(traffic or {}).get('road_users') or 0}
+    payload={'model':model,'messages':[
+        {'role':'system','content':'你是校园出行助手。在候选方案中为用户选一个，权衡：耗时、步行长短、停车区余位与容载率（越满越应避免）、公交拥挤度与候车时间、当前事故起数与路上人数。用户明确表达的方式偏好优先。只返回JSON {"option_id":"候选id","reason":"50字内中文理由，必须提到至少一个影响选择的具体因素（如某停车区余位、公交拥挤度、当前事故）"}。current_traffic.active_accidents 是当前事故起数，大于0时不得声称"无事故"，可以说所选路线避开事故路段。数据均来自候选与路况，不得编造。'},
+        {'role':'user','content':json.dumps({'preference':preference,'options':opts,'current_traffic':current},ensure_ascii=False)}],
+        'stream':False,'temperature':0,'max_tokens':300,'response_format':{'type':'json_object'}}
+    if 'qwen' in model.lower():payload['enable_thinking']=False
+    req=urllib.request.Request(base.rstrip('/')+'/chat/completions',data=json.dumps(payload).encode(),headers={'Authorization':'Bearer '+key,'Content-Type':'application/json'})
+    try:
+        with urllib.request.urlopen(req,timeout=35) as response:raw=json.load(response)
+        answer=json.loads(raw['choices'][0]['message']['content'])
+        ids={o['id'] for o in options}
+        if answer.get('option_id') not in ids or not isinstance(answer.get('reason'),str):raise ValueError()
+        return answer['option_id'],answer['reason'][:300],model
+    except Exception:raise ValueError('AI选路失败') from None
+
+
 @router.post('/chat')
 def chat_navigation(body:ChatNavigationRequest,request:Request):
     if body.messages[-1].role!='user':raise HTTPException(422,'最后一条消息必须是出行请求')
@@ -304,21 +399,50 @@ def chat_navigation(body:ChatNavigationRequest,request:Request):
             if candidate_mode=='bike':
                 parking=compute_parking(nav,request,graph,areas)['items']
                 if parking:
-                    direct={**parking[0],'mode':'bike','notice':'蓝线到停车区，紫色线为停车后步行；耗时不含入口接驳和停车操作。'}
+                    direct={**parking[0],'id':'bike','mode':'bike','notice':'蓝线到停车区，紫色线为停车后步行；耗时不含入口接驳和停车操作。'}
             options.append(direct)
         except ValueError:continue
-    if not options:raise HTTPException(422,'这两个地点之间暂无可通行路线，请换一个入口或目的地')
     if len(parking)>1:
-        second={**parking[1],'mode':'bike','notice':'备选停车区：蓝线到停车区，紫色线为停车后步行；耗时不含入口接驳和停车操作。'}
+        second={**parking[1],'id':'bike-alt','mode':'bike','notice':'备选停车区：蓝线到停车区，紫色线为停车后步行；耗时不含入口接驳和停车操作。'}
         options.append(second)
-    result=min(options,key=lambda r:r['duration_minutes'])
-    verb='步行' if result['mode']=='walk' else '骑行'
+    nav=NavigationRequest(origin=origin,destination=destination,mode='walk')
+    options.extend(bus_options(graph,nav,request))
+    if not parking:
+        try:parking=compute_parking(NavigationRequest(origin=origin,destination=destination,mode='bike'),request,graph,areas)['items']
+        except ValueError:parking=[]
+    if not options:raise HTTPException(422,'这两个地点之间暂无可通行路线，请换一个入口或目的地')
+    seen=set()
+    for o in options:
+        o.setdefault('id',o['mode'])
+        while o['id'] in seen:o['id']+='-x'
+        seen.add(o['id'])
+        accidents=(traffic or {}).get('active_accidents') or 0
+        if o['mode']=='walk':
+            o['label']='步行直达';o['factors']=f"全程步行 · 当前路上 {(traffic or {}).get('road_users') or 0} 人" + (f" · 事故 {accidents} 起" if accidents else '')
+        elif o['mode']=='bus':
+            o['label']=f"公交 {o['route_name']}：{o['board_stop']} → {o['alight_stop']}"
+            crowd=o.get('crowding_percent')
+            o['factors']=(f"车内拥挤度 {crowd}%" if crowd is not None else '暂无车内人数数据')+f" · 候车约 {o['wait_minutes']} 分" + (f" · 当前事故 {accidents} 起" if accidents else '')
+        else:
+            o['label']='骑行，经'+o['name']+'停车' if o.get('area_id') else '骑行直达'
+            o['factors']=(f"{o['name']}余位 {o.get('free')} / {o.get('capacity')} · 容载率 {o.get('percent')}%" if o.get('area_id') else '直达骑行，无需停车') + (f" · 当前事故 {accidents} 起" if accidents else '')
+    preference_text=' '.join(m.content for m in body.messages if m.role=='user')[-400:]
+    ai_reason='';ai_model=model
+    try:
+        chosen_id,ai_reason,ai_model=choose_option(preference_text,options,traffic)
+        result=next(o for o in options if o['id']==chosen_id)
+    except ValueError:
+        result=min(options,key=lambda r:r['duration_minutes'])
+    verb={'walk':'步行','bike':'骑行','bus':'乘坐公交'}[result['mode']]
     stop='，在'+result['name']+'停车后步行' if result.get('area_id') else ''
-    reply=f"从{origin['name']}到{destination['name']}，建议{verb}{stop}，预计{result['duration_minutes']}分钟，约{result['distance_m']}米。"
+    bus_leg=f"（{result['board_stop']}上车，{result['alight_stop']}下车）" if result['mode']=='bus' else ''
+    reply=f"从{origin['name']}到{destination['name']}，建议{verb}{bus_leg}{stop}，预计{result['duration_minutes']}分钟，约{result['distance_m']}米。"
+    if ai_reason:reply+=ai_reason
     if result['mode']=='bike' and not parking:reply+='目的地附近暂无可推荐停车区，请勿随意停车。'
     if demo:reply='演示模式：大模型尚未接入，以下为内置规则按真实路网计算的候选。'+reply
-    choices=[{'mode':o['mode'],'duration_minutes':o['duration_minutes'],'distance_m':o['distance_m'],
-              'area_id':o.get('area_id'),'name':o.get('name'),
-              'label':('步行直达' if o['mode']=='walk' else ('骑行，经'+o['name']+'停车' if o.get('area_id') else '骑行直达')),
+    choices=[{'id':o['id'],'mode':o['mode'],'duration_minutes':o['duration_minutes'],'distance_m':o['distance_m'],
+              'area_id':o.get('area_id'),'name':o.get('name'),'factors':o['factors'],
+              'label':o['label'],'free':o.get('free'),'capacity':o.get('capacity'),'percent':o.get('percent'),
+              'crowding_percent':o.get('crowding_percent'),
               'route':o} for o in options]
-    return {'status':'route','reply':reply,'origin':origin,'destination':destination,'route':{**result,'traffic':traffic,'ai':{'model':model,'reason':reply}},'parking':parking if result['mode']=='bike' else [],'options':choices,'demo':demo}
+    return {'status':'route','reply':reply,'origin':origin,'destination':destination,'recommended':result['id'],'route':{**result,'traffic':traffic,'ai':{'model':ai_model,'reason':ai_reason or reply}},'parking':parking if any(o['mode']=='bike' for o in options) else [],'options':choices,'demo':demo}
