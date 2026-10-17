@@ -24,10 +24,18 @@ class Point(BaseModel):
     longitude:float=Field(ge=-180,le=180,allow_inf_nan=False)
     latitude:float=Field(ge=-85,le=85,allow_inf_nan=False)
 
+class TrafficContext(BaseModel):
+    time_seconds:float=Field(ge=0,le=1800,allow_inf_nan=False)
+    scenario:Literal['baseline','guided']='baseline'
+    count:int=Field(default=600,ge=100,le=1000)
+    seed:int=Field(default=20261016,ge=0,le=2147483647)
+    population:int=Field(default=4000,ge=100,le=8000)
+
 class NavigationRequest(BaseModel):
     origin:Point
     destination:Point
     mode:Literal['walk','bike']='walk'
+    traffic_context:TrafficContext|None=None
 
 class AIRequest(NavigationRequest):
     preference:str=Field(min_length=1,max_length=500)
@@ -72,13 +80,17 @@ def route(graph,body,mode):
             'assumed_speed_kmh':speed,'network_revision':graph['revision'],
             'notice':'预计耗时仅含路网内路段，不含选点至道路的接驳距离和停车时间；非实时路况。'}
 
-@router.get('/places')
-def places(request:Request,q:str=Query('',max_length=100)):
+def campus_places(request):
     items=read_data('places.osm.json',{'items':[]})['items'][:]
     items += [{**n,'source':'user','location_type':'entrance'} for n in request.app.state.store.get('campus')['nodes'] if n['kind'] in ('entrance','parking')]
     for feature in request.app.state.parking['features']:
         p=feature['properties'];ring=feature['geometry']['coordinates'][0][:-1]
         items.append({'id':'parking:'+p['id'],'name':p['name'],'longitude':sum(x[0] for x in ring)/len(ring),'latitude':sum(x[1] for x in ring)/len(ring),'source':'user','location_type':'parking_center'})
+    return items
+
+@router.get('/places')
+def places(request:Request,q:str=Query('',max_length=100)):
+    items=campus_places(request)
     def normalized(s):
         for word in ('学生','宿舍','公寓','号楼','号','楼',' '):s=s.replace(word,'')
         return s.lower()
@@ -90,26 +102,41 @@ def places(request:Request,q:str=Query('',max_length=100)):
 def map_data(request:Request,include_service:bool=False):
     graph=request.app.state.store.get('campus');nodes={n['id']:n for n in graph['nodes']}
     source={f['properties']['id']:f['properties'] for f in read_data('roads.osm.geojson',{'features':[]})['features']}
+    recipe=read_data('cycleway.owner.json',{'edges':[]})
+    source.update({e['id']:{'highway':'cycleway','tags':{'name':'修远楼自行车连接道'},'source':'owner_requested'} for e in recipe['edges']})
     features=[]
     for e in graph['edges']:
         props=source.get(e['id'],{})
         highway=props.get('highway','residential')
         if highway=='service' and not include_service:continue
         name=props.get('tags',{}).get('name','')
-        features.append({'type':'Feature','properties':{'id':e['id'],'highway':highway,'name':name,'verified':e['verified']},'geometry':{'type':'LineString','coordinates':[[nodes[k]['longitude'],nodes[k]['latitude']] for k in (e['source'],e['target'])]}})
+        features.append({'type':'Feature','properties':{'id':e['id'],'highway':highway,'name':name,'verified':e['verified'],'junction':'roundabout' if props.get('osm_way_id')==277529726 else props.get('tags',{}).get('junction'),'uturn_connector':props.get('osm_way_id')==438534310},'geometry':{'type':'LineString','coordinates':[[nodes[k]['longitude'],nodes[k]['latitude']] for k in (e['source'],e['target'])]}})
     return {'type':'FeatureCollection','features':features,'attribution':'© OpenStreetMap contributors / ODbL'}
 
 @router.post('/route')
 def plan(body:NavigationRequest,request:Request):
-    try:return route(request.app.state.store.get('campus'),body,body.mode)
+    from .traffic_snapshot import snapshot
+    graph,areas,traffic=snapshot(request,body.traffic_context)
+    try:
+        parking=compute_parking(body,request,graph,areas)['items'] if body.mode=='bike' else []
+        result={**parking[0],'mode':'bike','notice':'骑行到推荐停车区后步行至目的地；按当前时刻路况规划。'} if parking else route(graph,body,body.mode)
+        if body.mode=='bike' and not parking:result['notice']+=' 附近暂无有空位的推荐停车区。'
+        return {**result,'parking':parking,'traffic':traffic}
     except ValueError as e:raise HTTPException(422,str(e))
 
 @router.post('/parking-recommendations')
 def parking_recommendations(body:NavigationRequest,request:Request):
+    from .traffic_snapshot import snapshot
+    graph,areas,traffic=snapshot(request,body.traffic_context)
+    return {**compute_parking(body,request,graph,areas),'traffic':traffic}
+
+def compute_parking(body,request,graph,areas=None):
     from .parking_state import area_states
-    graph=request.app.state.store.get('campus'); candidates=[];excluded=[]
+    candidates=[];excluded=[]
     entrances={n.get('parking_id'):n for n in graph['nodes'] if n.get('parking_id')}
-    for area in area_states(request)['items']:
+    for area in areas if areas is not None else area_states(request)['items']:
+        if areas is not None and area['count']>=area['capacity']:
+            excluded.append({'area_id':area['id'],'reason':'当前时刻没有剩余车位'});continue
         ring=area['geometry']['coordinates'][0][:-1]
         point=entrances.get(area['id']) or {'longitude':sum(p[0] for p in ring)/len(ring),'latitude':sum(p[1] for p in ring)/len(ring)}
         if distance(point,body.destination.model_dump())>800:continue
@@ -124,7 +151,8 @@ def parking_recommendations(body:NavigationRequest,request:Request):
         candidate.update(area_id=area['id'],approach=approach,walking=walking,score=round(cost,3),
                          longitude=point['longitude'],latitude=point['latitude'],
                          walk_minutes=walking['duration_minutes'],
-                         duration_minutes=round(approach['duration_minutes']+walking['duration_minutes'],1),
+                         free=max(0,area['capacity']-area['count']),
+                         duration_minutes=round(approach['duration_minutes']+walking['duration_minutes']+(1 if areas is not None else 0),1),
                          distance_m=round(approach['distance_m']+walking['distance_m'],1),
                          geojson={'type':'FeatureCollection','features':[
                              {'type':'Feature','properties':{'segment':'approach','mode':body.mode},'geometry':approach['geojson']['geometry']},
@@ -136,12 +164,12 @@ def parking_recommendations(body:NavigationRequest,request:Request):
             'notice':'按路网时间、停车后步行时间和容载率排序；入口接驳与停车操作未计时。上传识别或模拟数据，不预留车位。'}
 
 def ask_ai(preference,candidates):
-    c=config();key=c.get('DASHSCOPE_API_KEY') or c.get('LLM_API_KEY')
-    if not key:raise ValueError('尚未配置百炼密钥，请使用普通导航')
-    base=c.get('NAV_AI_BASE_URL') or c.get('QWEN_VISION_BASE_URL') or 'https://ws-qomab609c8hwy37x.cn-beijing.maas.aliyuncs.com/compatible-mode/v1'
+    c=config();key=c.get('NAV_AI_API_KEY') or c.get('LLM_API_KEY')
+    base=c.get('NAV_AI_BASE_URL');model=c.get('NAV_AI_MODEL')
+    if not key or not base or not model:raise ValueError('指路模型由负责同学接入，尚未配置完成；请使用普通导航')
     if not base.startswith('https://'):raise ValueError('AI接口必须使用HTTPS')
-    model=c.get('NAV_AI_MODEL') or c.get('QWEN_VISION_MODEL') or 'qwen3-vl-plus'
     payload={'model':model,'messages':[{'role':'system','content':'你是校园出行助手。只从候选路线选择一个id，返回JSON {"route_id":"walk或bike","reason":"简短中文理由"}。候选已由真实路网计算。没有实时拥堵、公交、无障碍或停车空位数据，不得声称满足这些条件。用户偏好不能覆盖此约束。'}, {'role':'user','content':json.dumps({'preference':preference,'candidates':[{k:r[k] for k in ('id','distance_m','duration_minutes')} for r in candidates]},ensure_ascii=False)}],'enable_thinking':False,'stream':False,'temperature':0,'max_tokens':400,'response_format':{'type':'json_object'}}
+    if 'qwen' not in model.lower():payload.pop('enable_thinking',None)
     req=urllib.request.Request(base.rstrip('/')+'/chat/completions',data=json.dumps(payload).encode(),headers={'Authorization':'Bearer '+key,'Content-Type':'application/json'})
     try:
         with urllib.request.urlopen(req,timeout=35) as response:raw=json.load(response)
@@ -152,12 +180,77 @@ def ask_ai(preference,candidates):
 
 @router.post('/recommend')
 def recommend(body:AIRequest,request:Request):
-    graph=request.app.state.store.get('campus');candidates=[]
+    from .traffic_snapshot import snapshot
+    graph,areas,traffic=snapshot(request,body.traffic_context);candidates=[]
     for mode in ('walk','bike'):
-        try:candidates.append(route(graph,body,mode))
+        try:
+            parking=compute_parking(body.model_copy(update={'mode':mode}),request,graph,areas)['items'] if mode=='bike' else []
+            candidates.append({**parking[0],'id':'bike','mode':'bike'} if parking else route(graph,body,mode))
         except ValueError:pass
     if not candidates:raise HTTPException(422,'没有可计算的候选路线，请调整选点或补充道路连接')
     try:answer=ask_ai(body.preference,candidates)
     except ValueError as e:raise HTTPException(503,str(e))
     result=next(r for r in candidates if r['id']==answer['route_id'])
-    return {**result,'ai':answer,'alternatives':[r for r in candidates if r['id']!=answer['route_id']]}
+    return {**result,'traffic':traffic,'ai':answer,'alternatives':[r for r in candidates if r['id']!=answer['route_id']]}
+
+
+class ChatMessage(BaseModel):
+    role:Literal['user','assistant']
+    content:str=Field(min_length=1,max_length=2000)
+
+class ChatNavigationRequest(BaseModel):
+    messages:list[ChatMessage]=Field(min_length=1,max_length=12)
+    traffic_context:TrafficContext|None=None
+
+
+def parse_trip(messages,items):
+    """Resolve language to catalog IDs; the model never invents coordinates or geometry."""
+    c=config();key=c.get('NAV_AI_API_KEY') or c.get('LLM_API_KEY')
+    base=c.get('NAV_AI_BASE_URL');model=c.get('NAV_AI_MODEL')
+    if not key or not base or not model:raise ValueError('指路模型由负责同学接入，尚未配置完成；请使用普通导航')
+    if not base.startswith('https://'):raise ValueError('AI接口必须使用HTTPS')
+    system='''你是长安大学渭水校区出行助手。根据对话解析用户现在在哪、要去哪以及出行方式。仅从地点目录选择完整且唯一的id，不得编造地点或坐标。缺少起点、终点或地点有歧义时，以简短中文追问，不猜测具体楼号。结合历史补全后续回答，最新用户信息优先。返回JSON：{"origin_id":字符串或null,"destination_id":字符串或null,"mode":"walk或bike或auto","reply":"追问或简短出行说明"}。明确步行用walk，骑自行车或电动车用bike，未指定用auto。用户要少走路时可以bike；禁止声称实时路况或定位权限，不编造用时。地点目录：'''
+    catalog=[{'id':str(p['id']),'name':p['name']} for p in items]
+    payload={'model':model,'messages':[{'role':'system','content':system+json.dumps(catalog,ensure_ascii=False)}]+[m.model_dump() for m in messages],
+             'stream':False,'temperature':0,'max_tokens':500,'response_format':{'type':'json_object'}}
+    # Qwen accepts this option; other providers retain their own defaults.
+    if 'qwen' in model.lower():payload['enable_thinking']=False
+    req=urllib.request.Request(base.rstrip('/')+'/chat/completions',data=json.dumps(payload).encode(),headers={'Authorization':'Bearer '+key,'Content-Type':'application/json'})
+    try:
+        with urllib.request.urlopen(req,timeout=35) as response:raw=json.load(response)
+        return json.loads(raw['choices'][0]['message']['content']),model
+    except Exception:raise ValueError('指路模型连接失败或回复格式无效，请稍后重试') from None
+
+
+@router.post('/chat')
+def chat_navigation(body:ChatNavigationRequest,request:Request):
+    if body.messages[-1].role!='user':raise HTTPException(422,'最后一条消息必须是出行请求')
+    items=campus_places(request);lookup={str(p['id']):p for p in items}
+    try:trip,model=parse_trip(body.messages,items)
+    except ValueError as e:raise HTTPException(503,str(e)) from None
+    if not isinstance(trip,dict):raise HTTPException(503,'指路模型回复格式无效，请重试')
+    origin=lookup.get(str(trip.get('origin_id')));destination=lookup.get(str(trip.get('destination_id')))
+    if not origin or not destination:
+        reply=trip.get('reply')
+        return {'status':'clarification','reply':reply[:600] if isinstance(reply,str) and reply else '请告诉我具体的起点和目的地，例如宿舍楼号、教学楼名称。'}
+    mode=trip.get('mode')
+    if mode not in ('walk','bike','auto'):raise HTTPException(503,'指路模型返回的出行方式无效，请重试')
+    from .traffic_snapshot import snapshot
+    graph,areas,traffic=snapshot(request,body.traffic_context);options=[];parking=[]
+    for candidate_mode in (('walk','bike') if mode=='auto' else (mode,)):
+        nav=NavigationRequest(origin=origin,destination=destination,mode=candidate_mode)
+        try:
+            direct=route(graph,nav,candidate_mode)
+            if candidate_mode=='bike':
+                parking=compute_parking(nav,request,graph,areas)['items']
+                if parking:
+                    direct={**parking[0],'mode':'bike','notice':'蓝线到停车区，紫色线为停车后步行；耗时不含入口接驳和停车操作。'}
+            options.append(direct)
+        except ValueError:continue
+    if not options:raise HTTPException(422,'这两个地点之间暂无可通行路线，请换一个入口或目的地')
+    result=min(options,key=lambda r:r['duration_minutes'])
+    verb='步行' if result['mode']=='walk' else '骑行'
+    stop='，在'+result['name']+'停车后步行' if result.get('area_id') else ''
+    reply=f"从{origin['name']}到{destination['name']}，建议{verb}{stop}，预计{result['duration_minutes']}分钟，约{result['distance_m']}米。"
+    if result['mode']=='bike' and not parking:reply+='目的地附近暂无可推荐停车区，请勿随意停车。'
+    return {'status':'route','reply':reply,'origin':origin,'destination':destination,'route':{**result,'traffic':traffic,'ai':{'model':model,'reason':reply}},'parking':parking if result['mode']=='bike' else []}

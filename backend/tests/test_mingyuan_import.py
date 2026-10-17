@@ -9,7 +9,7 @@ BATCH='mingyuan-20261016'
 def test_mingyuan_preserves_provided_ids_capacities_and_locations():
     original=json.loads((Path(__file__).resolve().parents[2]/'data/parking.mingyuan.original.geojson').read_text(encoding='utf-8'))
     collection=load_parking();imported=[f for f in collection['features'] if f['properties'].get('import_batch')==BATCH]
-    assert len(original['features'])==len(imported)==17 and len(collection['features'])==33
+    assert len(original['features'])==len(imported)==17 and len(collection['features'])==41
     lookup={f['properties']['id']:f for f in imported}
     assert len(lookup)==17 and sum(f['properties']['capacity'] for f in imported)==640
     for f in original['features']:

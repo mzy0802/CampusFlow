@@ -37,6 +37,36 @@ def merge_import_batch(store,default,batch_id):
         db.execute('INSERT INTO settings VALUES(?,?)',('parking_import:'+batch_id,json.dumps({'added_ids':[f['properties']['id'] for f in added],'at':now()})))
     return {'revision':revision,'collection':collection}
 
+def replace_import_batch(store, default, batch_id):
+    """Apply an owner-supplied replacement once, preserving unrelated areas and history."""
+    ensure(store, default)
+    incoming = [f for f in default['features'] if f['properties'].get('import_batch') == batch_id]
+    if not incoming:
+        return ensure(store, default)
+    with store.connect() as db:
+        db.execute('CREATE TABLE IF NOT EXISTS settings(key TEXT PRIMARY KEY,value TEXT)')
+        db.execute('BEGIN IMMEDIATE')
+        row = db.execute('SELECT * FROM parking_geometry WHERE id=1').fetchone()
+        collection = json.loads(row['payload'])
+        key = 'parking_replace:' + batch_id
+        if db.execute('SELECT 1 FROM settings WHERE key=?', (key,)).fetchone():
+            return {'revision': row['revision'], 'collection': collection}
+        replacements = {f['properties']['id']: f for f in incoming}
+        existing_ids = {f['properties']['id'] for f in collection['features']}
+        collection['features'] = [replacements.get(f['properties']['id'], f) for f in collection['features']]
+        collection['features'].extend(f for f in incoming if f['properties']['id'] not in existing_ids)
+        revision = row['revision']
+        if collection != json.loads(row['payload']):
+            db.execute('INSERT INTO parking_geometry_history VALUES(?,?,?)', (revision, row['payload'], now()))
+            revision += 1
+            db.execute('UPDATE parking_geometry SET revision=?,payload=? WHERE id=1', (revision, json.dumps(collection, ensure_ascii=False)))
+        for f in incoming:
+            p = f['properties']
+            db.execute('INSERT OR REPLACE INTO parking_config VALUES(?,?,?,?)', (p['id'], p['name'], p['capacity'], now()))
+        db.execute('INSERT INTO settings VALUES(?,?)', (key, now()))
+    return {'revision': revision, 'collection': collection}
+
+
 def validate_collection(collection,existing=None):
     if collection.get('type')!='FeatureCollection' or not isinstance(collection.get('features'),list) or len(collection['features'])>500:raise ValueError('需要最多500个区域的GeoJSON FeatureCollection')
     ids=set();features=[]

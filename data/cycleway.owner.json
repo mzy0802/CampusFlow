@@ -1,0 +1,106 @@
+{
+  "version": "owner_cycleway_20261017",
+  "source": "owner_requested_connection_of_saved_nodes",
+  "nodes": [
+    {
+      "id": "osm_n11451826855",
+      "name": "步行道 · 11451826855",
+      "longitude": 108.8973404,
+      "latitude": 34.3726153,
+      "kind": "junction",
+      "parking_id": null,
+      "capacity": 100,
+      "available": 50
+    },
+    {
+      "id": "osm_n11173238457",
+      "name": "步行道 · 11173238457",
+      "longitude": 108.8975541,
+      "latitude": 34.3721016,
+      "kind": "junction",
+      "parking_id": null,
+      "capacity": 100,
+      "available": 50
+    },
+    {
+      "id": "n28f92267f436",
+      "name": "新节点 1072",
+      "longitude": 108.8976538,
+      "latitude": 34.371991,
+      "kind": "junction",
+      "parking_id": null,
+      "capacity": 100,
+      "available": 50
+    },
+    {
+      "id": "nead5b502edda",
+      "name": "新节点 1073",
+      "longitude": 108.898083,
+      "latitude": 34.3714863,
+      "kind": "junction",
+      "parking_id": null,
+      "capacity": 100,
+      "available": 50
+    },
+    {
+      "id": "osm_n2613667577",
+      "name": "校内道路 · 2613667577",
+      "longitude": 108.898319,
+      "latitude": 34.3713299,
+      "kind": "junction",
+      "parking_id": null,
+      "capacity": 100,
+      "available": 50
+    }
+  ],
+  "edges": [
+    {
+      "id": "osm_w1205663659_1",
+      "source": "osm_n11451826855",
+      "target": "osm_n11173238457",
+      "modes": [
+        "walk",
+        "bike"
+      ],
+      "bidirectional": true,
+      "congestion": 1,
+      "verified": true
+    },
+    {
+      "id": "ebffe18a21126",
+      "source": "osm_n11173238457",
+      "target": "n28f92267f436",
+      "modes": [
+        "walk",
+        "bike"
+      ],
+      "bidirectional": true,
+      "congestion": 1,
+      "verified": true
+    },
+    {
+      "id": "owner_cycleway_20261017_2",
+      "source": "n28f92267f436",
+      "target": "nead5b502edda",
+      "modes": [
+        "walk",
+        "bike"
+      ],
+      "bidirectional": true,
+      "congestion": 1,
+      "verified": true
+    },
+    {
+      "id": "owner_cycleway_20261017_3",
+      "source": "nead5b502edda",
+      "target": "osm_n2613667577",
+      "modes": [
+        "walk",
+        "bike"
+      ],
+      "bidirectional": true,
+      "congestion": 1,
+      "verified": true
+    }
+  ]
+}

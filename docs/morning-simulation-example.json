@@ -1,0 +1,22 @@
+{
+  "source": "scenario_simulation",
+  "is_observed": false,
+  "count": 4000,
+  "seed": 20261016,
+  "time": "08:30",
+  "notice": "Single synthetic scenario; not measured intervention effectiveness. Uses repository seed geometry/capacities, not local database edits.",
+  "cases": {
+    "baseline": {
+      "parked": 3400,
+      "over_capacity_areas": 13,
+      "peak_percent": 246.67,
+      "normalized_load_cv": 1.3116
+    },
+    "guided": {
+      "parked": 3400,
+      "over_capacity_areas": 9,
+      "peak_percent": 116.67,
+      "normalized_load_cv": 0.205
+    }
+  }
+}

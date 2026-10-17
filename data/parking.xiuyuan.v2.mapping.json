@@ -1,0 +1,92 @@
+[
+  {
+    "name": "修远4西南",
+    "source_id": "X4001",
+    "id": "X4001",
+    "capacity": 80
+  },
+  {
+    "name": "修远4西北",
+    "source_id": "x4002",
+    "id": "x4002",
+    "capacity": 60
+  },
+  {
+    "name": "修远2东面",
+    "source_id": "x2003",
+    "id": "x2001",
+    "capacity": 50
+  },
+  {
+    "name": "修远4北",
+    "source_id": "x4003",
+    "id": "x4003",
+    "capacity": 100
+  },
+  {
+    "name": "修远西1",
+    "source_id": "x2001",
+    "id": "xy1",
+    "capacity": 100
+  },
+  {
+    "name": "修远西2",
+    "source_id": "x2002",
+    "id": "xy2",
+    "capacity": 40
+  },
+  {
+    "name": "修远北",
+    "source_id": "x001",
+    "id": "x001",
+    "capacity": 100
+  },
+  {
+    "name": "修远1西",
+    "source_id": "x1001",
+    "id": "x1001",
+    "capacity": 50
+  },
+  {
+    "name": "修远3南",
+    "source_id": "x3001",
+    "id": "x3001_2",
+    "capacity": 100
+  },
+  {
+    "name": "修远3东",
+    "source_id": "x3002",
+    "id": "x3001",
+    "capacity": 80
+  },
+  {
+    "name": "修远大停车场",
+    "source_id": "x002",
+    "id": "x002",
+    "capacity": 200
+  },
+  {
+    "name": "修远2东",
+    "source_id": "x2003",
+    "id": "x2003",
+    "capacity": 60
+  },
+  {
+    "name": "修远4东1",
+    "source_id": "x4004",
+    "id": "x4004",
+    "capacity": 50
+  },
+  {
+    "name": "修远4东2",
+    "source_id": "x4004",
+    "id": "x4004_2",
+    "capacity": 50
+  },
+  {
+    "name": "修远廊桥",
+    "source_id": "x003",
+    "id": "x003",
+    "capacity": 88
+  }
+]

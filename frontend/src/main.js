@@ -1,8 +1,9 @@
 import { createApp } from 'vue'
 import 'leaflet/dist/leaflet.css'
 import './style.css'
+import './fonts.css'
 import App from './App.vue'
-import NavigationApp from './NavigationApp.vue'
+import SimulationApp from './SimulationApp.vue'
 
-document.title=location.pathname.startsWith('/debug')?'CampusFlow · 调试与标注':'CampusFlow · 校园导航'
-createApp(location.pathname.startsWith('/debug') ? App : NavigationApp).mount('#app')
+document.title=location.pathname.startsWith('/debug')?'CampusFlow · 调试与标注':'CampusFlow · 早高峰交通演示'
+createApp(location.pathname.startsWith('/debug') ? App : SimulationApp).mount('#app')

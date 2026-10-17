@@ -7,6 +7,7 @@ import VisionPanel from './components/VisionPanel.vue'
 import RouteWorkbench from './components/RouteWorkbench.vue'
 import ParkingEditor from './components/ParkingEditor.vue'
 import TransitWorkbench from './components/TransitWorkbench.vue'
+import AnimationSettings from './components/AnimationSettings.vue'
 const editingParking=ref(false)
 const areas=ref(null),snapshot=ref(null),observations=ref([]),error=ref(''),loading=ref(false)
 const selected=ref(''),tab=ref('parking'),moduleInfo=ref(''),useOsm=ref(true),tileError=ref(false)
@@ -87,7 +88,7 @@ onBeforeUnmount(()=>{stopped=true;clearInterval(timer);resizeObserver?.disconnec
     <TransitWorkbench v-if="tab==='transit'" @close="tab='parking';refresh()" />
     <RouteWorkbench v-if="['roads','routing'].includes(tab)" :areas="rows" :parking-geo-json="areas" @close="tab='parking';refresh()" />
     <div ref="mapEl" class="full-map" aria-label="校园停车区域地图"></div>
-    <nav class="rail" aria-label="主要功能"><div class="app-symbol"><MapIcon name="map" :size="29" /></div><button v-for="[key,icon,label] in tabs" :key="key" :class="{active:tab===key}" @click="switchTab(key)"><span><MapIcon :name="icon" /></span>{{label}}</button><div class="rail-bottom">DEMO</div></nav>
+    <AnimationSettings/><nav class="rail" aria-label="主要功能"><div class="app-symbol"><MapIcon name="map" :size="29" /></div><button v-for="[key,icon,label] in tabs" :key="key" :class="{active:tab===key}" @click="switchTab(key)"><span><MapIcon :name="icon" /></span>{{label}}</button><div class="rail-bottom">DEMO</div></nav>
     <div class="search-box"><button class="icon-button" :aria-label="panelOpen?'收起侧栏':'展开侧栏'" @click="panelOpen=!panelOpen"><MapIcon :name="panelOpen?'close':'search'" /></button><form @submit.prevent="search"><input v-model="query" aria-label="搜索停车区域" placeholder="搜索校园停车区" @focus="tab='parking';panelOpen=true"><button class="icon-button" aria-label="搜索"><MapIcon name="search" :size="21" /></button></form></div>
     <div class="map-chips" aria-label="地图快捷操作"><button class="chip active" @click="switchTab('parking');fitAll()"><MapIcon name="parking" :size="17" />周边停车</button><button class="chip" @click="switchTab('vision')"><MapIcon name="people" :size="17" />人车识别测试</button><span class="campus-label">长安大学 · 渭水校区</span></div>
     <aside v-show="panelOpen" class="side-panel" aria-label="区域与识别面板">
