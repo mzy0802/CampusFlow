@@ -15,7 +15,7 @@ def test_replacement_source_capacities_and_unique_ids():
     valid = [f for f in raw['features'] if f.get('geometry')]
     assert len(incoming) == len(valid) == 15
     assert sum(f['properties']['capacity'] for f in incoming) == 1208
-    assert len({f['properties']['id'] for f in default['features']}) == 41
+    assert len({f['properties']['id'] for f in default['features']}) == 52
     for source, result in zip(valid, incoming):
         assert result['properties']['capacity'] == source['properties']['space']
         assert set(map(tuple, result['geometry']['coordinates'][0])) == set(map(tuple, source['geometry']['coordinates']))
@@ -35,7 +35,7 @@ def test_replace_once_updates_capacity_preserves_links_and_other_edits(tmp_path)
     assert lookup['x2001']['properties']['name'] == '修远2东面'
     assert lookup['x2001']['properties']['capacity'] == 50
     assert lookup['WM1001']['properties']['capacity'] == 777
-    assert len(lookup) == 41
+    assert len(lookup) == 52
     store.set_capacity('x2001', 123)
     again = replace_import_batch(store, default, BATCH)
     assert again['revision'] == result['revision']

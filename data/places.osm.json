@@ -1018,6 +1018,16 @@
       "source": "OpenStreetMap",
       "location_type": "building_center",
       "verified": false
+    },
+    {
+      "id": "osm_relation_16871375",
+      "name": "修远教学楼四区",
+      "longitude": 108.8976996631579,
+      "latitude": 34.372479847368425,
+      "source": "OpenStreetMap",
+      "location_type": "building_center",
+      "verified": false,
+      "source_url": "https://www.openstreetmap.org/relation/16871375"
     }
   ]
 }

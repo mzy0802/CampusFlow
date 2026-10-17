@@ -1,1874 +1,2406 @@
 {
-  "type": "FeatureCollection",
-  "is_example": false,
-  "description": "用户提供的校园停车区：原有7个、明远17个、修远新标注9个。名称补充楼区前缀，容量和坐标来自原始文件；状态来源另行标记。",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "WM1001",
-        "name": "明远1西侧",
-        "capacity": 20,
-        "source": "user_upload",
-        "source_file": "parking.mingyuan.original.geojson",
-        "import_batch": "mingyuan-20261016",
-        "capacity_source": "user_file"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              108.899015,
-              34.371042
-            ],
-            [
-              108.899023,
-              34.371013
-            ],
-            [
-              108.899144,
-              34.371048
-            ],
-            [
-              108.899135,
-              34.371077
-            ],
-            [
-              108.899015,
-              34.371042
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "WM4005",
-        "name": "明远4东北角",
-        "capacity": 30,
-        "source": "user_upload",
-        "source_file": "parking.mingyuan.original.geojson",
-        "import_batch": "mingyuan-20261016",
-        "capacity_source": "user_file"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              108.899186,
-              34.371074
-            ],
-            [
-              108.899221,
-              34.370979
-            ],
-            [
-              108.899262,
-              34.370987
-            ],
-            [
-              108.899227,
-              34.371087
-            ],
-            [
-              108.899205,
-              34.371081
-            ],
-            [
-              108.899186,
-              34.371074
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "WM1002",
-        "name": "明远1东南",
-        "capacity": 60,
-        "source": "user_upload",
-        "source_file": "parking.mingyuan.original.geojson",
-        "import_batch": "mingyuan-20261016",
-        "capacity_source": "user_file"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              108.897504,
-              34.370395
-            ],
-            [
-              108.897572,
-              34.370377
-            ],
-            [
-              108.897639,
-              34.370387
-            ],
-            [
-              108.897679,
-              34.370419
-            ],
-            [
-              108.897705,
-              34.370458
-            ],
-            [
-              108.89773,
-              34.370443
-            ],
-            [
-              108.897699,
-              34.37041
-            ],
-            [
-              108.897646,
-              34.370374
-            ],
-            [
-              108.897567,
-              34.370363
-            ],
-            [
-              108.897494,
-              34.370379
-            ],
-            [
-              108.897503,
-              34.370394
-            ],
-            [
-              108.897504,
-              34.370394
-            ],
-            [
-              108.897504,
-              34.370395
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "WM1003",
-        "name": "明远1中1",
-        "capacity": 80,
-        "source": "user_upload",
-        "source_file": "parking.mingyuan.original.geojson",
-        "import_batch": "mingyuan-20261016",
-        "capacity_source": "user_file"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              108.897768,
-              34.370912
-            ],
-            [
-              108.897903,
-              34.370646
-            ],
-            [
-              108.897934,
-              34.370655
-            ],
-            [
-              108.897817,
-              34.370924
-            ],
-            [
-              108.897807,
-              34.370923
-            ],
-            [
-              108.897768,
-              34.370912
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "WM1004",
-        "name": "明远1中2",
-        "capacity": 60,
-        "source": "user_upload",
-        "source_file": "parking.mingyuan.original.geojson",
-        "import_batch": "mingyuan-20261016",
-        "capacity_source": "user_file"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              108.897837,
-              34.370928
-            ],
-            [
-              108.897952,
-              34.370658
-            ],
-            [
-              108.897984,
-              34.370669
-            ],
-            [
-              108.897878,
-              34.370939
-            ],
-            [
-              108.897837,
-              34.370928
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "WM4001",
-        "name": "明远4南侧",
-        "capacity": 30,
-        "source": "user_upload",
-        "source_file": "parking.mingyuan.original.geojson",
-        "import_batch": "mingyuan-20261016",
-        "capacity_source": "user_file"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              108.899771,
-              34.370309
-            ],
-            [
-              108.899794,
-              34.370256
-            ],
-            [
-              108.899794,
-              34.370255
-            ],
-            [
-              108.900072,
-              34.370327
-            ],
-            [
-              108.900045,
-              34.370386
-            ],
-            [
-              108.899771,
-              34.370309
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "WM5001",
-        "name": "明远5北侧",
-        "capacity": 40,
-        "source": "user_upload",
-        "source_file": "parking.mingyuan.original.geojson",
-        "import_batch": "mingyuan-20261016",
-        "capacity_source": "user_file"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              108.899805,
-              34.370202
-            ],
-            [
-              108.899822,
-              34.370167
-            ],
-            [
-              108.899824,
-              34.370167
-            ],
-            [
-              108.900111,
-              34.370238
-            ],
-            [
-              108.900092,
-              34.370279
-            ],
-            [
-              108.899805,
-              34.370202
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "WM3001",
-        "name": "明远3东南",
-        "capacity": 20,
-        "source": "user_upload",
-        "source_file": "parking.mingyuan.original.geojson",
-        "import_batch": "mingyuan-20261016",
-        "capacity_source": "user_file"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              108.899447,
-              34.369742
-            ],
-            [
-              108.899456,
-              34.36972
-            ],
-            [
-              108.899458,
-              34.369717
-            ],
-            [
-              108.899578,
-              34.36975
-            ],
-            [
-              108.899567,
-              34.369777
-            ],
-            [
-              108.899447,
-              34.369742
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "WM5002",
-        "name": "明远5西侧",
-        "capacity": 20,
-        "source": "user_upload",
-        "source_file": "parking.mingyuan.original.geojson",
-        "import_batch": "mingyuan-20261016",
-        "capacity_source": "user_file"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              108.899582,
-              34.369745
-            ],
-            [
-              108.899621,
-              34.369661
-            ],
-            [
-              108.899652,
-              34.369671
-            ],
-            [
-              108.899613,
-              34.369752
-            ],
-            [
-              108.899582,
-              34.369745
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "WM4002",
-        "name": "明远4东南2",
-        "capacity": 20,
-        "source": "user_upload",
-        "source_file": "parking.mingyuan.original.geojson",
-        "import_batch": "mingyuan-20261016",
-        "capacity_source": "user_file"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              108.899497,
-              34.369629
-            ],
-            [
-              108.899507,
-              34.369599
-            ],
-            [
-              108.89963,
-              34.369628
-            ],
-            [
-              108.899619,
-              34.369655
-            ],
-            [
-              108.899497,
-              34.369629
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "WM4003",
-        "name": "明远4东南3",
-        "capacity": 20,
-        "source": "user_upload",
-        "source_file": "parking.mingyuan.original.geojson",
-        "import_batch": "mingyuan-20261016",
-        "capacity_source": "user_file"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              108.899442,
-              34.369706
-            ],
-            [
-              108.899473,
-              34.369632
-            ],
-            [
-              108.899499,
-              34.36964
-            ],
-            [
-              108.899472,
-              34.369714
-            ],
-            [
-              108.899442,
-              34.369706
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "WM3002",
-        "name": "明远3南侧",
-        "capacity": 30,
-        "source": "user_upload",
-        "source_file": "parking.mingyuan.original.geojson",
-        "import_batch": "mingyuan-20261016",
-        "capacity_source": "user_file"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              108.899197,
-              34.369611
-            ],
-            [
-              108.899232,
-              34.36952
-            ],
-            [
-              108.899252,
-              34.369527
-            ],
-            [
-              108.899215,
-              34.369616
-            ],
-            [
-              108.899197,
-              34.369611
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "WM3003",
-        "name": "明远3南侧2",
-        "capacity": 20,
-        "source": "user_upload",
-        "source_file": "parking.mingyuan.original.geojson",
-        "import_batch": "mingyuan-20261016",
-        "capacity_source": "user_file"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              108.899205,
-              34.369501
-            ],
-            [
-              108.899242,
-              34.369416
-            ],
-            [
-              108.899256,
-              34.369422
-            ],
-            [
-              108.89922,
-              34.369505
-            ],
-            [
-              108.899205,
-              34.369501
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "WM3004",
-        "name": "明远3南侧3",
-        "capacity": 100,
-        "source": "user_upload",
-        "source_file": "parking.mingyuan.original.geojson",
-        "import_batch": "mingyuan-20261016",
-        "capacity_source": "user_file"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              108.898625,
-              34.369398
-            ],
-            [
-              108.898632,
-              34.369384
-            ],
-            [
-              108.898632,
-              34.369383
-            ],
-            [
-              108.899104,
-              34.369503
-            ],
-            [
-              108.899093,
-              34.369524
-            ],
-            [
-              108.898625,
-              34.369398
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "WM3005",
-        "name": "明远3南侧4",
-        "capacity": 30,
-        "source": "user_upload",
-        "source_file": "parking.mingyuan.original.geojson",
-        "import_batch": "mingyuan-20261016",
-        "capacity_source": "user_file"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              108.898358,
-              34.369418
-            ],
-            [
-              108.898394,
-              34.369333
-            ],
-            [
-              108.898438,
-              34.369346
-            ],
-            [
-              108.898401,
-              34.369429
-            ],
-            [
-              108.898358,
-              34.369418
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "WM2001",
-        "name": "明远2西侧",
-        "capacity": 30,
-        "source": "user_upload",
-        "source_file": "parking.mingyuan.original.geojson",
-        "import_batch": "mingyuan-20261016",
-        "capacity_source": "user_file"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              108.897392,
-              34.369852
-            ],
-            [
-              108.897403,
-              34.369813
-            ],
-            [
-              108.897491,
-              34.369835
-            ],
-            [
-              108.897478,
-              34.369873
-            ],
-            [
-              108.897392,
-              34.369852
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "WM4004",
-        "name": "明远4北侧2",
-        "capacity": 30,
-        "source": "user_upload",
-        "source_file": "parking.mingyuan.original.geojson",
-        "import_batch": "mingyuan-20261016",
-        "capacity_source": "user_file"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              108.899278,
-              34.371402
-            ],
-            [
-              108.899295,
-              34.371366
-            ],
-            [
-              108.899476,
-              34.371403
-            ],
-            [
-              108.899461,
-              34.371448
-            ],
-            [
-              108.899401,
-              34.371433
-            ],
-            [
-              108.899278,
-              34.371402
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "WH1002",
-        "name": "鸿远1区东",
-        "capacity": 262,
-        "space": 262,
-        "type": "非机动车",
-        "source": "user_upload",
-        "verification_status": "unverified",
-        "original_name": "1区东",
-        "source_file": "修远楼停车区标注.geojson",
-        "import_batch": "hongyuan-20261016",
-        "capacity_source": "user_file_estimate",
-        "source_id": "X1002"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              108.8956075,
-              34.369742
-            ],
-            [
-              108.8956765,
-              34.3697635
-            ],
-            [
-              108.8957792,
-              34.3695247
-            ],
-            [
-              108.8958819,
-              34.3692905
-            ],
-            [
-              108.8958091,
-              34.3692612
-            ],
-            [
-              108.8956075,
-              34.369742
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "WH1003",
-        "name": "鸿远1区西",
-        "capacity": 108,
-        "space": 108,
-        "type": "非机动车",
-        "source": "user_upload",
-        "verification_status": "unverified",
-        "original_name": "1区西",
-        "source_file": "修远楼停车区标注.geojson",
-        "import_batch": "hongyuan-20261016",
-        "capacity_source": "user_file_estimate",
-        "source_id": "X1003"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              108.8945623,
-              34.3693644
-            ],
-            [
-              108.8946015,
-              34.3693844
-            ],
-            [
-              108.894682,
-              34.3692084
-            ],
-            [
-              108.8947362,
-              34.3690401
-            ],
-            [
-              108.8947063,
-              34.3690293
-            ],
-            [
-              108.8945623,
-              34.3693644
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "WH2002",
-        "name": "鸿远2区东",
-        "capacity": 264,
-        "space": 264,
-        "type": "非机动车",
-        "source": "user_upload",
-        "verification_status": "unverified",
-        "original_name": "2区东",
-        "source_file": "修远楼停车区标注.geojson",
-        "import_batch": "hongyuan-20261016",
-        "capacity_source": "user_file_estimate",
-        "source_id": "X2002"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              108.8958912,
-              34.3690469
-            ],
-            [
-              108.8959757,
-              34.3690735
-            ],
-            [
-              108.8961403,
-              34.3686968
-            ],
-            [
-              108.8960412,
-              34.368669
-            ],
-            [
-              108.8958912,
-              34.3690469
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "WH2003",
-        "name": "鸿远2区西",
-        "capacity": 214,
-        "space": 214,
-        "type": "非机动车",
-        "source": "user_upload",
-        "verification_status": "unverified",
-        "original_name": "2区西",
-        "source_file": "修远楼停车区标注.geojson",
-        "import_batch": "hongyuan-20261016",
-        "capacity_source": "user_file_estimate",
-        "source_id": "X2003"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              108.8947842,
-              34.3687764
-            ],
-            [
-              108.8948702,
-              34.3687888
-            ],
-            [
-              108.8950199,
-              34.3683935
-            ],
-            [
-              108.8949712,
-              34.3683564
-            ],
-            [
-              108.8947842,
-              34.3687764
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "WH1005",
-        "name": "鸿远1区南",
-        "capacity": 152,
-        "space": 152,
-        "type": "非机动车",
-        "source": "user_upload",
-        "verification_status": "unverified",
-        "original_name": "1区南",
-        "source_file": "修远楼停车区标注.geojson",
-        "import_batch": "hongyuan-20261016",
-        "capacity_source": "user_file_estimate",
-        "source_id": "X1005"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              108.89509089370621,
-              34.36904571548744
-            ],
-            [
-              108.89545072063142,
-              34.36913559850949
-            ],
-            [
-              108.89543600505071,
-              34.36919450910268
-            ],
-            [
-              108.8950761781255,
-              34.36910462608063
-            ],
-            [
-              108.89509089370621,
-              34.36904571548744
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "WH2001",
-        "name": "鸿远2区北",
-        "capacity": 125,
-        "space": 125,
-        "type": "非机动车",
-        "source": "user_upload",
-        "verification_status": "unverified",
-        "original_name": "2区北",
-        "source_file": "修远楼停车区标注.geojson",
-        "import_batch": "hongyuan-20261016",
-        "capacity_source": "user_file_estimate",
-        "source_id": "X2001"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              108.89516847763676,
-              34.36887168505043
-            ],
-            [
-              108.8954908985436,
-              34.36895698879174
-            ],
-            [
-              108.89547668707169,
-              34.369010703618294
-            ],
-            [
-              108.89515426616485,
-              34.368925399876986
-            ],
-            [
-              108.89516847763676,
-              34.36887168505043
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "WH1001",
-        "name": "鸿远1区北",
-        "capacity": 518,
-        "space": 518,
-        "type": "非机动车",
-        "source": "user_upload",
-        "verification_status": "unverified",
-        "original_name": "1区北",
-        "source_file": "修远楼停车区标注.geojson",
-        "import_batch": "hongyuan-20261016",
-        "capacity_source": "user_file_estimate",
-        "source_id": "X1001"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              108.89470444236844,
-              34.36949241500149
-            ],
-            [
-              108.89539119026723,
-              34.36969635037203
-            ],
-            [
-              108.89536078211478,
-              34.36979874916017
-            ],
-            [
-              108.89467403421598,
-              34.369594813789625
-            ],
-            [
-              108.89470444236844,
-              34.36949241500149
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "WH1004",
-        "name": "鸿远1区中",
-        "capacity": 66,
-        "space": 66,
-        "type": "非机动车",
-        "source": "user_upload",
-        "verification_status": "unverified",
-        "original_name": "1区中",
-        "source_file": "修远楼停车区标注.geojson",
-        "import_batch": "hongyuan-20261016",
-        "capacity_source": "user_file_estimate",
-        "source_id": "X1004"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              108.89483301738689,
-              34.36931475604776
-            ],
-            [
-              108.89496370458652,
-              34.36934653038937
-            ],
-            [
-              108.89498088782913,
-              34.36927585607337
-            ],
-            [
-              108.8948502006295,
-              34.36924408173176
-            ],
-            [
-              108.89483301738689,
-              34.36931475604776
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "WH2004",
-        "name": "鸿远2区南",
-        "capacity": 70,
-        "space": 70,
-        "type": "非机动车",
-        "source": "user_upload",
-        "verification_status": "unverified",
-        "original_name": "2区南",
-        "source_file": "修远楼停车区标注.geojson",
-        "import_batch": "hongyuan-20261016",
-        "capacity_source": "user_file_estimate",
-        "source_id": "X2004"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              108.8954797,
-              34.3684627
-            ],
-            [
-              108.89558155235365,
-              34.368507000615786
-            ],
-            [
-              108.89562388107673,
-              34.368429796695715
-            ],
-            [
-              108.89552628207524,
-              34.368376285927035
-            ],
-            [
-              108.8954797,
-              34.3684627
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "X4001",
-        "name": "修远4西南",
-        "capacity": 80,
-        "source": "user_geojson",
-        "source_id": "X4001",
-        "source_file": "Untitled.geojson20000.geojson",
-        "import_batch": "xiuyuan-v2-20261016",
-        "capacity_source": "user_space"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              108.897398,
-              34.372571
-            ],
-            [
-              108.897474,
-              34.372595
-            ],
-            [
-              108.897563,
-              34.3725
-            ],
-            [
-              108.897571,
-              34.372493
-            ],
-            [
-              108.897609,
-              34.372506
-            ],
-            [
-              108.897621,
-              34.372479
-            ],
-            [
-              108.897453,
-              34.372424
-            ],
-            [
-              108.897398,
-              34.372573
-            ],
-            [
-              108.897398,
-              34.372571
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "x4002",
-        "name": "修远4西北",
-        "capacity": 60,
-        "source": "user_geojson",
-        "source_id": "x4002",
-        "source_file": "Untitled.geojson20000.geojson",
-        "import_batch": "xiuyuan-v2-20261016",
-        "capacity_source": "user_space"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              108.897458,
-              34.372314
-            ],
-            [
-              108.897534,
-              34.372141
-            ],
-            [
-              108.897581,
-              34.372155
-            ],
-            [
-              108.897504,
-              34.372323
-            ],
-            [
-              108.897457,
-              34.372314
-            ],
-            [
-              108.897458,
-              34.372314
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "x2001",
-        "name": "修远2东面",
-        "capacity": 50,
-        "source": "user_geojson",
-        "source_id": "x2003",
-        "source_file": "Untitled.geojson20000.geojson",
-        "import_batch": "xiuyuan-v2-20261016",
-        "capacity_source": "user_space"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              108.897366,
-              34.372281
-            ],
-            [
-              108.89741,
-              34.372294
-            ],
-            [
-              108.897514,
-              34.372079
-            ],
-            [
-              108.897464,
-              34.372063
-            ],
-            [
-              108.897367,
-              34.37228
-            ],
-            [
-              108.897366,
-              34.372281
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "x4003",
-        "name": "修远4北",
-        "capacity": 100,
-        "source": "user_geojson",
-        "source_id": "x4003",
-        "source_file": "Untitled.geojson20000.geojson",
-        "import_batch": "xiuyuan-v2-20261016",
-        "capacity_source": "user_space"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              108.897687,
-              34.372213
-            ],
-            [
-              108.897855,
-              34.372253
-            ],
-            [
-              108.897876,
-              34.372208
-            ],
-            [
-              108.898016,
-              34.372253
-            ],
-            [
-              108.898047,
-              34.372211
-            ],
-            [
-              108.897891,
-              34.372161
-            ],
-            [
-              108.897878,
-              34.372207
-            ],
-            [
-              108.8977,
-              34.372168
-            ],
-            [
-              108.897687,
-              34.372212
-            ],
-            [
-              108.897687,
-              34.372211
-            ],
-            [
-              108.897687,
-              34.372213
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "xy1",
-        "name": "修远西1",
-        "capacity": 100,
-        "source": "user_geojson",
-        "source_id": "x2001",
-        "source_file": "Untitled.geojson20000.geojson",
-        "import_batch": "xiuyuan-v2-20261016",
-        "capacity_source": "user_space"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              108.896583,
-              34.371908
-            ],
-            [
-              108.896671,
-              34.371728
-            ],
-            [
-              108.896599,
-              34.371708
-            ],
-            [
-              108.896508,
-              34.371889
-            ],
-            [
-              108.89658,
-              34.371908
-            ],
-            [
-              108.896583,
-              34.371908
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "xy2",
-        "name": "修远西2",
-        "capacity": 40,
-        "source": "user_geojson",
-        "source_id": "x2002",
-        "source_file": "Untitled.geojson20000.geojson",
-        "import_batch": "xiuyuan-v2-20261016",
-        "capacity_source": "user_space"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              108.896668,
-              34.371525
-            ],
-            [
-              108.896752,
-              34.371549
-            ],
-            [
-              108.896806,
-              34.371425
-            ],
-            [
-              108.89674,
-              34.371405
-            ],
-            [
-              108.896671,
-              34.371525
-            ],
-            [
-              108.896671,
-              34.371523
-            ],
-            [
-              108.896668,
-              34.371525
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "x001",
-        "name": "修远北",
-        "capacity": 100,
-        "source": "user_geojson",
-        "source_id": "x001",
-        "source_file": "Untitled.geojson20000.geojson",
-        "import_batch": "xiuyuan-v2-20261016",
-        "capacity_source": "user_space"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              108.897072,
-              34.372528
-            ],
-            [
-              108.897497,
-              34.372668
-            ],
-            [
-              108.89752,
-              34.372622
-            ],
-            [
-              108.897095,
-              34.372474
-            ],
-            [
-              108.897072,
-              34.372527
-            ],
-            [
-              108.897072,
-              34.372528
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "x1001",
-        "name": "修远1西",
-        "capacity": 50,
-        "source": "user_geojson",
-        "source_id": "x1001",
-        "source_file": "Untitled.geojson20000.geojson",
-        "import_batch": "xiuyuan-v2-20261016",
-        "capacity_source": "user_space"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              108.896395,
-              34.37215
-            ],
-            [
-              108.896507,
-              34.372186
-            ],
-            [
-              108.896544,
-              34.372108
-            ],
-            [
-              108.896435,
-              34.372068
-            ],
-            [
-              108.896395,
-              34.37215
-            ],
-            [
-              108.896389,
-              34.372148
-            ],
-            [
-              108.896395,
-              34.37215
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "x3001_2",
-        "name": "修远3南",
-        "capacity": 100,
-        "source": "user_geojson",
-        "source_id": "x3001",
-        "source_file": "Untitled.geojson20000.geojson",
-        "import_batch": "xiuyuan-v2-20261016",
-        "capacity_source": "user_space"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              108.897201,
-              34.371145
-            ],
-            [
-              108.897647,
-              34.371276
-            ],
-            [
-              108.897733,
-              34.371128
-            ],
-            [
-              108.897266,
-              34.37102
-            ],
-            [
-              108.897201,
-              34.371147
-            ],
-            [
-              108.897205,
-              34.371145
-            ],
-            [
-              108.897201,
-              34.371145
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "x3001",
-        "name": "修远3东",
-        "capacity": 80,
-        "source": "user_geojson",
-        "source_id": "x3002",
-        "source_file": "Untitled.geojson20000.geojson",
-        "import_batch": "xiuyuan-v2-20261016",
-        "capacity_source": "user_space"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              108.897763,
-              34.371746
-            ],
-            [
-              108.897838,
-              34.371772
-            ],
-            [
-              108.898029,
-              34.371383
-            ],
-            [
-              108.897961,
-              34.37136
-            ],
-            [
-              108.897761,
-              34.371746
-            ],
-            [
-              108.897766,
-              34.371746
-            ],
-            [
-              108.897763,
-              34.371746
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "x002",
-        "name": "修远大停车场",
-        "capacity": 200,
-        "source": "user_geojson",
-        "source_id": "x002",
-        "source_file": "Untitled.geojson20000.geojson",
-        "import_batch": "xiuyuan-v2-20261016",
-        "capacity_source": "user_space"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              108.897837,
-              34.371844
-            ],
-            [
-              108.898103,
-              34.371611
-            ],
-            [
-              108.898162,
-              34.371653
-            ],
-            [
-              108.897899,
-              34.371879
-            ],
-            [
-              108.897837,
-              34.371847
-            ],
-            [
-              108.897837,
-              34.371844
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "x2003",
-        "name": "修远2东",
-        "capacity": 60,
-        "source": "user_geojson",
-        "source_id": "x2003",
-        "source_file": "Untitled.geojson20000.geojson",
-        "import_batch": "xiuyuan-v2-20261016",
-        "capacity_source": "user_space"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              108.897643,
-              34.372105
-            ],
-            [
-              108.897852,
-              34.371997
-            ],
-            [
-              108.897768,
-              34.371913
-            ],
-            [
-              108.897641,
-              34.3721
-            ],
-            [
-              108.897641,
-              34.372101
-            ],
-            [
-              108.897643,
-              34.372105
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "x4004",
-        "name": "修远4东1",
-        "capacity": 50,
-        "source": "user_geojson",
-        "source_id": "x4004",
-        "source_file": "Untitled.geojson20000.geojson",
-        "import_batch": "xiuyuan-v2-20261016",
-        "capacity_source": "user_space"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              108.89804,
-              34.372475
-            ],
-            [
-              108.898177,
-              34.372393
-            ],
-            [
-              108.898225,
-              34.372445
-            ],
-            [
-              108.898042,
-              34.37248
-            ],
-            [
-              108.898042,
-              34.372483
-            ],
-            [
-              108.89804,
-              34.372475
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "x4004_2",
-        "name": "修远4东2",
-        "capacity": 50,
-        "source": "user_geojson",
-        "source_id": "x4004",
-        "source_file": "Untitled.geojson20000.geojson",
-        "import_batch": "xiuyuan-v2-20261016",
-        "capacity_source": "user_space"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              108.897965,
-              34.372636
-            ],
-            [
-              108.898142,
-              34.372692
-            ],
-            [
-              108.89816,
-              34.372659
-            ],
-            [
-              108.897983,
-              34.372603
-            ],
-            [
-              108.897968,
-              34.372636
-            ],
-            [
-              108.897965,
-              34.372636
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "x003",
-        "name": "修远廊桥",
-        "capacity": 88,
-        "source": "user_geojson",
-        "source_id": "x003",
-        "source_file": "Untitled.geojson20000.geojson",
-        "import_batch": "xiuyuan-v2-20261016",
-        "capacity_source": "user_space"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              108.897388,
-              34.372567
-            ],
-            [
-              108.897322,
-              34.37254
-            ],
-            [
-              108.897431,
-              34.372316
-            ],
-            [
-              108.897495,
-              34.372332
-            ],
-            [
-              108.89746,
-              34.372379
-            ],
-            [
-              108.897536,
-              34.372399
-            ],
-            [
-              108.897558,
-              34.372378
-            ],
-            [
-              108.897621,
-              34.372404
-            ],
-            [
-              108.89761,
-              34.372421
-            ],
-            [
-              108.897545,
-              34.372408
-            ],
-            [
-              108.89746,
-              34.372379
-            ],
-            [
-              108.897388,
-              34.372568
-            ],
-            [
-              108.897388,
-              34.372564
-            ],
-            [
-              108.897388,
-              34.372567
-            ]
-          ]
-        ]
-      }
-    }
-  ]
+ "type": "FeatureCollection",
+ "is_example": false,
+ "description": "用户提供的校园停车区：原有7个、明远17个、修远新标注9个。名称补充楼区前缀，容量和坐标来自原始文件；状态来源另行标记。",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "WM1001",
+    "name": "明远1西侧",
+    "capacity": 20,
+    "source": "user_upload",
+    "source_file": "parking.mingyuan.original.geojson",
+    "import_batch": "mingyuan-20261016",
+    "capacity_source": "user_file"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.899015,
+       34.371042
+      ],
+      [
+       108.899023,
+       34.371013
+      ],
+      [
+       108.899144,
+       34.371048
+      ],
+      [
+       108.899135,
+       34.371077
+      ],
+      [
+       108.899015,
+       34.371042
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "WM4005",
+    "name": "明远4东北角",
+    "capacity": 30,
+    "source": "user_upload",
+    "source_file": "parking.mingyuan.original.geojson",
+    "import_batch": "mingyuan-20261016",
+    "capacity_source": "user_file"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.899186,
+       34.371074
+      ],
+      [
+       108.899221,
+       34.370979
+      ],
+      [
+       108.899262,
+       34.370987
+      ],
+      [
+       108.899227,
+       34.371087
+      ],
+      [
+       108.899205,
+       34.371081
+      ],
+      [
+       108.899186,
+       34.371074
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "WM1002",
+    "name": "明远1东南",
+    "capacity": 60,
+    "source": "user_upload",
+    "source_file": "parking.mingyuan.original.geojson",
+    "import_batch": "mingyuan-20261016",
+    "capacity_source": "user_file"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.897504,
+       34.370395
+      ],
+      [
+       108.897572,
+       34.370377
+      ],
+      [
+       108.897639,
+       34.370387
+      ],
+      [
+       108.897679,
+       34.370419
+      ],
+      [
+       108.897705,
+       34.370458
+      ],
+      [
+       108.89773,
+       34.370443
+      ],
+      [
+       108.897699,
+       34.37041
+      ],
+      [
+       108.897646,
+       34.370374
+      ],
+      [
+       108.897567,
+       34.370363
+      ],
+      [
+       108.897494,
+       34.370379
+      ],
+      [
+       108.897503,
+       34.370394
+      ],
+      [
+       108.897504,
+       34.370394
+      ],
+      [
+       108.897504,
+       34.370395
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "WM1003",
+    "name": "明远1中1",
+    "capacity": 80,
+    "source": "user_upload",
+    "source_file": "parking.mingyuan.original.geojson",
+    "import_batch": "mingyuan-20261016",
+    "capacity_source": "user_file"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.897768,
+       34.370912
+      ],
+      [
+       108.897903,
+       34.370646
+      ],
+      [
+       108.897934,
+       34.370655
+      ],
+      [
+       108.897817,
+       34.370924
+      ],
+      [
+       108.897807,
+       34.370923
+      ],
+      [
+       108.897768,
+       34.370912
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "WM1004",
+    "name": "明远1中2",
+    "capacity": 60,
+    "source": "user_upload",
+    "source_file": "parking.mingyuan.original.geojson",
+    "import_batch": "mingyuan-20261016",
+    "capacity_source": "user_file"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.897837,
+       34.370928
+      ],
+      [
+       108.897952,
+       34.370658
+      ],
+      [
+       108.897984,
+       34.370669
+      ],
+      [
+       108.897878,
+       34.370939
+      ],
+      [
+       108.897837,
+       34.370928
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "WM4001",
+    "name": "明远4南侧",
+    "capacity": 30,
+    "source": "user_upload",
+    "source_file": "parking.mingyuan.original.geojson",
+    "import_batch": "mingyuan-20261016",
+    "capacity_source": "user_file"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.899771,
+       34.370309
+      ],
+      [
+       108.899794,
+       34.370256
+      ],
+      [
+       108.899794,
+       34.370255
+      ],
+      [
+       108.900072,
+       34.370327
+      ],
+      [
+       108.900045,
+       34.370386
+      ],
+      [
+       108.899771,
+       34.370309
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "WM5001",
+    "name": "明远5北侧",
+    "capacity": 40,
+    "source": "user_upload",
+    "source_file": "parking.mingyuan.original.geojson",
+    "import_batch": "mingyuan-20261016",
+    "capacity_source": "user_file"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.899805,
+       34.370202
+      ],
+      [
+       108.899822,
+       34.370167
+      ],
+      [
+       108.899824,
+       34.370167
+      ],
+      [
+       108.900111,
+       34.370238
+      ],
+      [
+       108.900092,
+       34.370279
+      ],
+      [
+       108.899805,
+       34.370202
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "WM3001",
+    "name": "明远3东南",
+    "capacity": 20,
+    "source": "user_upload",
+    "source_file": "parking.mingyuan.original.geojson",
+    "import_batch": "mingyuan-20261016",
+    "capacity_source": "user_file"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.899447,
+       34.369742
+      ],
+      [
+       108.899456,
+       34.36972
+      ],
+      [
+       108.899458,
+       34.369717
+      ],
+      [
+       108.899578,
+       34.36975
+      ],
+      [
+       108.899567,
+       34.369777
+      ],
+      [
+       108.899447,
+       34.369742
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "WM5002",
+    "name": "明远5西侧",
+    "capacity": 20,
+    "source": "user_upload",
+    "source_file": "parking.mingyuan.original.geojson",
+    "import_batch": "mingyuan-20261016",
+    "capacity_source": "user_file"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.899582,
+       34.369745
+      ],
+      [
+       108.899621,
+       34.369661
+      ],
+      [
+       108.899652,
+       34.369671
+      ],
+      [
+       108.899613,
+       34.369752
+      ],
+      [
+       108.899582,
+       34.369745
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "WM4002",
+    "name": "明远4东南2",
+    "capacity": 20,
+    "source": "user_upload",
+    "source_file": "parking.mingyuan.original.geojson",
+    "import_batch": "mingyuan-20261016",
+    "capacity_source": "user_file"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.899497,
+       34.369629
+      ],
+      [
+       108.899507,
+       34.369599
+      ],
+      [
+       108.89963,
+       34.369628
+      ],
+      [
+       108.899619,
+       34.369655
+      ],
+      [
+       108.899497,
+       34.369629
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "WM4003",
+    "name": "明远4东南3",
+    "capacity": 20,
+    "source": "user_upload",
+    "source_file": "parking.mingyuan.original.geojson",
+    "import_batch": "mingyuan-20261016",
+    "capacity_source": "user_file"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.899442,
+       34.369706
+      ],
+      [
+       108.899473,
+       34.369632
+      ],
+      [
+       108.899499,
+       34.36964
+      ],
+      [
+       108.899472,
+       34.369714
+      ],
+      [
+       108.899442,
+       34.369706
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "WM3002",
+    "name": "明远3南侧",
+    "capacity": 30,
+    "source": "user_upload",
+    "source_file": "parking.mingyuan.original.geojson",
+    "import_batch": "mingyuan-20261016",
+    "capacity_source": "user_file"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.899197,
+       34.369611
+      ],
+      [
+       108.899232,
+       34.36952
+      ],
+      [
+       108.899252,
+       34.369527
+      ],
+      [
+       108.899215,
+       34.369616
+      ],
+      [
+       108.899197,
+       34.369611
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "WM3003",
+    "name": "明远3南侧2",
+    "capacity": 20,
+    "source": "user_upload",
+    "source_file": "parking.mingyuan.original.geojson",
+    "import_batch": "mingyuan-20261016",
+    "capacity_source": "user_file"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.899205,
+       34.369501
+      ],
+      [
+       108.899242,
+       34.369416
+      ],
+      [
+       108.899256,
+       34.369422
+      ],
+      [
+       108.89922,
+       34.369505
+      ],
+      [
+       108.899205,
+       34.369501
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "WM3004",
+    "name": "明远3南侧3",
+    "capacity": 100,
+    "source": "user_upload",
+    "source_file": "parking.mingyuan.original.geojson",
+    "import_batch": "mingyuan-20261016",
+    "capacity_source": "user_file"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.898625,
+       34.369398
+      ],
+      [
+       108.898632,
+       34.369384
+      ],
+      [
+       108.898632,
+       34.369383
+      ],
+      [
+       108.899104,
+       34.369503
+      ],
+      [
+       108.899093,
+       34.369524
+      ],
+      [
+       108.898625,
+       34.369398
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "WM3005",
+    "name": "明远3南侧4",
+    "capacity": 30,
+    "source": "user_upload",
+    "source_file": "parking.mingyuan.original.geojson",
+    "import_batch": "mingyuan-20261016",
+    "capacity_source": "user_file"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.898358,
+       34.369418
+      ],
+      [
+       108.898394,
+       34.369333
+      ],
+      [
+       108.898438,
+       34.369346
+      ],
+      [
+       108.898401,
+       34.369429
+      ],
+      [
+       108.898358,
+       34.369418
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "WM2001",
+    "name": "明远2西侧",
+    "capacity": 30,
+    "source": "user_upload",
+    "source_file": "parking.mingyuan.original.geojson",
+    "import_batch": "mingyuan-20261016",
+    "capacity_source": "user_file"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.897392,
+       34.369852
+      ],
+      [
+       108.897403,
+       34.369813
+      ],
+      [
+       108.897491,
+       34.369835
+      ],
+      [
+       108.897478,
+       34.369873
+      ],
+      [
+       108.897392,
+       34.369852
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "WM4004",
+    "name": "明远4北侧2",
+    "capacity": 30,
+    "source": "user_upload",
+    "source_file": "parking.mingyuan.original.geojson",
+    "import_batch": "mingyuan-20261016",
+    "capacity_source": "user_file"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.899278,
+       34.371402
+      ],
+      [
+       108.899295,
+       34.371366
+      ],
+      [
+       108.899476,
+       34.371403
+      ],
+      [
+       108.899461,
+       34.371448
+      ],
+      [
+       108.899401,
+       34.371433
+      ],
+      [
+       108.899278,
+       34.371402
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "WH1002",
+    "name": "鸿远1区东",
+    "capacity": 262,
+    "space": 262,
+    "type": "非机动车",
+    "source": "user_upload",
+    "verification_status": "unverified",
+    "original_name": "1区东",
+    "source_file": "修远楼停车区标注.geojson",
+    "import_batch": "hongyuan-20261016",
+    "capacity_source": "user_file_estimate",
+    "source_id": "X1002"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.8956075,
+       34.369742
+      ],
+      [
+       108.8956765,
+       34.3697635
+      ],
+      [
+       108.8957792,
+       34.3695247
+      ],
+      [
+       108.8958819,
+       34.3692905
+      ],
+      [
+       108.8958091,
+       34.3692612
+      ],
+      [
+       108.8956075,
+       34.369742
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "WH1003",
+    "name": "鸿远1区西",
+    "capacity": 108,
+    "space": 108,
+    "type": "非机动车",
+    "source": "user_upload",
+    "verification_status": "unverified",
+    "original_name": "1区西",
+    "source_file": "修远楼停车区标注.geojson",
+    "import_batch": "hongyuan-20261016",
+    "capacity_source": "user_file_estimate",
+    "source_id": "X1003"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.8945623,
+       34.3693644
+      ],
+      [
+       108.8946015,
+       34.3693844
+      ],
+      [
+       108.894682,
+       34.3692084
+      ],
+      [
+       108.8947362,
+       34.3690401
+      ],
+      [
+       108.8947063,
+       34.3690293
+      ],
+      [
+       108.8945623,
+       34.3693644
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "WH2002",
+    "name": "鸿远2区东",
+    "capacity": 264,
+    "space": 264,
+    "type": "非机动车",
+    "source": "user_upload",
+    "verification_status": "unverified",
+    "original_name": "2区东",
+    "source_file": "修远楼停车区标注.geojson",
+    "import_batch": "hongyuan-20261016",
+    "capacity_source": "user_file_estimate",
+    "source_id": "X2002"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.8958912,
+       34.3690469
+      ],
+      [
+       108.8959757,
+       34.3690735
+      ],
+      [
+       108.8961403,
+       34.3686968
+      ],
+      [
+       108.8960412,
+       34.368669
+      ],
+      [
+       108.8958912,
+       34.3690469
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "WH2003",
+    "name": "鸿远2区西",
+    "capacity": 214,
+    "space": 214,
+    "type": "非机动车",
+    "source": "user_upload",
+    "verification_status": "unverified",
+    "original_name": "2区西",
+    "source_file": "修远楼停车区标注.geojson",
+    "import_batch": "hongyuan-20261016",
+    "capacity_source": "user_file_estimate",
+    "source_id": "X2003"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.8947842,
+       34.3687764
+      ],
+      [
+       108.8948702,
+       34.3687888
+      ],
+      [
+       108.8950199,
+       34.3683935
+      ],
+      [
+       108.8949712,
+       34.3683564
+      ],
+      [
+       108.8947842,
+       34.3687764
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "WH1005",
+    "name": "鸿远1区南",
+    "capacity": 152,
+    "space": 152,
+    "type": "非机动车",
+    "source": "user_upload",
+    "verification_status": "unverified",
+    "original_name": "1区南",
+    "source_file": "修远楼停车区标注.geojson",
+    "import_batch": "hongyuan-20261016",
+    "capacity_source": "user_file_estimate",
+    "source_id": "X1005"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.89509089370621,
+       34.36904571548744
+      ],
+      [
+       108.89545072063142,
+       34.36913559850949
+      ],
+      [
+       108.89543600505071,
+       34.36919450910268
+      ],
+      [
+       108.8950761781255,
+       34.36910462608063
+      ],
+      [
+       108.89509089370621,
+       34.36904571548744
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "WH2001",
+    "name": "鸿远2区北",
+    "capacity": 125,
+    "space": 125,
+    "type": "非机动车",
+    "source": "user_upload",
+    "verification_status": "unverified",
+    "original_name": "2区北",
+    "source_file": "修远楼停车区标注.geojson",
+    "import_batch": "hongyuan-20261016",
+    "capacity_source": "user_file_estimate",
+    "source_id": "X2001"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.89516847763676,
+       34.36887168505043
+      ],
+      [
+       108.8954908985436,
+       34.36895698879174
+      ],
+      [
+       108.89547668707169,
+       34.369010703618294
+      ],
+      [
+       108.89515426616485,
+       34.368925399876986
+      ],
+      [
+       108.89516847763676,
+       34.36887168505043
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "WH1001",
+    "name": "鸿远1区北",
+    "capacity": 518,
+    "space": 518,
+    "type": "非机动车",
+    "source": "user_upload",
+    "verification_status": "unverified",
+    "original_name": "1区北",
+    "source_file": "修远楼停车区标注.geojson",
+    "import_batch": "hongyuan-20261016",
+    "capacity_source": "user_file_estimate",
+    "source_id": "X1001"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.89470444236844,
+       34.36949241500149
+      ],
+      [
+       108.89539119026723,
+       34.36969635037203
+      ],
+      [
+       108.89536078211478,
+       34.36979874916017
+      ],
+      [
+       108.89467403421598,
+       34.369594813789625
+      ],
+      [
+       108.89470444236844,
+       34.36949241500149
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "WH1004",
+    "name": "鸿远1区中",
+    "capacity": 66,
+    "space": 66,
+    "type": "非机动车",
+    "source": "user_upload",
+    "verification_status": "unverified",
+    "original_name": "1区中",
+    "source_file": "修远楼停车区标注.geojson",
+    "import_batch": "hongyuan-20261016",
+    "capacity_source": "user_file_estimate",
+    "source_id": "X1004"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.89483301738689,
+       34.36931475604776
+      ],
+      [
+       108.89496370458652,
+       34.36934653038937
+      ],
+      [
+       108.89498088782913,
+       34.36927585607337
+      ],
+      [
+       108.8948502006295,
+       34.36924408173176
+      ],
+      [
+       108.89483301738689,
+       34.36931475604776
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "WH2004",
+    "name": "鸿远2区南",
+    "capacity": 70,
+    "space": 70,
+    "type": "非机动车",
+    "source": "user_upload",
+    "verification_status": "unverified",
+    "original_name": "2区南",
+    "source_file": "修远楼停车区标注.geojson",
+    "import_batch": "hongyuan-20261016",
+    "capacity_source": "user_file_estimate",
+    "source_id": "X2004"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.8954797,
+       34.3684627
+      ],
+      [
+       108.89558155235365,
+       34.368507000615786
+      ],
+      [
+       108.89562388107673,
+       34.368429796695715
+      ],
+      [
+       108.89552628207524,
+       34.368376285927035
+      ],
+      [
+       108.8954797,
+       34.3684627
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "X4001",
+    "name": "修远4西南",
+    "capacity": 80,
+    "source": "user_geojson",
+    "source_id": "X4001",
+    "source_file": "Untitled.geojson20000.geojson",
+    "import_batch": "xiuyuan-v2-20261016",
+    "capacity_source": "user_space"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.897398,
+       34.372571
+      ],
+      [
+       108.897474,
+       34.372595
+      ],
+      [
+       108.897563,
+       34.3725
+      ],
+      [
+       108.897571,
+       34.372493
+      ],
+      [
+       108.897609,
+       34.372506
+      ],
+      [
+       108.897621,
+       34.372479
+      ],
+      [
+       108.897453,
+       34.372424
+      ],
+      [
+       108.897398,
+       34.372573
+      ],
+      [
+       108.897398,
+       34.372571
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "x4002",
+    "name": "修远4西北",
+    "capacity": 60,
+    "source": "user_geojson",
+    "source_id": "x4002",
+    "source_file": "Untitled.geojson20000.geojson",
+    "import_batch": "xiuyuan-v2-20261016",
+    "capacity_source": "user_space"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.897458,
+       34.372314
+      ],
+      [
+       108.897534,
+       34.372141
+      ],
+      [
+       108.897581,
+       34.372155
+      ],
+      [
+       108.897504,
+       34.372323
+      ],
+      [
+       108.897457,
+       34.372314
+      ],
+      [
+       108.897458,
+       34.372314
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "x2001",
+    "name": "修远2东面",
+    "capacity": 50,
+    "source": "user_geojson",
+    "source_id": "x2003",
+    "source_file": "Untitled.geojson20000.geojson",
+    "import_batch": "xiuyuan-v2-20261016",
+    "capacity_source": "user_space"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.897366,
+       34.372281
+      ],
+      [
+       108.89741,
+       34.372294
+      ],
+      [
+       108.897514,
+       34.372079
+      ],
+      [
+       108.897464,
+       34.372063
+      ],
+      [
+       108.897367,
+       34.37228
+      ],
+      [
+       108.897366,
+       34.372281
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "x4003",
+    "name": "修远4北",
+    "capacity": 100,
+    "source": "user_geojson",
+    "source_id": "x4003",
+    "source_file": "Untitled.geojson20000.geojson",
+    "import_batch": "xiuyuan-v2-20261016",
+    "capacity_source": "user_space"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.897687,
+       34.372213
+      ],
+      [
+       108.897855,
+       34.372253
+      ],
+      [
+       108.897876,
+       34.372208
+      ],
+      [
+       108.898016,
+       34.372253
+      ],
+      [
+       108.898047,
+       34.372211
+      ],
+      [
+       108.897891,
+       34.372161
+      ],
+      [
+       108.897878,
+       34.372207
+      ],
+      [
+       108.8977,
+       34.372168
+      ],
+      [
+       108.897687,
+       34.372212
+      ],
+      [
+       108.897687,
+       34.372211
+      ],
+      [
+       108.897687,
+       34.372213
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "xy1",
+    "name": "修远西1",
+    "capacity": 100,
+    "source": "user_geojson",
+    "source_id": "x2001",
+    "source_file": "Untitled.geojson20000.geojson",
+    "import_batch": "xiuyuan-v2-20261016",
+    "capacity_source": "user_space"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.896583,
+       34.371908
+      ],
+      [
+       108.896671,
+       34.371728
+      ],
+      [
+       108.896599,
+       34.371708
+      ],
+      [
+       108.896508,
+       34.371889
+      ],
+      [
+       108.89658,
+       34.371908
+      ],
+      [
+       108.896583,
+       34.371908
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "xy2",
+    "name": "修远西2",
+    "capacity": 40,
+    "source": "user_geojson",
+    "source_id": "x2002",
+    "source_file": "Untitled.geojson20000.geojson",
+    "import_batch": "xiuyuan-v2-20261016",
+    "capacity_source": "user_space"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.896668,
+       34.371525
+      ],
+      [
+       108.896752,
+       34.371549
+      ],
+      [
+       108.896806,
+       34.371425
+      ],
+      [
+       108.89674,
+       34.371405
+      ],
+      [
+       108.896671,
+       34.371525
+      ],
+      [
+       108.896671,
+       34.371523
+      ],
+      [
+       108.896668,
+       34.371525
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "x001",
+    "name": "修远北",
+    "capacity": 100,
+    "source": "user_geojson",
+    "source_id": "x001",
+    "source_file": "Untitled.geojson20000.geojson",
+    "import_batch": "xiuyuan-v2-20261016",
+    "capacity_source": "user_space"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.897072,
+       34.372528
+      ],
+      [
+       108.897497,
+       34.372668
+      ],
+      [
+       108.89752,
+       34.372622
+      ],
+      [
+       108.897095,
+       34.372474
+      ],
+      [
+       108.897072,
+       34.372527
+      ],
+      [
+       108.897072,
+       34.372528
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "x1001",
+    "name": "修远1西",
+    "capacity": 50,
+    "source": "user_geojson",
+    "source_id": "x1001",
+    "source_file": "Untitled.geojson20000.geojson",
+    "import_batch": "xiuyuan-v2-20261016",
+    "capacity_source": "user_space"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.896395,
+       34.37215
+      ],
+      [
+       108.896507,
+       34.372186
+      ],
+      [
+       108.896544,
+       34.372108
+      ],
+      [
+       108.896435,
+       34.372068
+      ],
+      [
+       108.896395,
+       34.37215
+      ],
+      [
+       108.896389,
+       34.372148
+      ],
+      [
+       108.896395,
+       34.37215
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "x3001_2",
+    "name": "修远3南",
+    "capacity": 100,
+    "source": "user_geojson",
+    "source_id": "x3001",
+    "source_file": "Untitled.geojson20000.geojson",
+    "import_batch": "xiuyuan-v2-20261016",
+    "capacity_source": "user_space"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.897201,
+       34.371145
+      ],
+      [
+       108.897647,
+       34.371276
+      ],
+      [
+       108.897733,
+       34.371128
+      ],
+      [
+       108.897266,
+       34.37102
+      ],
+      [
+       108.897201,
+       34.371147
+      ],
+      [
+       108.897205,
+       34.371145
+      ],
+      [
+       108.897201,
+       34.371145
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "x3001",
+    "name": "修远3东",
+    "capacity": 80,
+    "source": "user_geojson",
+    "source_id": "x3002",
+    "source_file": "Untitled.geojson20000.geojson",
+    "import_batch": "xiuyuan-v2-20261016",
+    "capacity_source": "user_space"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.897763,
+       34.371746
+      ],
+      [
+       108.897838,
+       34.371772
+      ],
+      [
+       108.898029,
+       34.371383
+      ],
+      [
+       108.897961,
+       34.37136
+      ],
+      [
+       108.897761,
+       34.371746
+      ],
+      [
+       108.897766,
+       34.371746
+      ],
+      [
+       108.897763,
+       34.371746
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "x002",
+    "name": "修远大停车场",
+    "capacity": 200,
+    "source": "user_geojson",
+    "source_id": "x002",
+    "source_file": "Untitled.geojson20000.geojson",
+    "import_batch": "xiuyuan-v2-20261016",
+    "capacity_source": "user_space"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.897837,
+       34.371844
+      ],
+      [
+       108.898103,
+       34.371611
+      ],
+      [
+       108.898162,
+       34.371653
+      ],
+      [
+       108.897899,
+       34.371879
+      ],
+      [
+       108.897837,
+       34.371847
+      ],
+      [
+       108.897837,
+       34.371844
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "x2003",
+    "name": "修远2东",
+    "capacity": 60,
+    "source": "user_geojson",
+    "source_id": "x2003",
+    "source_file": "Untitled.geojson20000.geojson",
+    "import_batch": "xiuyuan-v2-20261016",
+    "capacity_source": "user_space"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.897643,
+       34.372105
+      ],
+      [
+       108.897852,
+       34.371997
+      ],
+      [
+       108.897768,
+       34.371913
+      ],
+      [
+       108.897641,
+       34.3721
+      ],
+      [
+       108.897641,
+       34.372101
+      ],
+      [
+       108.897643,
+       34.372105
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "x4004",
+    "name": "修远4东1",
+    "capacity": 50,
+    "source": "user_geojson",
+    "source_id": "x4004",
+    "source_file": "Untitled.geojson20000.geojson",
+    "import_batch": "xiuyuan-v2-20261016",
+    "capacity_source": "user_space"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.89804,
+       34.372475
+      ],
+      [
+       108.898177,
+       34.372393
+      ],
+      [
+       108.898225,
+       34.372445
+      ],
+      [
+       108.898042,
+       34.37248
+      ],
+      [
+       108.898042,
+       34.372483
+      ],
+      [
+       108.89804,
+       34.372475
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "x4004_2",
+    "name": "修远4东2",
+    "capacity": 50,
+    "source": "user_geojson",
+    "source_id": "x4004",
+    "source_file": "Untitled.geojson20000.geojson",
+    "import_batch": "xiuyuan-v2-20261016",
+    "capacity_source": "user_space"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.897965,
+       34.372636
+      ],
+      [
+       108.898142,
+       34.372692
+      ],
+      [
+       108.89816,
+       34.372659
+      ],
+      [
+       108.897983,
+       34.372603
+      ],
+      [
+       108.897968,
+       34.372636
+      ],
+      [
+       108.897965,
+       34.372636
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "x003",
+    "name": "修远廊桥",
+    "capacity": 88,
+    "source": "user_geojson",
+    "source_id": "x003",
+    "source_file": "Untitled.geojson20000.geojson",
+    "import_batch": "xiuyuan-v2-20261016",
+    "capacity_source": "user_space"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.897388,
+       34.372567
+      ],
+      [
+       108.897322,
+       34.37254
+      ],
+      [
+       108.897431,
+       34.372316
+      ],
+      [
+       108.897495,
+       34.372332
+      ],
+      [
+       108.89746,
+       34.372379
+      ],
+      [
+       108.897536,
+       34.372399
+      ],
+      [
+       108.897558,
+       34.372378
+      ],
+      [
+       108.897621,
+       34.372404
+      ],
+      [
+       108.89761,
+       34.372421
+      ],
+      [
+       108.897545,
+       34.372408
+      ],
+      [
+       108.89746,
+       34.372379
+      ],
+      [
+       108.897388,
+       34.372568
+      ],
+      [
+       108.897388,
+       34.372564
+      ],
+      [
+       108.897388,
+       34.372567
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "shuhuiyuan001",
+    "name": "树蕙园南",
+    "capacity": 200,
+    "source": "user_upload",
+    "source_file": "canteen-parking.geojson",
+    "import_batch": "canteen-20261017",
+    "capacity_source": "user_file",
+    "zone": "canteen"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.904739,
+       34.373599
+      ],
+      [
+       108.905293,
+       34.37376
+      ],
+      [
+       108.905323,
+       34.373689
+      ],
+      [
+       108.904902,
+       34.373572
+      ],
+      [
+       108.904958,
+       34.373437
+      ],
+      [
+       108.904831,
+       34.373403
+      ],
+      [
+       108.904739,
+       34.373594
+      ],
+      [
+       108.904739,
+       34.373599
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "shuhuiyuan002",
+    "name": "树蕙园西",
+    "capacity": 150,
+    "source": "user_upload",
+    "source_file": "canteen-parking.geojson",
+    "import_batch": "canteen-20261017",
+    "capacity_source": "user_file",
+    "zone": "canteen"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.904308,
+       34.373954
+      ],
+      [
+       108.904374,
+       34.373978
+      ],
+      [
+       108.904729,
+       34.373208
+      ],
+      [
+       108.904681,
+       34.373196
+      ],
+      [
+       108.904301,
+       34.373951
+      ],
+      [
+       108.904308,
+       34.373954
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "shuhuiyuan003",
+    "name": "树蕙园东1",
+    "capacity": 40,
+    "source": "user_upload",
+    "source_file": "canteen-parking.geojson",
+    "import_batch": "canteen-20261017",
+    "capacity_source": "user_file",
+    "zone": "canteen"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.905165,
+       34.374225
+      ],
+      [
+       108.905208,
+       34.374238
+      ],
+      [
+       108.905244,
+       34.374154
+      ],
+      [
+       108.905205,
+       34.37414
+      ],
+      [
+       108.905158,
+       34.374227
+      ],
+      [
+       108.905165,
+       34.374225
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "shuhuiyuan004",
+    "name": "树蕙园东2",
+    "capacity": 80,
+    "source": "user_upload",
+    "source_file": "canteen-parking.geojson",
+    "import_batch": "canteen-20261017",
+    "capacity_source": "user_file",
+    "zone": "canteen"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.905244,
+       34.374015
+      ],
+      [
+       108.90529,
+       34.374034
+      ],
+      [
+       108.905402,
+       34.373806
+      ],
+      [
+       108.905356,
+       34.37379
+      ],
+      [
+       108.905241,
+       34.374013
+      ],
+      [
+       108.905244,
+       34.374015
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "shangyejie001",
+    "name": "商业街东南1",
+    "capacity": 80,
+    "source": "user_upload",
+    "source_file": "canteen-parking.geojson",
+    "import_batch": "canteen-20261017",
+    "capacity_source": "user_file",
+    "zone": "canteen"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.903536,
+       34.375545
+      ],
+      [
+       108.903864,
+       34.375637
+      ],
+      [
+       108.903821,
+       34.37572
+      ],
+      [
+       108.903501,
+       34.375628
+      ],
+      [
+       108.903536,
+       34.375547
+      ],
+      [
+       108.903536,
+       34.375548
+      ],
+      [
+       108.903536,
+       34.375545
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "shangyejie002",
+    "name": "商业街东南2",
+    "capacity": 80,
+    "source": "user_upload",
+    "source_file": "canteen-parking.geojson",
+    "import_batch": "canteen-20261017",
+    "capacity_source": "user_file",
+    "zone": "canteen"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.90408,
+       34.37545
+      ],
+      [
+       108.903704,
+       34.375327
+      ],
+      [
+       108.903658,
+       34.375428
+      ],
+      [
+       108.903764,
+       34.375461
+      ],
+      [
+       108.90379,
+       34.375412
+      ],
+      [
+       108.904054,
+       34.375493
+      ],
+      [
+       108.904073,
+       34.375455
+      ],
+      [
+       108.90408,
+       34.37545
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "shangyejie003",
+    "name": "商业街西南",
+    "capacity": 60,
+    "source": "user_upload",
+    "source_file": "canteen-parking.geojson",
+    "import_batch": "canteen-20261017",
+    "capacity_source": "user_file",
+    "zone": "canteen"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.903504,
+       34.375308
+      ],
+      [
+       108.903576,
+       34.375175
+      ],
+      [
+       108.9035,
+       34.375148
+      ],
+      [
+       108.903405,
+       34.375308
+      ],
+      [
+       108.903467,
+       34.375316
+      ],
+      [
+       108.903507,
+       34.375308
+      ],
+      [
+       108.903504,
+       34.375308
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "tianxingjian",
+    "name": "天行健",
+    "capacity": 130,
+    "source": "user_upload",
+    "source_file": "canteen-parking.geojson",
+    "import_batch": "canteen-20261017",
+    "capacity_source": "user_file",
+    "zone": "canteen"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.902541,
+       34.376163
+      ],
+      [
+       108.902513,
+       34.376213
+      ],
+      [
+       108.90296,
+       34.37636
+      ],
+      [
+       108.902994,
+       34.376292
+      ],
+      [
+       108.902541,
+       34.376162
+      ],
+      [
+       108.902541,
+       34.376163
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "zilanyuan001",
+    "name": "滋兰苑西",
+    "capacity": 100,
+    "source": "user_upload",
+    "source_file": "canteen-parking.geojson",
+    "import_batch": "canteen-20261017",
+    "capacity_source": "user_file",
+    "zone": "canteen"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.894072,
+       34.37103
+      ],
+      [
+       108.894174,
+       34.370823
+      ],
+      [
+       108.894112,
+       34.370802
+      ],
+      [
+       108.894007,
+       34.371006
+      ],
+      [
+       108.89407,
+       34.37103
+      ],
+      [
+       108.894072,
+       34.37103
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "zilanyuan002",
+    "name": "滋兰苑东",
+    "capacity": 80,
+    "source": "user_upload",
+    "source_file": "canteen-parking.geojson",
+    "import_batch": "canteen-20261017",
+    "capacity_source": "user_file",
+    "zone": "canteen"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.894811,
+       34.371102
+      ],
+      [
+       108.894857,
+       34.370999
+      ],
+      [
+       108.894965,
+       34.371037
+      ],
+      [
+       108.895084,
+       34.371066
+      ],
+      [
+       108.895038,
+       34.371169
+      ],
+      [
+       108.894815,
+       34.371102
+      ],
+      [
+       108.894928,
+       34.371133
+      ],
+      [
+       108.894811,
+       34.371102
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "caiqinyuan",
+    "name": "采芹苑",
+    "capacity": 200,
+    "source": "user_upload",
+    "source_file": "canteen-parking.geojson",
+    "import_batch": "canteen-20261017",
+    "capacity_source": "user_file",
+    "zone": "canteen"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       108.890153,
+       34.369842
+      ],
+      [
+       108.890545,
+       34.369945
+      ],
+      [
+       108.890586,
+       34.369846
+      ],
+      [
+       108.890202,
+       34.369748
+      ],
+      [
+       108.890017,
+       34.369797
+      ],
+      [
+       108.889936,
+       34.369985
+      ],
+      [
+       108.890036,
+       34.370009
+      ],
+      [
+       108.890103,
+       34.369833
+      ],
+      [
+       108.890154,
+       34.369842
+      ],
+      [
+       108.890153,
+       34.369842
+      ]
+     ]
+    ]
+   }
+  }
+ ]
 }

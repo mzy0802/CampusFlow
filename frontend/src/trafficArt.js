@@ -27,27 +27,27 @@ if(mode==='walk'||rider){
 sprites.set(key,c);return c}
 export function drawActor(ctx,p,mode,size=1,angle=0,alpha=1,rider=true,time=0){const frame=Math.floor(time*2)%4,img=sprite(mode,rider,frame);ctx.save();ctx.translate(p.x,p.y);if(mode!=='walk'){// Face the travel direction while keeping heads upright on westbound segments.
 if(Math.cos(angle)<0)ctx.scale(-1,1);ctx.rotate(Math.max(-.4,Math.min(.4,Math.sin(angle)*.4)))}ctx.globalAlpha=alpha;ctx.drawImage(img,-28*size,-28*size,56*size,56*size);ctx.restore()}
-// Continuous racing ribbons: layered strokes replace expensive blur filters.
-export function drawFlowPath(ctx,path,mode,time,alpha=1,motion){
- const color=palette[mode],width=mode==='walk'?2:3
- ctx.save();ctx.lineCap='round';ctx.lineJoin='round';ctx.setLineDash([])
- for(const [scale,opacity] of [[3.6,.025],[2.1,.065],[1,.18]]){ctx.globalAlpha=opacity*alpha;ctx.strokeStyle=color;ctx.lineWidth=width*scale;ctx.stroke(path)}
- if(motion&&motion.progress>0){
-  const {sample,progress,seed=0}=motion,pulses=mode==='walk'?1:2,rate=mode==='electric'?.034:mode==='bicycle'?.026:.018
-  for(let pulse=0;pulse<pulses;pulse++){
-   const head=((time*rate+seed*.173+pulse/pulses)%1)*progress,span=Math.min(head,mode==='electric'?.085:.06),tail=head-span
-   if(span<.001)continue
-   const points=Array.from({length:11},(_,i)=>sample(tail+span*i/10)),start=points[0],end=points.at(-1)
-   if(Math.hypot(end.x-start.x,end.y-start.y)<1)continue
-   const ribbon=new Path2D();points.forEach((p,i)=>i?ribbon.lineTo(p.x,p.y):ribbon.moveTo(p.x,p.y))
-   const gradient=ctx.createLinearGradient(start.x,start.y,end.x,end.y)
-   gradient.addColorStop(0,color+'00');gradient.addColorStop(.35,color+'40');gradient.addColorStop(.78,color+'d0');gradient.addColorStop(1,'#fff9df')
-   ctx.strokeStyle=gradient;ctx.globalAlpha=.22*alpha;ctx.lineWidth=width*3.3;ctx.stroke(ribbon)
-   ctx.globalAlpha=.86*alpha;ctx.lineWidth=width*1.5;ctx.stroke(ribbon)
-   const core=ctx.createLinearGradient(start.x,start.y,end.x,end.y);core.addColorStop(0,'#ffffff00');core.addColorStop(.65,'#ffffff25');core.addColorStop(1,'#fffdf0')
-   ctx.strokeStyle=core;ctx.lineWidth=mode==='walk'?.9:1.3;ctx.globalAlpha=.95*alpha;ctx.stroke(ribbon)
-   const halo=ctx.createRadialGradient(end.x,end.y,0,end.x,end.y,width*2.5);halo.addColorStop(0,'#fffdf0e0');halo.addColorStop(.25,color+'a0');halo.addColorStop(1,color+'00');ctx.fillStyle=halo;ctx.globalAlpha=alpha;ctx.beginPath();ctx.arc(end.x,end.y,width*2.5,0,Math.PI*2);ctx.fill()
-  }
+// Dot-matrix flow: a leader glyph pulls a column of dots along the route,
+// making crowd direction and volume readable without continuous trails.
+export function drawDotFlow(ctx,sample,progress,mode,alpha=1,members=3,gap=.015){
+ const color=palette[mode]
+ if(progress<=0||alpha<=0)return
+ const dots=Math.min(14,2+Math.round(members*1.2)),head=sample(progress)
+ if(!head)return
+ ctx.save()
+ for(let k=dots;k>=1;k--){
+  const at=progress-k*gap
+  if(at<=0)continue
+  const p=sample(at),f=1-k/(dots+1)
+  ctx.globalAlpha=alpha*(.22+.6*f)
+  ctx.fillStyle=color
+  ctx.beginPath();ctx.arc(p.x,p.y,(mode==='walk'?2.3:3)*(.5+.5*f),0,Math.PI*2);ctx.fill()
  }
+ const halo=ctx.createRadialGradient(head.x,head.y,0,head.x,head.y,9)
+ halo.addColorStop(0,'#fffdf0e0');halo.addColorStop(.3,color+'b0');halo.addColorStop(1,color+'00')
+ ctx.fillStyle=halo;ctx.globalAlpha=alpha;ctx.beginPath();ctx.arc(head.x,head.y,9,0,Math.PI*2);ctx.fill()
+ ctx.fillStyle=color;ctx.globalAlpha=alpha*.95
+ ctx.beginPath();ctx.arc(head.x,head.y,mode==='walk'?2.8:3.6,0,Math.PI*2);ctx.fill()
+ ctx.strokeStyle='#fffefa';ctx.lineWidth=1.2;ctx.stroke()
  ctx.restore()
 }

@@ -30,7 +30,7 @@ async def lifespan(app: FastAPI):
     default_parking=load_parking()
     storage = os.getenv('DETECTION_STORAGE', str(Path(__file__).resolve().parents[1] / 'storage'))
     migrate_hongyuan(app.state.store, default_parking, storage)
-    for batch in ('mingyuan-20261016','hongyuan-20261016'):
+    for batch in ('mingyuan-20261016','hongyuan-20261016','canteen-20261017'):
         parking=merge_import_batch(app.state.store,default_parking,batch)
     parking=replace_import_batch(app.state.store,default_parking,'xiuyuan-v2-20261016')
     app.state.parking = app.state.store.parking(parking['collection'])

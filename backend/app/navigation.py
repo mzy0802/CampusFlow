@@ -49,12 +49,18 @@ def project(p,a,b):
     return t,q,distance(p,q)
 
 def route(graph,body,mode):
+    if mode=='walk':
+        from .building_walk import walking_network
+        graph=walking_network(graph)
     nodes={n['id']:dict(n) for n in graph['nodes']}
     edges=[e for e in graph['edges'] if e['verified'] and mode in e['modes']]
     if not edges: raise ValueError('暂无支持此出行方式的道路')
     snaps=[]
     for point in (body.origin,body.destination):
-        options=[(*project(point.model_dump(),nodes[e['source']],nodes[e['target']]),i) for i,e in enumerate(edges)]
+        from .building_walk import inside
+        indoor_point=any(inside((point.longitude,point.latitude),ring) for ring in graph.get('_building_rings',[]))
+        options=[(*project(point.model_dump(),nodes[e['source']],nodes[e['target']]),i) for i,e in enumerate(edges) if indoor_point or e.get('source_type')!='owner_building_permeability']
+        if not options:raise ValueError('暂无可接入的室外步行道路')
         t,q,gap,i=min(options,key=lambda x:x[2])
         if gap>150: raise ValueError('选点距离可用道路超过150米，请选择校内道路附近或补充入口')
         snaps.append((t,q,gap,i))
@@ -75,10 +81,19 @@ def route(graph,body,mode):
     costs,prev=shortest(links,anchors[0])
     if anchors[1] not in costs: raise ValueError('起终点之间路网不连通，或单向及通行方式限制导致无路线')
     result=segment(nodes,prev,anchors[0],anchors[1],mode)
-    return {'id':mode,'mode':mode,'distance_m':result['distance_m'],'duration_minutes':round(result['duration_seconds']/60,1),'geojson':result['geojson'],
+    indoor=any(str(n).startswith('indoor:') for n in result['node_ids']) or any(edges[s[3]].get('source_type')=='owner_building_permeability' for s in snaps)
+    access=sum(s[2] for s in snaps) if mode=='walk' else 0
+    if mode=='walk':
+        geometry=result['geojson']['geometry'];coords=geometry['coordinates'] if geometry['type']=='LineString' else [geometry['coordinates']]
+        if snaps[0][2]>.1:coords=[[body.origin.longitude,body.origin.latitude]]+coords
+        if snaps[1][2]>.1:coords=coords+[[body.destination.longitude,body.destination.latitude]]
+        if len(coords)>1:result['geojson']['geometry']={'type':'LineString','coordinates':coords}
+    return {'id':mode,'mode':mode,'distance_m':round(result['distance_m']+access,1),'duration_minutes':round((result['duration_seconds']+access/(speed/3.6))/60,1),'geojson':result['geojson'],
+            'uses_building_passage':indoor,
+            'building_passage_basis':'OSM建筑轮廓与教学楼可穿行规则；接入点为模型连接，非实测门位' if indoor else None,
             'origin_access_distance_m':round(snaps[0][2],1),'destination_access_distance_m':round(snaps[1][2],1),
             'assumed_speed_kmh':speed,'network_revision':graph['revision'],
-            'notice':'预计耗时仅含路网内路段，不含选点至道路的接驳距离和停车时间；非实时路况。'}
+            'notice':'步行时间含接入路网的直线距离估算；楼内连接按教学楼可穿行规则建模。' if mode=='walk' else '预计耗时仅含路网内路段，不含选点至道路的接驳距离和停车时间；非实时路况。'}
 
 def campus_places(request):
     items=read_data('places.osm.json',{'items':[]})['items'][:]
@@ -86,16 +101,20 @@ def campus_places(request):
     for feature in request.app.state.parking['features']:
         p=feature['properties'];ring=feature['geometry']['coordinates'][0][:-1]
         items.append({'id':'parking:'+p['id'],'name':p['name'],'longitude':sum(x[0] for x in ring)/len(ring),'latitude':sum(x[1] for x in ring)/len(ring),'source':'user','location_type':'parking_center'})
-    return items
+    from .place_search import aliases
+    known={str(p['id']) for p in items}
+    for f in read_data('buildings.osm.geojson',{'features':[]})['features']:
+        p=f['properties'];name=p.get('tags',{}).get('name','')
+        if p['id'] in known or not name:continue
+        ring=f['geometry']['coordinates'][0][:-1]
+        items.append({'id':p['id'],'name':name,'longitude':sum(v[0] for v in ring)/len(ring),'latitude':sum(v[1] for v in ring)/len(ring),'source':'OpenStreetMap','location_type':'building_center'})
+    return [{**p,'aliases':aliases(p)} for p in items]
 
 @router.get('/places')
 def places(request:Request,q:str=Query('',max_length=100)):
     items=campus_places(request)
-    def normalized(s):
-        for word in ('学生','宿舍','公寓','号楼','号','楼',' '):s=s.replace(word,'')
-        return s.lower()
-    key=normalized(q.strip())
-    matches=[p for p in items if key in normalized(p['name'])] if q else items
+    from .place_search import search_places
+    matches=search_places(items,q)
     return {'items':matches[:100],'source':'OpenStreetMap and user entrances','note':'建筑坐标为中心点；入口接驳距离未计入路线时间'}
 
 @router.get('/map')
@@ -112,6 +131,11 @@ def map_data(request:Request,include_service:bool=False):
         name=props.get('tags',{}).get('name','')
         features.append({'type':'Feature','properties':{'id':e['id'],'highway':highway,'name':name,'verified':e['verified'],'junction':'roundabout' if props.get('osm_way_id')==277529726 else props.get('tags',{}).get('junction'),'uturn_connector':props.get('osm_way_id')==438534310},'geometry':{'type':'LineString','coordinates':[[nodes[k]['longitude'],nodes[k]['latitude']] for k in (e['source'],e['target'])]}})
     return {'type':'FeatureCollection','features':features,'attribution':'© OpenStreetMap contributors / ODbL'}
+
+@router.get('/buildings')
+def building_outlines():
+    """Teaching-building outlines used to keep roadside violations out of buildings."""
+    return read_data('buildings.osm.geojson',{'type':'FeatureCollection','features':[]})
 
 @router.post('/route')
 def plan(body:NavigationRequest,request:Request):
@@ -151,6 +175,8 @@ def compute_parking(body,request,graph,areas=None):
         candidate.update(area_id=area['id'],approach=approach,walking=walking,score=round(cost,3),
                          longitude=point['longitude'],latitude=point['latitude'],
                          walk_minutes=walking['duration_minutes'],
+                         walk_distance_m=walking['distance_m'],
+                         walking_basis=walking.get('building_passage_basis'),
                          free=max(0,area['capacity']-area['count']),
                          duration_minutes=round(approach['duration_minutes']+walking['duration_minutes']+(1 if areas is not None else 0),1),
                          distance_m=round(approach['distance_m']+walking['distance_m'],1),
@@ -210,7 +236,7 @@ def parse_trip(messages,items):
     if not key or not base or not model:raise ValueError('指路模型由负责同学接入，尚未配置完成；请使用普通导航')
     if not base.startswith('https://'):raise ValueError('AI接口必须使用HTTPS')
     system='''你是长安大学渭水校区出行助手。根据对话解析用户现在在哪、要去哪以及出行方式。仅从地点目录选择完整且唯一的id，不得编造地点或坐标。缺少起点、终点或地点有歧义时，以简短中文追问，不猜测具体楼号。结合历史补全后续回答，最新用户信息优先。返回JSON：{"origin_id":字符串或null,"destination_id":字符串或null,"mode":"walk或bike或auto","reply":"追问或简短出行说明"}。明确步行用walk，骑自行车或电动车用bike，未指定用auto。用户要少走路时可以bike；禁止声称实时路况或定位权限，不编造用时。地点目录：'''
-    catalog=[{'id':str(p['id']),'name':p['name']} for p in items]
+    catalog=[{'id':str(p['id']),'name':p['name'],'aliases':p.get('aliases',[])} for p in items]
     payload={'model':model,'messages':[{'role':'system','content':system+json.dumps(catalog,ensure_ascii=False)}]+[m.model_dump() for m in messages],
              'stream':False,'temperature':0,'max_tokens':500,'response_format':{'type':'json_object'}}
     # Qwen accepts this option; other providers retain their own defaults.
@@ -222,12 +248,46 @@ def parse_trip(messages,items):
     except Exception:raise ValueError('指路模型连接失败或回复格式无效，请稍后重试') from None
 
 
+def demo_parse(messages,items):
+    """Built-in rule parser, only until the responsible student plugs in the real model."""
+    from .place_search import normalize
+    text=' '.join(m.content for m in messages if m.role=='user')
+    norm=normalize(text)
+    hits=[];seen=set()
+    for it in sorted(items,key=lambda p:-len(normalize(p['name']))):
+        for term in [it['name']]+list(it.get('aliases',[])):
+            n=normalize(term)
+            if len(n)>=2 and n in norm and str(it['id']) not in seen:
+                hits.append((norm.index(n),it));seen.add(str(it['id']));break
+    hits.sort(key=lambda h:h[0])
+    found=[h[1] for h in hits]
+    origin=destination=None
+    if len(found)>=2:origin,destination=found[0],found[1]
+    elif len(found)==1:
+        key=normalize(found[0]['name']);pos=norm.find(key)
+        after=norm[pos+len(key):] if pos>=0 else ''
+        if any(k in after for k in ('去','到','回')) or any(k in norm[:pos] for k in ('去','到')):destination=found[0]
+        else:origin=found[0]
+    if not destination and any(k in norm for k in ('食堂','餐厅','吃饭')):
+        canteens=[p for p in items if '餐厅' in p['name'] or '食堂' in p['name']]
+        names='、'.join(c['name'] for c in canteens[:6]) or '暂无食堂目录'
+        return {'origin_id':str(origin['id']) if origin else None,'destination_id':None,'mode':'auto','reply':f'想去哪个食堂？校园里有{names}。'}
+    if not origin or not destination:
+        missing='起点' if not origin else '目的地'
+        return {'origin_id':str(origin['id']) if origin else None,'destination_id':str(destination['id']) if destination else None,'mode':'auto','reply':f'请告诉我{missing}，例如宿舍楼号、食堂或教学楼名称。'}
+    mode='walk' if any(k in text for k in ('步行','走路')) else 'bike' if any(k in text for k in ('骑','自行车','电动')) else 'auto'
+    return {'origin_id':str(origin['id']),'destination_id':str(destination['id']),'mode':mode,'reply':''}
+
+
 @router.post('/chat')
 def chat_navigation(body:ChatNavigationRequest,request:Request):
     if body.messages[-1].role!='user':raise HTTPException(422,'最后一条消息必须是出行请求')
     items=campus_places(request);lookup={str(p['id']):p for p in items}
+    demo=False
     try:trip,model=parse_trip(body.messages,items)
-    except ValueError as e:raise HTTPException(503,str(e)) from None
+    except ValueError as e:
+        if '尚未配置' not in str(e):raise HTTPException(503,str(e)) from None
+        trip=demo_parse(body.messages,items);model='demo-builtin';demo=True
     if not isinstance(trip,dict):raise HTTPException(503,'指路模型回复格式无效，请重试')
     origin=lookup.get(str(trip.get('origin_id')));destination=lookup.get(str(trip.get('destination_id')))
     if not origin or not destination:
@@ -248,9 +308,17 @@ def chat_navigation(body:ChatNavigationRequest,request:Request):
             options.append(direct)
         except ValueError:continue
     if not options:raise HTTPException(422,'这两个地点之间暂无可通行路线，请换一个入口或目的地')
+    if len(parking)>1:
+        second={**parking[1],'mode':'bike','notice':'备选停车区：蓝线到停车区，紫色线为停车后步行；耗时不含入口接驳和停车操作。'}
+        options.append(second)
     result=min(options,key=lambda r:r['duration_minutes'])
     verb='步行' if result['mode']=='walk' else '骑行'
     stop='，在'+result['name']+'停车后步行' if result.get('area_id') else ''
     reply=f"从{origin['name']}到{destination['name']}，建议{verb}{stop}，预计{result['duration_minutes']}分钟，约{result['distance_m']}米。"
     if result['mode']=='bike' and not parking:reply+='目的地附近暂无可推荐停车区，请勿随意停车。'
-    return {'status':'route','reply':reply,'origin':origin,'destination':destination,'route':{**result,'traffic':traffic,'ai':{'model':model,'reason':reply}},'parking':parking if result['mode']=='bike' else []}
+    if demo:reply='演示模式：大模型尚未接入，以下为内置规则按真实路网计算的候选。'+reply
+    choices=[{'mode':o['mode'],'duration_minutes':o['duration_minutes'],'distance_m':o['distance_m'],
+              'area_id':o.get('area_id'),'name':o.get('name'),
+              'label':('步行直达' if o['mode']=='walk' else ('骑行，经'+o['name']+'停车' if o.get('area_id') else '骑行直达')),
+              'route':o} for o in options]
+    return {'status':'route','reply':reply,'origin':origin,'destination':destination,'route':{**result,'traffic':traffic,'ai':{'model':model,'reason':reply}},'parking':parking if result['mode']=='bike' else [],'options':choices,'demo':demo}

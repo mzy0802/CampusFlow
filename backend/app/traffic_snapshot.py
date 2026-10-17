@@ -45,7 +45,7 @@ def snapshot(request,context):
     collection=request.app.state.store.parking(request.app.state.parking)
     doc=scenario_document(json.dumps(graph,sort_keys=True),json.dumps(collection,sort_keys=True),
                           json.dumps(read_data('places.osm.json',{'items':[]})['items'],sort_keys=True),context.population,context.seed)
-    agents=doc['cases'][context.scenario];people=[];loads={a['id']:0 for a in doc['areas']};illegal=dict(loads)
+    agents=doc['cases'][context.scenario];people=[];all_areas=doc['areas']+doc.get('canteen_areas',[]);loads={a['id']:0 for a in all_areas};illegal=dict(loads)
     def at(path_id,progress):
         from .trip_planner import distance
         coords=doc['paths'][path_id]['coordinates'];lengths=[];total=0
@@ -58,22 +58,29 @@ def snapshot(request,context):
                 return {'longitude':a[0]+(b[0]-a[0])*t,'latitude':a[1]+(b[1]-a[1])*t}
             before=length
         return {'longitude':coords[0][0],'latitude':coords[0][1]}
+    from .scenario_dynamics import state_at
     for a in agents:
         elapsed=context.time_seconds-a['start'];duration=a['travel_seconds']
-        if a['area_id'] and elapsed>=duration+18:
+        if a['area_id'] and elapsed>=duration+a.get('parking_seconds',18):
             loads[a['area_id']]+=1
             if a.get('illegal'):illegal[a['area_id']]+=1
-        if 0<=elapsed<duration:people.append((at(a['path'],elapsed/duration),'walk' if a['mode']=='walk' else 'bike'))
-        tail=doc['paths'].get(a.get('walk_path'))
-        if tail and duration+60<=elapsed<duration+60+tail['seconds']:
-            people.append((at(a['walk_path'],(elapsed-duration-60)/tail['seconds']),'walk'))
-    weighted,counts=apply_density(graph,people)
+        first=a.get('leg1_seconds',0)
+        if a.get('via_area_id') and first+18<=elapsed<first+a.get('dwell_seconds',0):loads[a['via_area_id']]+=1
+        state=state_at(a,context.time_seconds,doc['paths'])
+        if state['kind'] in ('moving','walking'):
+            mode='walk' if state['kind']=='walking' or a['mode']=='walk' else 'bike'
+            people.append((at(state['path'],state['progress']),mode))
+    from .building_walk import walking_network
+    weighted,counts=apply_density(walking_network(graph),people)
+    active_accidents=[e for e in doc.get('accidents',{}).get(context.scenario,[]) if e['start']<=context.time_seconds<=e['end']]
+    for edge in weighted['edges']:
+        if any(edge['id']==event['road_id'] for event in active_accidents):edge['congestion']*=3.5
     areas=[]
-    for a in doc['areas']:
+    for a in all_areas:
         n=loads[a['id']]
         areas.append({**a,'count':n,'free':max(0,a['capacity']-n),'percent':round(n/a['capacity']*100,1),
                       'illegal_count':illegal[a['id']],'source':'scenario_simulation','updated_at':datetime.now(timezone.utc).isoformat()})
-    return weighted,areas,{'source':'scenario_simulation',**context.model_dump(),'road_users':len(people),
+    return weighted,areas,{'source':'scenario_simulation',**context.model_dump(),'road_users':len(people),'active_accidents':len(active_accidents),
                           'busy_segments':sum(bool(n['walk']+n['bike']) for n in counts.values()),
                           'density_formula':'base_seconds * (1 + min(3, (walkers + 2 * riders) / max(3, segment_m / 12)))',
                           'notice':'按所选时刻的人车位置及停车数量计算；采用当前截面路况，不预测途中未来变化。'}

@@ -30,7 +30,7 @@ def test_hongyuan_identity_links_and_idempotence(tmp_path):
         media=db.execute('SELECT * FROM annotation_media').fetchone()
         assert json.loads(media['payload'])['area_id']=='WH1001' and media['revision']==4
         geometry=json.loads(db.execute('SELECT payload FROM parking_geometry').fetchone()[0])
-        assert len(geometry['features'])==41
+        assert len(geometry['features'])==52
         assert {f['properties']['name'] for f in geometry['features'] if f['properties']['id']=='WH1001'}=={'鸿远1区北'}
         assert db.execute("SELECT capacity FROM parking_config WHERE id='WH1001'").fetchone()[0]==321
         assert db.execute('SELECT count(*) FROM parking_geometry_history').fetchone()[0]==1
